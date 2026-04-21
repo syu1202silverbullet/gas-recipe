@@ -1,7 +1,7 @@
 ---
 title: "GASでLINEに毎朝「今日の予定・天気・タスク」を自動通知する仕組み"
 description: "毎朝LINEに「今日の予定＋天気＋やることリスト」が自動で届く情報ダッシュボードをGoogle Apps Scriptで作る方法。副業・個人事業の情報収集時間をゼロにする仕組みをまとめました。"
-pubDate: "2026-04-24"
+pubDate: "2026-04-18"
 heroImage: "/blog-placeholder-4.jpg"
 ---
 
