@@ -1,7 +1,7 @@
 ---
 title: "Gmail予約メールをGoogleカレンダーに自動登録する仕組み｜GASで手作業ゼロに"
 description: "美容室・病院・レストランの予約確認メールが届いたら、自動でGoogleカレンダーに予定を入れる仕組みをGAS（Google Apps Script）で作る方法。コピペ作業から解放される実用自動化のノウハウまとめ。"
-pubDate: "2026-04-22"
+pubDate: "2026-04-16"
 heroImage: "/blog-placeholder-2.jpg"
 ---
 
