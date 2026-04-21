@@ -1,7 +1,7 @@
 ---
 title: "スマホ写真のレシートをGAS＋OCRで自動集計｜確定申告を楽にする仕組み"
 description: "レシートを撮るだけで日付・金額・店名をテキスト化し、スプレッドシートに自動転記するGoogle Apps Script活用術。確定申告・経費精算の手作業を大幅に削減できる実用自動化を解説します。"
-pubDate: "2026-04-23"
+pubDate: "2026-04-17"
 heroImage: "/blog-placeholder-3.jpg"
 ---
 
