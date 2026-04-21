@@ -1,7 +1,7 @@
 ---
 title: "Google Apps Scriptでできること10選｜無料で毎日使える自動化アイデア集"
 description: "Google Apps Script（GAS）で自動化できる身近な作業を、実際に動かしている事例とともに10個紹介します。プログラミング未経験でも使える範囲から、副業や個人開発まで、GASの可能性がこの1記事でわかります。"
-pubDate: "2026-04-21"
+pubDate: "2026-04-15"
 heroImage: "/blog-placeholder-1.jpg"
 ---
 
