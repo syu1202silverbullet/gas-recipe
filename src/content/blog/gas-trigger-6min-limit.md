@@ -1,7 +1,7 @@
 ---
 title: "GAS6分制限を回避する3パターン完全解説"
 description: "GASの実行時間6分制限にぶつかって処理が途中で止まってしまう…そんなとき使える3つの回避パターンを、看護師の現場目線でやさしく整理しました。"
-pubDate: "TBD"
+pubDate: "2026-05-18T19:00:00+09:00"
 heroImage: "/blog-placeholder-1.jpg"
 categorySlug: "gas-basics"
 categoryName: "GAS入門"
