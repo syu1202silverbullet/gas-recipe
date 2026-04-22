@@ -3,8 +3,11 @@ title: "スプレッドシートを毎朝自動で整える｜GASトリガーを
 description: "毎朝決まった時間にスプレッドシートのデータ集計・シート複製・不要行削除などを自動実行するGASトリガーの使い方を徹底解説。業務効率化の第一歩として最も効果的な自動化をまとめました。"
 pubDate: "2026-04-19"
 heroImage: "/blog-placeholder-5.jpg"
-category: "スプレッドシート"
-tags: ["GAS", "スプレッドシート", "トリガー", "自動化"]
+categorySlug: "spreadsheet"
+categoryName: "スプレッドシート"
+tagSlugs: ["gas", "spreadsheet", "trigger", "automation"]
+tagNames: ["GAS", "スプレッドシート", "トリガー", "自動化"]
+readingTime: 6
 ---
 
 「毎朝、このシートを開いてコピーして…」という定例作業、ありませんか？
