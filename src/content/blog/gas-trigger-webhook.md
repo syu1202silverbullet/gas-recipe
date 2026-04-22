@@ -1,6 +1,6 @@
 ---
 title: "Webhook受信でGAS即時実行する設定方法"
-description: "時間トリガーじゃ遅すぎる…そんなときに使えるのがWebhook経由の即時実行。doPostの基本から安全な受け取り方まで、看護師ママ目線でまとめました。"
+description: "時間トリガーじゃ遅すぎる…そんなときに使えるのがWebhook経由の即時実行。doPostの基本から安全な受け取り方まで、看護師目線でまとめました。"
 pubDate: "2026-05-19T19:00:00+09:00"
 heroImage: "/blog-placeholder-2.jpg"
 categorySlug: "gas-basics"
@@ -9,7 +9,7 @@ tagSlugs: ["gas", "webhook", "doPost"]
 tagNames: ["GAS", "Webhook", "doPost"]
 mainKeyword: "GAS Webhook"
 readingTime: 6
-author: "みっちゃんママ"
+author: "凛"
 ---
 
 # Webhook受信でGAS即時実行する設定方法
@@ -117,6 +117,6 @@ function doPost(e) {
 
 ---
 
-### この記事を書いた人：みっちゃんママ
+### この記事を書いた人：凛
 
-三姉妹の母で現役ナース、夜勤の合間に副業でGASプログラミングをしています。「自分が楽になるための自動化」をモットーに、看護師ママ目線でGASレシピを発信中。難しいコードより、明日の自分が助かる仕組みが好きです。
+の母で現役ナース、夜勤の合間に副業でGASプログラミングをしています。「自分が楽になるための自動化」をモットーに、看護師目線でGASレシピを発信中。難しいコードより、明日の自分が助かる仕組みが好きです。
