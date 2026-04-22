@@ -1,0 +1,95 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import MobileNav from '../components/MobileNav.astro';
+import { SITE_TITLE } from '../consts';
+
+const errors = [
+	{ code: "TypeError: Cannot read properties of undefined", cause: "存在しないプロパティを参照", solution: "オプショナルチェーン ?. を使う。先にnullチェック。", detail: "/blog/gas-error-exception/" },
+	{ code: "ReferenceError: XXX is not defined", cause: "変数名のタイプミス・宣言忘れ", solution: "スペル確認とconst/let宣言を追加", detail: "/blog/gas-error-exception/" },
+	{ code: "Exception: Service Spreadsheets failed", cause: "シート名変更・同時編集", solution: "getSheetByName直後にnullチェック", detail: "/blog/gas-error-exception/" },
+	{ code: "Exception: Authorization is required", cause: "初回実行の権限未承認", solution: "手動で1回実行して権限承認する", detail: "/blog/gas-error-exception/" },
+	{ code: "Exception: Service invoked too many times", cause: "API呼び出し上限超過（Gmail100通/日など）", solution: "Utilities.sleep()または処理分割", detail: "/blog/gas-error-exception/" },
+	{ code: "Exception: Script took too long", cause: "6分実行制限超過", solution: "バッチ分割+トリガー再起動", detail: "/blog/gas-trigger-6min-limit/" },
+	{ code: "SyntaxError: Unexpected token", cause: "構文ミス（カンマ/括弧忘れ等）", solution: "エディタの赤波線をたどる", detail: "/blog/gas-error-exception/" },
+	{ code: "Exception: Range not found", cause: "無効な範囲指定", solution: "数値で明示的に getRange(1,1,lastRow,lastCol)", detail: "/blog/gas-error-exception/" },
+	{ code: "TypeError: XXX.map is not a function", cause: "配列でない変数に対して配列メソッドを使用", solution: "Array.isArray()でチェック後、必要なら配列化", detail: "/blog/gas-error-exception/" },
+	{ code: "Exception: Rate Limit Exceeded", cause: "外部API連打（UrlFetchApp等）", solution: "指数バックオフで再試行", detail: "/blog/gas-error-exception/" },
+];
+
+// FAQ JSON-LD
+const faqJsonLd = {
+	"@context": "https://schema.org",
+	"@type": "FAQPage",
+	"mainEntity": errors.map((e) => ({
+		"@type": "Question",
+		"name": e.code,
+		"acceptedAnswer": { "@type": "Answer", "text": `${e.cause} / 解決: ${e.solution}` }
+	}))
+};
+---
+
+<!doctype html>
+<html lang="ja">
+	<head>
+		<BaseHead title={`GASエラー逆引き辞典｜${SITE_TITLE}`} description="GASでよく出るエラーメッセージから原因と解決方法を逆引きで探せる辞典ページ。TypeError、Quota超過、権限エラー等を網羅しています。" />
+		<script type="application/ld+json" set:html={JSON.stringify(faqJsonLd)} />
+	</head>
+	<body>
+		<Header />
+		<main>
+			<nav class="breadcrumbs" aria-label="パンくずリスト">
+				<a href="/">ホーム</a> <span>›</span> エラー逆引き辞典
+			</nav>
+			<h1>GASエラー逆引き辞典</h1>
+			<p class="lead">エラーメッセージから原因と解決方法を即座に探せる辞典ページ。本ページをブックマークしておけば、次のエラー遭遇時に検索時間ゼロで解決できます。</p>
+
+			<div class="err-table">
+				{errors.map((e) => (
+					<details class="err-row">
+						<summary>
+							<code>{e.code}</code>
+						</summary>
+						<div class="err-body">
+							<p><strong>原因:</strong> {e.cause}</p>
+							<p><strong>解決:</strong> {e.solution}</p>
+							<p><a href={e.detail}>詳細記事を読む →</a></p>
+						</div>
+					</details>
+				))}
+			</div>
+		</main>
+		<Footer />
+		<MobileNav />
+		<style>
+			main { width: 860px; max-width: calc(100% - 2rem); margin: 0 auto; padding: 2rem 1rem 4rem; }
+			.breadcrumbs { font-size: 0.88em; color: rgb(var(--gray)); margin-bottom: 1rem; }
+			.breadcrumbs a { color: var(--accent); text-decoration: none; }
+			.lead { color: rgb(var(--gray-dark)); line-height: 1.9; margin: 0 0 2rem; }
+			.err-row {
+				background: var(--bg);
+				border: 1px solid rgb(var(--gray-light));
+				border-radius: 8px;
+				margin-bottom: 0.6rem;
+			}
+			.err-row summary {
+				padding: 1rem 1.2rem;
+				cursor: pointer;
+				font-weight: 600;
+				color: rgb(var(--black));
+			}
+			.err-row[open] summary { border-bottom: 1px solid rgb(var(--gray-light)); }
+			.err-row code {
+				font-family: 'JetBrains Mono', monospace;
+				font-size: 0.88em;
+				background: var(--code-bg);
+				color: var(--code-text);
+				padding: 0.2em 0.6em;
+				border-radius: 4px;
+			}
+			.err-body { padding: 1rem 1.2rem; color: rgb(var(--gray-dark)); line-height: 1.8; font-size: 0.92em; }
+			.err-body a { color: var(--accent); text-decoration: none; font-weight: 600; }
+		</style>
+	</body>
+</html>
