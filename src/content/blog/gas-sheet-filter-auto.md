@@ -1,6 +1,6 @@
 ---
 title: "スプシ自動フィルタをGASで3秒セット"
-description: "スプレッドシートのフィルタ設定をGASで一気に済ませる方法を、看護師ママが優しく解説。毎回のフィルタ作り直しから卒業しましょう。"
+description: "スプレッドシートのフィルタ設定をGASで一気に済ませる方法を、看護師が優しく解説。毎回のフィルタ作り直しから卒業しましょう。"
 pubDate: "2026-05-10T19:00:00+09:00"
 heroImage: "/blog-placeholder-3.jpg"
 categorySlug: "spreadsheet"
@@ -79,7 +79,7 @@ function createMyFilterView(ssId, sheetId) {
     requests: [{
       addFilterView: {
         filter: {
-          title: 'みっちゃんママ専用',
+          title: '凛専用',
           range: { sheetId: sheetId, startRowIndex: 0, startColumnIndex: 0 }
         }
       }
@@ -98,7 +98,7 @@ function createMyFilterView(ssId, sheetId) {
 ```javascript
 function onOpen() {
   SpreadsheetApp.getUi()
-    .createMenu('みっちゃんメニュー')
+    .createMenu('カスタムメニュー')
     .addItem('完了を隠す', 'filterNotDone_default')
     .addItem('全部表示', 'resetFilter_default')
     .addToUi();
@@ -128,5 +128,5 @@ function resetFilter_default()   { resetFilter(SpreadsheetApp.getActive().getShe
 
 ---
 
-**【この記事を書いた人：みっちゃんママ】**
-三姉妹の母で現役ナース。病院勤務のかたわら、Google Apps Scriptで家計簿・副業管理・家族スケジュールを自動化している副業GASプログラマー。「忙しいママでも、コード3行で生活が軽くなる」をモットーに、等身大のレシピを発信中。
+**### この記事を書いた人：凛**
+の母で現役ナース。病院勤務のかたわら、Google Apps Scriptで家計簿・副業管理・家族スケジュールを自動化している副業GASプログラマー。「忙しいママでも、コード3行で生活が軽くなる」をモットーに、等身大のレシピを発信中。
