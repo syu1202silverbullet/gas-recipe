@@ -1,44 +1,60 @@
 ---
-title: "GASログ出力console.logでデバッグ完全版"
-description: "GASのconsole.logを使ったデバッグ手法を、現役ナースみっちゃんママが実務目線で解説。ログの見方・応用テクまで完全ガイド。"
-pubDate: "2026-05-07T19:00:00+09:00"
+title: "GASログ出力console.logでデバッグ完全版｜Logger.logとの違い・応用テク10選"
+description: "GASのconsole.logを使ったデバッグ手法を、現役ナース副業プログラマーが実務目線で解説。Logger.logとの違い・時間計測・条件付きログ・本番ログ最適化まで完全ガイドします。"
+pubDate: "TBD"
 heroImage: "/blog-placeholder-5.jpg"
 categorySlug: "gas-basics"
 categoryName: "GAS入門"
-tagSlugs: ["gas","debug","logging"]
-tagNames: ["GAS","デバッグ","ログ"]
-readingTime: 5
-keywords: ["GAS console.log"]
+tagSlugs: ["gas","debug","logging","console-log","logger"]
+tagNames: ["GAS","デバッグ","ログ","console.log","Logger"]
+readingTime: 9
+keywords: ["GAS console.log","GAS ログ","GAS デバッグ","GAS Logger.log"]
 ---
 
-こんにちは、みっちゃんママです。夜勤明けにGASを書くと、だいたい1回は「なんで動かないの？！」って叫びます。そんなときの頼れる相棒が`console.log`。今日は、GASでのデバッグの基本を、私の失敗談交えてお話しますね。
+こんにちは、みっちゃんママです。三姉妹の母で、夜勤明けにGASを書いている副業プログラマーです。夜勤明けにGASを書くと、だいたい1回は「**なんで動かないの？！**」って叫びます。そんなときの頼れる相棒が`console.log`。今日は、GASでのデバッグの基本を、私の失敗談を交えて徹底的にお話しますね。
+
+「GAS console.log」で検索してここに来た方が、読み終わったあと即コードに戻れるレベルで書いています。
 
 ## こんな悩みありませんか？
 
 - 「エラーが出ないのに、なぜか結果がおかしい」
 - 「`Logger.log`と`console.log`、どっちを使えばいいの？」
 - 「ログをどこで見るのかわからない」
+- 「オブジェクトを`console.log`したら`[object Object]`って出て中身が見えない」
+- 「ログが多すぎて、肝心な情報が埋もれる」
 
-私も最初は画面とにらめっこで「なぜ…なぜ動かない…」ってやってました。ログをちゃんと出す習慣がつくと、トラブル解決の時間が体感1/3くらいになります。
+私も最初は画面とにらめっこで「なぜ…なぜ動かない…」ってやってました。ログをちゃんと出す習慣がつくと、**トラブル解決の時間が体感1/3くらいになります**。
 
-## 全体像：GASのログは2系統ある
+## GASのログは2系統：どっちを使うべき？
 
 GASには伝統的に2つのログ方法があります。
 
-| 方法 | 見る場所 | 特徴 |
-|------|---------|------|
-| `console.log` | 実行ログ（Cloud Logging） | 推奨。構造化ログも扱える |
-| `Logger.log` | 実行ログ | 昔ながらの方法。現在も動く |
+| 方法 | 見る場所 | 特徴 | 2026年の推奨度 |
+|------|---------|------|:---:|
+| `console.log` | 実行ログ（Cloud Logging） | 構造化ログ・レベル別表示 | ◎ |
+| `Logger.log` | 実行ログ | 昔ながらの方法。現在も動く | △ |
 
-**今から覚えるなら`console.log`一択**でOKです。`Logger.log`も動きますが、新しいコードは`console.log`で統一すると一貫性が出ます。
+**2026年から新しく覚えるなら`console.log`一択**でOKです。`Logger.log`も動きますが、新しいコードは`console.log`で統一すると一貫性が出て、Cloud Loggingとの連携もスムーズ。
+
+### `console.log`と`Logger.log`の違い
+
+```javascript
+console.log('みっちゃん');        // 推奨：レベル別、構造化、複数引数
+Logger.log('みっちゃん');          // 昔ながら：単純な文字列ログ
+Logger.log('名前: %s', 'みっちゃん'); // フォーマット指定もできる
+```
+
+`Logger.log`は単純な文字列ログ向け。`console.log`はレベル分け・複数引数・構造化出力ができるので、**どちらか迷ったら`console`**と覚えましょう。
 
 ### ログはどこで見る？
 
-GASエディタの左メニューから「実行数」または関数実行後に表示される「実行ログ」パネル。トリガー経由で動いた場合も、実行数の履歴から個別実行のログを開けます。
+GASエディタの左メニューから「**実行数**」、または関数実行後に下部に表示される「**実行ログ**」パネル。トリガー経由で動いた場合も、実行数の履歴から個別実行のログを開けます。
 
-## ポイント3つ：使いこなしの基本
+スマホのGoogle Apps ScriptアプリからもCloud Loggingが見えるので、外出先から夜勤中のGASの様子を確認できるのは地味に便利です。
 
-### ポイント1：値の中身を見る
+## `console.log`使いこなしの基本
+
+### 1. 値の中身を見る
 
 一番よく使うのがコレ。
 
@@ -51,31 +67,33 @@ function checkValue() {
 }
 ```
 
-カンマ区切りで複数の値を並べられます。テンプレートリテラルも便利。
+**カンマ区切りで複数の値を並べられる**のが`console.log`の強み。テンプレートリテラルも便利です。
 
 ```javascript
 console.log(`名前: ${name} / 年齢: ${age}`);
 ```
 
-### ポイント2：オブジェクト・配列はそのまま投げる
+### 2. オブジェクト・配列はそのまま投げる
 
-文字列連結で`+`すると`[object Object]`になって泣きます。オブジェクトはそのまま渡しましょう。
+文字列連結で`+`すると`[object Object]`になって泣きます。**オブジェクトはそのまま渡しましょう**。
 
 ```javascript
 const user = { name: 'みっちゃん', shift: '夜勤' };
 
-console.log(user);                    // 構造化されて表示される
-console.log(JSON.stringify(user));     // 文字列化したいときはこれ
+console.log('ダメな例: ' + user);        // [object Object] ← 泣く
+console.log(user);                        // ✅ 構造化されて表示される
+console.log(JSON.stringify(user));        // 文字列化したいときはこれ
+console.log(JSON.stringify(user, null, 2)); // インデント付きで超見やすい
 ```
 
 2次元配列の中身を確認するときも、`JSON.stringify`が地味に便利。
 
 ```javascript
 const values = sheet.getDataRange().getValues();
-console.log(JSON.stringify(values));
+console.log(JSON.stringify(values, null, 2));
 ```
 
-### ポイント3：ログレベルを使い分ける
+### 3. ログレベルを使い分ける
 
 `console`には`log`以外にもレベル別のメソッドがあります。
 
@@ -86,9 +104,9 @@ console.warn('警告：値が空でした');
 console.error('エラー：処理を中断します');
 ```
 
-実行ログではレベルごとに色が変わるので、重要な警告・エラーが一目で見つかります。普段は`log`だけで十分、問題の切り分け時に`warn`・`error`を使う、くらいの温度感で。
+実行ログではレベルごとに色が変わるので、**重要な警告・エラーが一目で見つかります**。普段は`log`だけで十分、問題の切り分け時に`warn`・`error`を使う、くらいの温度感で。
 
-## 応用：実務で効くデバッグテク
+## 実務で効くデバッグテク7選
 
 ### テク1：関数の入口と出口にログを置く
 
@@ -98,16 +116,16 @@ console.error('エラー：処理を中断します');
 function fetchUsers() {
   console.log('[fetchUsers] 開始');
   // 処理...
-  console.log('[fetchUsers] 終了');
+  console.log('[fetchUsers] 終了 件数:', users.length);
   return users;
 }
 ```
 
-`[関数名]`を先頭に付けておくと、実行ログが長くなったときに検索しやすいです。
+**`[関数名]`を先頭に付けておく**と、実行ログが長くなったときにCmd+Fで検索しやすいです。
 
 ### テク2：ループの中で条件付きログ
 
-全部出すとログが溢れるので、怪しい行だけ。
+全部出すとログが溢れるので、怪しい行だけピンポイントに。
 
 ```javascript
 values.forEach((row, i) => {
@@ -117,7 +135,7 @@ values.forEach((row, i) => {
 });
 ```
 
-### テク3：時間計測
+### テク3：時間計測で処理の遅さを特定
 
 処理が遅いときの原因特定に。
 
@@ -128,13 +146,15 @@ const elapsed = new Date() - start;
 console.log(`処理時間: ${elapsed}ms`);
 ```
 
-`console.time`/`console.timeEnd`も使えます。
+`console.time` / `console.timeEnd` でもっと簡潔に書けます。
 
 ```javascript
 console.time('fetch');
 // 重い処理
 console.timeEnd('fetch'); // 「fetch: 1234ms」と出る
 ```
+
+**GASには6分制限があるので、時間計測は早めに仕込んでおく**と、後で「なぜか止まる」という悲劇が減ります。
 
 ### テク4：本番ではログを減らす
 
@@ -145,28 +165,77 @@ const DEBUG = true;
 function debugLog(...args) {
   if (DEBUG) console.log(...args);
 }
+
+// 呼び出し側はいつも通り
+debugLog('デバッグ情報', someValue);
 ```
 
-### ハマりがちなポイント
+本番リリース時に`DEBUG = false`にするだけで、デバッグログが全部止まります。
 
-- **ログが出ない時**：トリガー実行なら「実行数」から該当実行をクリック
+### テク5：エラーをcatchしてログに残す
+
+```javascript
+try {
+  // 失敗するかもしれない処理
+  const sheet = SpreadsheetApp.openById('unknown');
+} catch (e) {
+  console.error('[エラー]', e.message, e.stack);
+}
+```
+
+`e.stack`まで出すと、どこでコケたか行番号まで追えます。
+
+### テク6：条件分岐のどこを通ったか確認
+
+```javascript
+function route(value) {
+  if (value > 100) {
+    console.log('[route] A分岐');
+  } else if (value > 50) {
+    console.log('[route] B分岐');
+  } else {
+    console.log('[route] C分岐');
+  }
+}
+```
+
+「思っていない分岐を通っている」というバグは意外と多いので、分岐のたびにログを仕込むと発見が早いです。
+
+### テク7：ログのグループ化（整理用）
+
+```javascript
+console.log('=== 集計開始 ===');
+console.log('売上:', total);
+console.log('件数:', count);
+console.log('=== 集計終了 ===');
+```
+
+長い実行ログの中から「ここだ」と見つけるとき、区切り文字があると目で追えます。
+
+## ハマりがちなポイント
+
+- **ログが出ない時**：トリガー実行なら「実行数」から該当実行をクリック。エディタの実行ログには出ないので注意
 - **古いログが残る**：GASのログは個別実行ごとに記録されるので、過去分と混同しないよう時刻を確認
-- **大量出力の注意**：ループの中で毎回出すとログが数千行になることがあります
+- **大量出力の注意**：ループの中で毎回`console.log`すると、ログが数千行になって読めなくなる
+- **Logger.logとの併用**：混在すると見づらいので、プロジェクト内では`console`に統一するのが吉
 
 ## まとめ
 
 - 新規コードは`console.log`で統一、`Logger.log`は過去の遺産
-- オブジェクトはそのまま渡す、配列は`JSON.stringify`が楽
-- `log`/`info`/`warn`/`error`でレベル分け
+- オブジェクトはそのまま渡す、配列は`JSON.stringify(v, null, 2)`が楽
+- `log`/`info`/`warn`/`error`でレベル分けすると色が変わって見やすい
 - 関数の入口・出口ログで「どこまで動いたか」を可視化
+- `console.time`で処理時間を計測、6分制限対策に必須
+- 本番では`DEBUG`フラグでログを減らす
 
-デバッグは探偵の仕事に似ています。ログは現場の証拠。ちゃんと残しておくと、犯人（バグ）はたいてい自分で出てきます。夜勤明けの頭でも安心して追えるように、ログ文化を育てていきましょう。
+デバッグは探偵の仕事に似ています。**ログは現場の証拠**。ちゃんと残しておくと、犯人（バグ）はたいてい自分で出てきます。夜勤明けの頭でも安心して追えるように、ログ文化を育てていきましょう。
 
 ## 関連記事
 
 - [GAS変数const/letの違いと使い分け3パターン](/blog/gas-variable-const-let/)
 - [GAS関数の書き方7例とreturn徹底解説](/blog/gas-function-basic/)
 - [GAS配列操作push/map/filter早見表15個](/blog/gas-array-basic/)
+- [GASよく出るエラー10選と解決コード集](/blog/gas-error-exception/)
 
 ---
 
