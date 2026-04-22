@@ -1,7 +1,7 @@
 ---
 title: "副業タスクをGASで毎朝LINEに届ける仕組み"
 description: "夜勤明けでも今日やることを迷わないように、スプレッドシートの副業タスクを毎朝GASがLINEに届けてくれる仕組みを作りました。看護師の実運用レシピです。"
-pubDate: "TBD"
+pubDate: "2026-05-21T19:00:00+09:00"
 heroImage: "/blog-placeholder-4.jpg"
 categorySlug: "side-business"
 categoryName: "副業・確定申告"
