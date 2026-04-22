@@ -1,0 +1,457 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import MobileNav from '../components/MobileNav.astro';
+import NewsletterSignup from '../components/NewsletterSignup.astro';
+import { SITE_TITLE } from '../consts';
+
+const faqGroups = [
+	{
+		id: 'getting-started',
+		title: '🌱 GASを始めたい方',
+		items: [
+			{
+				q: 'プログラミング完全未経験ですが、GASを学べますか？',
+				a: '学べます。全記事「非エンジニアでも読める」をモットーに書いており、最初の5分で動くコードから始められます。<a href="/guide/#roadmap-beginner">初級ロードマップ（Week 1-2）</a>を上から順番に読めば、2週間で基礎が固まります。',
+			},
+			{
+				q: '必要なものは何ですか？ 有料サービスに課金が必要？',
+				a: 'Googleアカウント1つだけです。無料版で99%のことができます。サーバー代もドメイン代も不要、完全無料で始められます。',
+			},
+			{
+				q: 'Mac/Windowsどちらでも動きますか？',
+				a: 'GASはブラウザ（Chrome推奨）さえあれば動きます。OSは一切不問。スマホ（iPad/Android）のブラウザでも編集・実行できます。',
+			},
+			{
+				q: 'JavaScriptができないとダメ？',
+				a: 'JavaScriptの基礎はある程度必要ですが、記事の中でGAS文脈での基礎を解説しています。<a href="/blog/gas-javascript-difference/">GASとJavaScriptの違い7つ</a>と、<a href="/blog/gas-variable-const-let/">変数const/letの違い</a>から読むとスムーズです。',
+			},
+			{
+				q: 'GASでHello Worldを書くまでに何分かかりますか？',
+				a: '5分以内で動かせます。<a href="/blog/gas-beginner-5min/">GAS入門5分で書ける最初の1行コード完全解説</a>で手順を追って解説しています。',
+			},
+		],
+	},
+	{
+		id: 'learning',
+		title: '📚 学習方法について',
+		items: [
+			{
+				q: '記事を読む順番を教えてください',
+				a: '<a href="/guide/">GAS完全ガイド</a>に3レベルのロードマップを用意しています。初級（Week 1-2）→ 中級（Week 3-4）→ 上級（Week 5-8）の順で、計2ヶ月で副業案件が取れるレベルまで到達できる設計です。',
+			},
+			{
+				q: '動画教材のほうが合っていますが、GAS Recipeは使えますか？',
+				a: '本サイトは文章＋コード例ベースですが、スクショや図解を多用しています。動画がお好きな方は、Udemyやプログラミングスクールと本サイトを組み合わせるのもおすすめです。',
+			},
+			{
+				q: '独学で挫折しそうです',
+				a: 'まずは<a href="/usecase/">ユースケース逆引き</a>で「自分がやりたい自動化」を決めてから学ぶのが効果的です。目的があると挫折しにくくなります。つまずいたら<a href="/errors/">エラー逆引き辞典</a>で解決策を探してください。',
+			},
+			{
+				q: 'コードが動かなかったらどうすれば？',
+				a: '各記事の「よくあるエラーと解決法」セクションで代表的なエラーを解説しています。それでも解決しない場合、<a href="/errors/">エラー逆引き辞典（23項目）</a>もあわせてご確認ください。',
+			},
+			{
+				q: '学習時間の目安は？',
+				a: '1日30分〜1時間、週5日のペースで、初級2週間+中級2週間+上級4週間=計2ヶ月で副業案件レベル到達が目標です。本業・家事の合間でも現実的なペースです。',
+			},
+		],
+	},
+	{
+		id: 'side-business',
+		title: '💼 副業・案件獲得について',
+		items: [
+			{
+				q: 'GAS案件は本当に稼げますか？',
+				a: 'クラウドワークス・ランサーズ等でGAS案件は継続的に募集されており、3,000〜5,000円/時間の相場です。ただし「絶対に稼げます」というお約束はできません。個人の学習ペース・営業努力に依存します。',
+			},
+			{
+				q: '最初の案件はどう取りますか？',
+				a: 'クラウドワークス等で「GAS 初心者歓迎」等の案件に応募するのが定石です。詳しくは<a href="/blog/gas-freelance-first-client/">GASフリーランスが最初の案件を獲得する完全ガイド</a>で手順を解説しています。',
+			},
+			{
+				q: '会社員の副業OKと言われましたが、バレる心配はありませんか？',
+				a: '副業の住民税申告を「普通徴収」にする、収入を20万円以下に抑える等の一般的な対策が有効です。ただし最終的には税理士・会社規定でご確認ください。本サイトは法律・税務アドバイスの専門サイトではありません。',
+			},
+			{
+				q: '看護師でも副業Webエンジニアとしてやっていけますか？',
+				a: '運営者の凛（現役ナース）が副業Webエンジニアとして活動しています。夜勤明けやシフト外の時間でも回せる業務形態ですので、不可能ではありません。ただしご自身の職場の副業規定は必ずご確認ください。',
+			},
+		],
+	},
+	{
+		id: 'technical',
+		title: '⚙️ 技術的な質問',
+		items: [
+			{
+				q: 'GASはNode.jsとどう違うのですか？',
+				a: 'GASはGoogleインフラ上で動くサーバーサイドJSで、デプロイ・インフラ構築が一切不要な点が最大の違いです。詳しくは<a href="/blog/gas-javascript-difference/">GASとJavaScriptの違い7つ</a>で解説しています。',
+			},
+			{
+				q: 'GASで何ができて、何ができないのですか？',
+				a: '【できる】Gmail/スプシ/カレンダー/Drive等のGoogleサービス自動化、外部API呼び出し、定期実行、Webアプリ公開。<br/>【できない】DOM操作、リアルタイム通信（WebSocket）、長時間実行（6分制限）、独自ドメインホスティング。',
+			},
+			{
+				q: '6分制限とは何ですか？',
+				a: '無料GASは1回の実行が6分で強制終了する仕組みです。Workspace有料版は30分。対処法は<a href="/blog/gas-trigger-6min-limit/">GAS6分制限を回避する3パターン完全解説</a>で紹介しています。',
+			},
+			{
+				q: 'GASで作ったアプリを他の人に使ってもらえますか？',
+				a: 'Webアプリとしてデプロイすれば第三者がURLからアクセスできます。ただし無料版は同時接続数に制限あり、大量ユーザー向けには不向きです。',
+			},
+			{
+				q: 'データベースを使いたい場合は？',
+				a: 'スプレッドシート自体をDB的に扱うのが主流です。レコード数が数万を超える場合はFirestoreやGoogle Cloud SQLとの連携を検討します。',
+			},
+			{
+				q: 'Google Workspaceの有料版は必要ですか？',
+				a: '個人利用なら無料版で充分です。有料版の主なメリットは「実行時間上限6分→30分」「送信メール上限100通/日→1500通/日」。まずは無料版で始めて、限界を感じたら検討で大丈夫です。',
+			},
+		],
+	},
+	{
+		id: 'site',
+		title: '🏠 サイト・運営者について',
+		items: [
+			{
+				q: '凛さんはどんな方ですか？',
+				a: '都内で看護師として働きながら、副業でWebエンジニアをしています。病棟の事務仕事をGASで自動化してきた経験がベースです。詳しくは<a href="/about/">運営者情報</a>をご覧ください。',
+			},
+			{
+				q: '記事の更新頻度は？',
+				a: '現在は平日毎日19時に新着記事を公開中。2026年内に全120記事の公開を目指しています。',
+			},
+			{
+				q: '記事のコードを自分のブログ・YouTubeで紹介してもいい？',
+				a: 'コード部分は自由に使って構いません。記事本文の転載は禁止ですが、引用（URL+出典明記）は歓迎します。',
+			},
+			{
+				q: '記事のリクエストはできますか？',
+				a: '<a href="/contact/">お問い合わせフォーム</a>からお気軽にどうぞ。内容によっては優先的に記事化します。',
+			},
+			{
+				q: 'メール購読したらどんな情報が届きますか？',
+				a: '新着レシピのお知らせと、2026年6月リリース予定のGASテンプレート商品の先行案内（事前登録者には30%OFFクーポン）をお送りします。解除はいつでも可能です。',
+			},
+			{
+				q: 'GASテンプレート販売とは？',
+				a: '凛が実際に使っている自動化の仕組みを、ソフトウェアテンプレートとして販売予定（2026年6月〜）。写真→カレンダー、Uber Eats確定申告、買い物リスト等6商品。<a href="/products/">テンプレート一覧</a>をご確認ください。',
+			},
+		],
+	},
+	{
+		id: 'payment',
+		title: '💳 支払い・購入について',
+		items: [
+			{
+				q: 'GAS Recipeの記事は全て無料ですか？',
+				a: 'はい、全記事無料で閲覧できます。広告収益とアフィリエイト、今後リリースするテンプレート販売で運営します。',
+			},
+			{
+				q: 'テンプレート販売は月額課金ですか？',
+				a: 'いいえ、買い切り型です。一度購入すれば永続利用可能。サーバー代等のランニングコストもありません（Googleアカウント内で動くため）。',
+			},
+			{
+				q: '返金ポリシーは？',
+				a: 'デジタルコンテンツのため原則返金不可ですが、購入後30日以内で動作不具合が解決できない場合は個別対応します（商品リリース時に詳細規約を公開予定）。',
+			},
+			{
+				q: '支払い方法は何が使えますか？',
+				a: 'リリース時に詳細を公開しますが、クレジットカード・PayPal等の一般的な決済方法を予定しています。',
+			},
+		],
+	},
+];
+
+const allFaqs = faqGroups.flatMap(g => g.items);
+
+// FAQ JSON-LD
+const faqJsonLd = {
+	"@context": "https://schema.org",
+	"@type": "FAQPage",
+	"mainEntity": allFaqs.map(f => ({
+		"@type": "Question",
+		"name": f.q,
+		"acceptedAnswer": {
+			"@type": "Answer",
+			"text": f.a.replace(/<[^>]+>/g, ''),
+		},
+	})),
+};
+---
+
+<!doctype html>
+<html lang="ja">
+	<head>
+		<BaseHead
+			title={`FAQ（${allFaqs.length}問） | ${SITE_TITLE}`}
+			description={`GAS Recipeに寄せられるよくある質問${allFaqs.length}問を、学習・副業・技術・サイト・支払いの6カテゴリで整理。現役ナース×副業Webエンジニアの凛が回答。`}
+		/>
+		<script type="application/ld+json" set:html={JSON.stringify(faqJsonLd)} />
+	</head>
+	<body>
+		<Header />
+		<main>
+			<nav class="breadcrumbs" aria-label="パンくずリスト">
+				<a href="/">ホーム</a> <span>›</span> FAQ
+			</nav>
+
+			<!-- HERO -->
+			<section class="faq-hero">
+				<p class="eyebrow">❓ Frequently Asked Questions</p>
+				<h1>よくある質問</h1>
+				<p class="lead">
+					GAS Recipeに寄せられる<strong>{allFaqs.length}問</strong>のご質問を、
+					カテゴリ別にまとめました。該当する質問がない場合は<a href="/contact/">お問い合わせフォーム</a>からご連絡ください。
+				</p>
+				<div class="faq-stats">
+					<div class="stat"><strong>{allFaqs.length}</strong><span>質問</span></div>
+					<div class="stat"><strong>{faqGroups.length}</strong><span>カテゴリ</span></div>
+				</div>
+			</section>
+
+			<!-- JUMP NAV -->
+			<nav class="jump-nav" aria-label="FAQカテゴリ一覧">
+				{faqGroups.map(g => (
+					<a href={`#${g.id}`} class="jump-chip">
+						{g.title}
+						<span class="num">{g.items.length}</span>
+					</a>
+				))}
+			</nav>
+
+			<!-- FAQ SECTIONS -->
+			{faqGroups.map(group => (
+				<section class="faq-group" id={group.id}>
+					<h2>{group.title}</h2>
+					<div class="faq-list">
+						{group.items.map(item => (
+							<details>
+								<summary>{item.q}</summary>
+								<div class="answer" set:html={item.a} />
+							</details>
+						))}
+					</div>
+				</section>
+			))}
+
+			<!-- CONTACT CTA -->
+			<section class="contact-cta">
+				<h2>💬 解決しない場合は</h2>
+				<p>上記で解決しないご質問・記事のリクエスト・誤りのご指摘等は、お気軽にお問い合わせください。</p>
+				<a href="/contact/" class="contact-btn">お問い合わせフォームへ →</a>
+			</section>
+
+			<!-- NEWSLETTER -->
+			<NewsletterSignup />
+
+			<!-- RELATED -->
+			<section class="related">
+				<h2>📚 あわせて見る</h2>
+				<ul class="rel-list">
+					<li><a href="/guide/">📚 GAS完全ガイド（学習ロードマップ）</a></li>
+					<li><a href="/usecase/">🎯 ユースケース逆引き（31シーン）</a></li>
+					<li><a href="/errors/">🩹 エラー逆引き辞典（23項目）</a></li>
+					<li><a href="/products/">🛍️ テンプレート販売（6月リリース）</a></li>
+					<li><a href="/about/">👤 運営者プロフィール</a></li>
+				</ul>
+			</section>
+		</main>
+		<Footer />
+		<MobileNav />
+		<style>
+			main { width: 880px; max-width: calc(100% - 2rem); margin: 0 auto; padding: 2rem 1rem 4rem; }
+			.breadcrumbs { font-size: 0.88em; color: rgb(var(--gray)); margin-bottom: 1rem; }
+			.breadcrumbs a { color: var(--accent); text-decoration: none; }
+
+			.faq-hero {
+				background: linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%);
+				border-radius: 16px;
+				padding: 2.5rem 2rem;
+				text-align: center;
+				margin-bottom: 2rem;
+				border: 1px solid #c4b5fd;
+			}
+			.eyebrow {
+				display: inline-block;
+				padding: 0.3em 1em;
+				background: white;
+				color: #7e22ce;
+				border-radius: 999px;
+				font-size: 0.82em;
+				font-weight: 700;
+				margin: 0 0 1rem;
+			}
+			.faq-hero h1 {
+				font-size: 1.8em;
+				margin: 0 0 1rem;
+				color: rgb(var(--black));
+				border: none;
+			}
+			.lead {
+				color: rgb(var(--gray-dark));
+				line-height: 1.9;
+				margin: 0 0 1.5rem;
+				max-width: 680px;
+				margin-left: auto;
+				margin-right: auto;
+			}
+			.lead a { color: var(--accent); text-decoration: none; font-weight: 600; }
+			.faq-stats {
+				display: flex;
+				justify-content: center;
+				gap: 2rem;
+				flex-wrap: wrap;
+			}
+			.stat { display: flex; flex-direction: column; align-items: center; }
+			.stat strong { font-size: 1.8em; color: #7e22ce; line-height: 1; }
+			.stat span { font-size: 0.82em; color: rgb(var(--gray)); margin-top: 0.3rem; }
+
+			.jump-nav {
+				display: flex;
+				flex-wrap: wrap;
+				gap: 0.6rem;
+				margin-bottom: 2.5rem;
+			}
+			.jump-chip {
+				display: flex;
+				align-items: center;
+				gap: 0.5rem;
+				padding: 0.6em 1em;
+				background: var(--bg-soft);
+				border: 1px solid rgb(var(--gray-light));
+				border-radius: 999px;
+				text-decoration: none;
+				color: rgb(var(--gray-dark));
+				font-size: 0.88em;
+				font-weight: 600;
+			}
+			.jump-chip:hover {
+				border-color: var(--accent);
+				color: var(--accent);
+			}
+			.jump-chip .num {
+				padding: 0.1em 0.5em;
+				background: var(--accent);
+				color: white;
+				border-radius: 999px;
+				font-size: 0.72em;
+			}
+
+			.faq-group { margin-bottom: 2.5rem; scroll-margin-top: 80px; }
+			.faq-group h2 {
+				font-size: 1.3em;
+				margin: 0 0 1rem;
+				padding-bottom: 0.6rem;
+				border-bottom: 2px solid var(--accent);
+			}
+			.faq-list { display: flex; flex-direction: column; gap: 0.6rem; }
+			.faq-list details {
+				background: var(--bg);
+				border: 1px solid rgb(var(--gray-light));
+				border-radius: 10px;
+				transition: border-color 0.15s;
+			}
+			.faq-list details[open] { border-color: var(--accent); }
+			.faq-list summary {
+				padding: 1rem 1.3rem;
+				cursor: pointer;
+				font-weight: 600;
+				color: rgb(var(--black));
+				list-style: none;
+				padding-right: 2.5rem;
+				position: relative;
+			}
+			.faq-list summary::-webkit-details-marker { display: none; }
+			.faq-list summary::after {
+				content: '+';
+				position: absolute;
+				right: 1.2rem;
+				top: 50%;
+				transform: translateY(-50%);
+				color: var(--accent);
+				font-weight: 700;
+				font-size: 1.4em;
+			}
+			.faq-list details[open] summary::after { content: '−'; }
+			.faq-list details[open] summary { border-bottom: 1px solid rgb(var(--gray-light)); }
+			.answer {
+				padding: 1rem 1.3rem;
+				color: rgb(var(--gray-dark));
+				line-height: 1.9;
+				font-size: 0.92em;
+			}
+			.answer a { color: var(--accent); text-decoration: none; font-weight: 600; }
+			.answer a:hover { text-decoration: underline; }
+
+			.contact-cta {
+				margin: 3rem 0;
+				padding: 2rem;
+				background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+				border-radius: 12px;
+				text-align: center;
+			}
+			.contact-cta h2 {
+				margin: 0 0 0.8rem;
+				font-size: 1.2em;
+				color: #78350f;
+				border: none;
+				padding: 0;
+			}
+			.contact-cta p { margin: 0 0 1.2rem; color: #78350f; line-height: 1.8; }
+			.contact-btn {
+				display: inline-block;
+				padding: 0.8em 2rem;
+				background: var(--accent);
+				color: white;
+				border-radius: 999px;
+				text-decoration: none;
+				font-weight: 700;
+				box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3);
+			}
+			.contact-btn:hover { transform: translateY(-1px); color: white; }
+
+			.related { margin: 2rem 0; }
+			.related h2 { font-size: 1.2em; margin: 0 0 1rem; }
+			.rel-list {
+				list-style: none;
+				padding: 0;
+				display: grid;
+				grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+				gap: 0.6rem;
+			}
+			.rel-list li { margin: 0; }
+			.rel-list a {
+				display: block;
+				padding: 0.9rem 1.2rem;
+				background: var(--bg-soft);
+				border-radius: 8px;
+				text-decoration: none;
+				color: rgb(var(--black));
+				font-weight: 600;
+				font-size: 0.92em;
+				border: 1px solid transparent;
+			}
+			.rel-list a:hover {
+				border-color: var(--accent);
+				color: var(--accent);
+			}
+
+			@media (max-width: 720px) {
+				.faq-hero h1 { font-size: 1.5em; }
+			}
+			@media (prefers-color-scheme: dark) {
+				.faq-hero {
+					background: linear-gradient(135deg, #2e1065 0%, #581c87 100%);
+					border-color: #a855f7;
+				}
+				.faq-hero h1 { color: #f1f5f9; }
+				.eyebrow { background: var(--bg-soft); color: #d8b4fe; }
+				.contact-cta { background: linear-gradient(135deg, #451a03 0%, #78350f 100%); }
+				.contact-cta h2, .contact-cta p { color: #fef3c7; }
+			}
+		</style>
+	</body>
+</html>
