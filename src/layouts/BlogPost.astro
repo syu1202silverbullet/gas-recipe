@@ -13,7 +13,7 @@ import { getCollection } from 'astro:content';
 type Props = CollectionEntry<'blog'>['data'] & { slug?: string };
 
 const props: any = Astro.props;
-const { title, description, pubDate, updatedDate, heroImage, categorySlug, categoryName, tagSlugs, tagNames, readingTime } = props;
+const { title, description, pubDate, updatedDate, heroImage, categorySlug, categoryName, tagSlugs, tagNames, readingTime, keywords } = props;
 const currentSlug = Astro.params.slug;
 
 const now = new Date();
@@ -44,7 +44,7 @@ else ctaType = 'service';
 <!doctype html>
 <html lang="ja">
 	<head>
-		<BaseHead title={title} description={description} image={heroImage} pubDate={pubDate} updatedDate={updatedDate} type="article" />
+		<BaseHead title={title} description={description} image={heroImage} pubDate={pubDate} updatedDate={updatedDate} type="article" slug={currentSlug} keywords={keywords} categoryName={categoryName} />
 		<style>
 			main { width: 100%; padding-bottom: 4em; }
 			.hero-image { width: 100%; max-width: 960px; margin: 0 auto 1.5rem; }
