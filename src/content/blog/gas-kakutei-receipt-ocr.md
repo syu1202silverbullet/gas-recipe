@@ -1,7 +1,7 @@
 ---
 title: "確定申告レシートをOCR記帳するGAS実装"
 description: "ドライブに放り込むだけで、レシートを自動で読み取って勘定科目まで振り分ける仕組みを作りました。看護師が確定申告のレシート地獄から抜け出した手順を公開します。"
-pubDate: "TBD"
+pubDate: "2026-05-20T19:00:00+09:00"
 heroImage: "/blog-placeholder-3.jpg"
 categorySlug: "side-business"
 categoryName: "副業・確定申告"
