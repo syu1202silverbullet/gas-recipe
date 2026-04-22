@@ -204,6 +204,19 @@ const vs = MyLib.calcBulk(arr);
 
 ライブラリ選定は**「今も動いているか」の見極めが全て**です。古い記事で紹介されていても、3年間commitのないライブラリは避けましょう。本記事は2026年4月時点の現役稼働を確認しています。
 
+
+## 📚 さらに学ぶための参考書籍
+
+<div class="ad-block">
+<p class="ad-label">PR：本記事には広告（楽天市場）が含まれます</p>
+
+GASやJavaScriptを体系的に学びたい方は、書籍も併用するのが効率的です。
+日本語の解説書が複数出ているので、自分のレベルに合うものを選んでみてください。
+
+👉 <a href="//af.moshimo.com/af/c/click?a_id=5501673&p_id=54&pc_id=54&pl_id=621" rel="nofollow sponsored" referrerpolicy="no-referrer-when-downgrade" target="_blank">楽天市場</a> で「Google Apps Script」または「JavaScript 入門」を検索
+<img src="//i.moshimo.com/af/i/impression?a_id=5501673&p_id=54&pc_id=54&pl_id=621" width="1" height="1" style="border:none;" loading="lazy" alt="" />
+</div>
+
 ## 関連記事
 
 - [GAS変数const/letの違いと使い分け3パターン](/blog/gas-variable-const-let/)
