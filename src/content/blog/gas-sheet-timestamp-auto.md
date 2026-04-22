@@ -1,7 +1,7 @@
 ---
 title: "編集日時を自動記録するタイムスタンプGAS"
 description: "スプレッドシートの編集日時をonEditで自動記録する方法を、看護師がやさしく解説。「誰がいつ更新したか」をスッと残せる仕組みを作りましょう。"
-pubDate: "TBD"
+pubDate: "2026-05-12T19:00:00+09:00"
 heroImage: "/blog-placeholder-5.jpg"
 categorySlug: "spreadsheet"
 categoryName: "スプレッドシート"
