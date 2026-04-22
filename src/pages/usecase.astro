@@ -3,6 +3,7 @@ import BaseHead from '../components/BaseHead.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import MobileNav from '../components/MobileNav.astro';
+import NewsletterSignup from '../components/NewsletterSignup.astro';
 import { SITE_TITLE } from '../consts';
 import { getCollection } from 'astro:content';
 
@@ -10,33 +11,446 @@ const now = new Date();
 const posts = (await getCollection('blog'))
 	.filter((p: any) => p.data.pubDate.valueOf() <= now.valueOf());
 
-// ユースケースは業務シーンから探す逆引きインデックス
-const useCases = [
-	{ scene: '毎朝決まった時間にメール送信したい', keywords: ['gmail', 'morning', 'trigger'], category: 'gmail' },
-	{ scene: '大量データの集計・自動更新', keywords: ['spreadsheet', 'automation'], category: 'spreadsheet' },
-	{ scene: 'レシートや領収書の整理', keywords: ['ocr', 'receipt', 'tax'], category: 'side-business' },
-	{ scene: '家族やチームにLINE通知', keywords: ['line', 'notification'], category: 'line' },
-	{ scene: '予定・スケジュール管理', keywords: ['calendar', 'event'], category: 'calendar' },
-	{ scene: 'フォーム送信時の自動処理', keywords: ['form', 'automation'], category: null },
-	{ scene: 'エラーが出たときの対処', keywords: ['error', 'debug'], category: 'gas-basics' },
-	{ scene: 'GASで副業を始めたい', keywords: ['side-business', 'freelance'], category: 'side-business' },
-	{ scene: '毎朝のLINEリマインダー', keywords: ['line', 'reminder'], category: 'line' },
-	{ scene: '確定申告の書類管理', keywords: ['tax', 'receipt', 'invoice'], category: 'side-business' },
+// ユースケース：シーン×ペルソナ×技術カテゴリで網羅
+type UseCase = {
+	id: string;
+	scene: string;
+	problem: string;
+	solution: string;
+	timeSaved: string;
+	level: 'easy' | 'mid' | 'hard';
+	keywords: string[];
+	category: string | null;
+	personas: string[];
+};
+
+const useCases: UseCase[] = [
+	// === DAILY ROUTINE ===
+	{
+		id: 'morning-line',
+		scene: '毎朝7時に今日の予定をLINEで自分に通知したい',
+		problem: 'スマホのカレンダーは開くのが面倒、重要な予定を見落とす',
+		solution: 'GASでカレンダー→LINE Messaging API連携、時間主導トリガー',
+		timeSaved: '10分/日',
+		level: 'easy',
+		keywords: ['line', 'calendar', 'notification', 'reminder'],
+		category: 'line',
+		personas: ['忙しい人', '副業ワーカー', '会社員'],
+	},
+	{
+		id: 'weather-morning',
+		scene: '朝、今日の天気予報を自動でLINEに届けたい',
+		problem: '天気アプリを毎朝開くのが地味に面倒',
+		solution: 'OpenWeatherMap API → GAS → LINE連携',
+		timeSaved: '3分/日',
+		level: 'mid',
+		keywords: ['line', 'weather', 'api'],
+		category: 'line',
+		personas: ['家族持ち', '通勤者'],
+	},
+	{
+		id: 'daily-todo-line',
+		scene: '毎朝ToDoリストをLINEに通知してタスク抜け防止',
+		problem: 'ToDoアプリを開かない→やることを忘れる',
+		solution: 'スプシのToDo → 毎朝LINE送信',
+		timeSaved: '15分/日',
+		level: 'easy',
+		keywords: ['line', 'todo', 'reminder'],
+		category: 'line',
+		personas: ['個人事業主', '副業ワーカー'],
+	},
+
+	// === GMAIL AUTOMATION ===
+	{
+		id: 'gmail-auto-reply',
+		scene: '問い合わせメールに5分以内で自動返信したい',
+		problem: '夜勤・外出時に返信が遅れて信頼を失う',
+		solution: 'Gmail検索 → 自動返信+ラベル付与、5分トリガー',
+		timeSaved: '30分/日',
+		level: 'easy',
+		keywords: ['gmail', 'auto-reply'],
+		category: 'gmail',
+		personas: ['個人事業主', 'EC運営者'],
+	},
+	{
+		id: 'gmail-receipt-extract',
+		scene: 'Gmailの領収書・請求書メールを自動でスプシ記帳',
+		problem: '月末の経費精算がとにかく面倒',
+		solution: 'Gmail検索 → 正規表現抽出 → スプシ自動追記',
+		timeSaved: '2時間/月',
+		level: 'mid',
+		keywords: ['gmail', 'receipt', 'tax'],
+		category: 'side-business',
+		personas: ['フリーランス', '副業ワーカー'],
+	},
+	{
+		id: 'gmail-attachment-drive',
+		scene: 'Gmailの添付ファイルを自動でGoogleドライブに保存',
+		problem: '添付が散らかって後から探せない',
+		solution: 'Gmail→Drive自動振り分け、ラベル別フォルダ',
+		timeSaved: '1時間/週',
+		level: 'easy',
+		keywords: ['gmail', 'drive', 'attachment'],
+		category: 'gmail',
+		personas: ['個人事業主', '会社員'],
+	},
+	{
+		id: 'gmail-bulk-send',
+		scene: '顧客リストに一斉メール配信（300件まで安全送信）',
+		problem: '送信漏れ・重複送信・Gmail送信上限エラー',
+		solution: 'スプシ差し込み+送信済みフラグ管理',
+		timeSaved: '3時間/回',
+		level: 'mid',
+		keywords: ['gmail', 'bulk-send'],
+		category: 'gmail',
+		personas: ['EC運営者', '講師'],
+	},
+
+	// === CALENDAR ===
+	{
+		id: 'calendar-bulk-import',
+		scene: 'スプシの予定リストをカレンダーに一括登録',
+		problem: '100件の予定を手入力するのは現実的じゃない',
+		solution: 'スプシ→CalendarApp.createEvent一括実行',
+		timeSaved: '90%',
+		level: 'easy',
+		keywords: ['calendar', 'spreadsheet'],
+		category: 'calendar',
+		personas: ['教師', '講師', 'イベント運営'],
+	},
+	{
+		id: 'calendar-form-booking',
+		scene: 'Googleフォーム予約を自動でカレンダー登録',
+		problem: '予約が入るたびに手動でカレンダーに転記',
+		solution: 'フォーム送信イベント→カレンダー自動作成',
+		timeSaved: '5分/予約',
+		level: 'mid',
+		keywords: ['calendar', 'form'],
+		category: 'calendar',
+		personas: ['美容院', '整体院', 'フリーランス'],
+	},
+	{
+		id: 'calendar-birthday',
+		scene: '家族の誕生日を毎年自動でカレンダー登録＋通知',
+		problem: '誕生日を忘れて毎年家族に怒られる',
+		solution: 'スプシ管理→繰り返し予定自動生成+1週間前LINE通知',
+		timeSaved: '年3回の夫婦喧嘩',
+		level: 'easy',
+		keywords: ['calendar', 'birthday', 'family'],
+		category: 'calendar',
+		personas: ['家族持ち'],
+	},
+
+	// === SPREADSHEET ===
+	{
+		id: 'sheet-pdf-monthly',
+		scene: '毎月末にスプシをPDF化してドライブに保存',
+		problem: '月次レポートのPDF化・保存が地味に時間食う',
+		solution: 'getAs(PDF)→フォルダ保存、月末トリガー',
+		timeSaved: '30分/月',
+		level: 'mid',
+		keywords: ['spreadsheet', 'pdf'],
+		category: 'spreadsheet',
+		personas: ['個人事業主', '副業ワーカー'],
+	},
+	{
+		id: 'sheet-dashboard',
+		scene: '売上ダッシュボードを毎朝自動更新',
+		problem: '朝一で各種集計を手動でやるのがつらい',
+		solution: '複数データ源→集計→グラフ生成、毎朝7時',
+		timeSaved: '30分/日',
+		level: 'hard',
+		keywords: ['spreadsheet', 'dashboard', 'automation'],
+		category: 'spreadsheet',
+		personas: ['個人事業主', 'マーケター'],
+	},
+	{
+		id: 'sheet-dedupe',
+		scene: 'スプシの重複行を自動削除',
+		problem: '手作業の重複削除は見落としが出る',
+		solution: '一発重複削除スクリプト',
+		timeSaved: '15分/回',
+		level: 'easy',
+		keywords: ['spreadsheet', 'dedupe'],
+		category: 'spreadsheet',
+		personas: ['データ担当', '事務'],
+	},
+	{
+		id: 'sheet-csv-import',
+		scene: '毎週届くCSVをスプシに自動取り込み',
+		problem: 'CSV手動コピペで列ズレ事故が発生',
+		solution: 'Drive監視→CSV自動取り込み',
+		timeSaved: '20分/週',
+		level: 'mid',
+		keywords: ['spreadsheet', 'csv'],
+		category: 'spreadsheet',
+		personas: ['EC運営者', 'マーケター'],
+	},
+	{
+		id: 'sheet-stock-price',
+		scene: '株価・為替を毎朝自動取得して家計簿に記録',
+		problem: '資産管理を手動で更新するのが続かない',
+		solution: 'Yahoo Finance API→スプシ自動記録',
+		timeSaved: '10分/日',
+		level: 'mid',
+		keywords: ['spreadsheet', 'stock'],
+		category: 'spreadsheet',
+		personas: ['投資家', 'サイドFIRE志向'],
+	},
+	{
+		id: 'sheet-translate',
+		scene: 'スプシのセルを自動翻訳（多言語対応）',
+		problem: '海外クライアント向け資料の翻訳が手間',
+		solution: 'LanguageApp.translate 一括処理',
+		timeSaved: '1時間/回',
+		level: 'easy',
+		keywords: ['spreadsheet', 'translate'],
+		category: 'spreadsheet',
+		personas: ['翻訳者', '海外取引'],
+	},
+
+	// === SIDE BUSINESS / TAX ===
+	{
+		id: 'ubereats-mf-csv',
+		scene: 'Uber Eats配達記録を確定申告用CSV化',
+		problem: '配達スクショからの手入力で何時間も溶かす',
+		solution: 'OCR→マネーフォワード形式CSV出力',
+		timeSaved: '5時間/月',
+		level: 'hard',
+		keywords: ['side-business', 'ubereats', 'tax'],
+		category: 'side-business',
+		personas: ['副業配達員'],
+	},
+	{
+		id: 'receipt-ocr',
+		scene: 'レシート写真をOCRして自動記帳',
+		problem: '月末にレシート束を見てうんざり',
+		solution: 'Drive監視→Cloud Vision OCR→スプシ記録',
+		timeSaved: '3時間/月',
+		level: 'hard',
+		keywords: ['side-business', 'ocr', 'receipt'],
+		category: 'side-business',
+		personas: ['フリーランス', '個人事業主'],
+	},
+	{
+		id: 'freelance-invoice',
+		scene: 'フリーランス請求書を毎月自動発行',
+		problem: '請求書作成・PDF化・送信の月次ルーティン',
+		solution: 'スプシテンプレ→PDF生成→Gmail添付送信',
+		timeSaved: '2時間/月',
+		level: 'mid',
+		keywords: ['side-business', 'invoice'],
+		category: 'side-business',
+		personas: ['フリーランス', '副業ワーカー'],
+	},
+	{
+		id: 'amazon-fba-stock',
+		scene: 'Amazon FBA在庫を毎朝スプシで監視',
+		problem: '在庫切れに気付かず機会損失',
+		solution: 'SP-API→スプシ自動記録→しきい値でLINE警告',
+		timeSaved: '20分/日',
+		level: 'hard',
+		keywords: ['side-business', 'amazon', 'stock'],
+		category: 'side-business',
+		personas: ['物販事業者'],
+	},
+	{
+		id: 'mercari-sales',
+		scene: 'メルカリ売上を毎月自動集計',
+		problem: '取引履歴を手作業でまとめるのが面倒',
+		solution: 'メルカリ売上→スプシ集計→月次レポート',
+		timeSaved: '2時間/月',
+		level: 'mid',
+		keywords: ['side-business', 'mercari'],
+		category: 'side-business',
+		personas: ['副業ワーカー', 'せどり'],
+	},
+
+	// === LINE ===
+	{
+		id: 'line-chatgpt-bot',
+		scene: 'ChatGPT連携LINE Botを自作して質問し放題',
+		problem: 'ChatGPT課金は高い、手軽にLINEから使いたい',
+		solution: 'LINE Messaging API + OpenAI API連携',
+		timeSaved: 'N/A（日常便利）',
+		level: 'hard',
+		keywords: ['line', 'chatgpt'],
+		category: 'line',
+		personas: ['学習者', 'エンジニア'],
+	},
+	{
+		id: 'line-reply-bot',
+		scene: 'LINE公式アカウントで簡易FAQ応答Bot',
+		problem: '同じ質問への返信対応が積もる',
+		solution: 'LINE Messaging API→キーワード応答',
+		timeSaved: '30分/日',
+		level: 'mid',
+		keywords: ['line', 'bot'],
+		category: 'line',
+		personas: ['店舗運営', '副業ワーカー'],
+	},
+
+	// === FORM ===
+	{
+		id: 'form-cert-pdf',
+		scene: 'フォーム回答者に修了証PDFを自動発行',
+		problem: 'オンライン講座の修了証を1人ずつ作るのが非現実的',
+		solution: 'フォーム送信→テンプレ流し込み→PDF→メール送信',
+		timeSaved: '30分/人',
+		level: 'hard',
+		keywords: ['form', 'pdf', 'cert'],
+		category: null,
+		personas: ['講師', 'オンライン講座'],
+	},
+	{
+		id: 'form-slack-notify',
+		scene: 'フォーム送信を即Slack通知',
+		problem: 'メール通知は埋もれて見逃す',
+		solution: 'Googleフォーム→Slack Webhook',
+		timeSaved: 'リアルタイム対応',
+		level: 'easy',
+		keywords: ['form', 'slack'],
+		category: null,
+		personas: ['チーム運営'],
+	},
+
+	// === DRIVE / OCR ===
+	{
+		id: 'drive-backup',
+		scene: '重要スプシを毎週自動バックアップ',
+		problem: '誤削除・誤編集で復旧できずパニック',
+		solution: 'DriveApp.makeCopy 毎週トリガー',
+		timeSaved: '大事故回避',
+		level: 'easy',
+		keywords: ['drive', 'backup'],
+		category: null,
+		personas: ['全員'],
+	},
+	{
+		id: 'drive-cleanup',
+		scene: '古いファイルを自動でゴミ箱へ移動',
+		problem: 'ドライブが散らかって容量圧迫',
+		solution: '最終更新から1年経過で自動アーカイブ',
+		timeSaved: '3時間/年',
+		level: 'mid',
+		keywords: ['drive', 'cleanup'],
+		category: null,
+		personas: ['情報整理好き'],
+	},
+
+	// === WEB APP ===
+	{
+		id: 'webapp-form-db',
+		scene: 'スプシをDB化して簡易CRM Webアプリ',
+		problem: '有料CRMは高い、シンプル案件管理だけ欲しい',
+		solution: 'doGet/doPost + HTMLサービスで自作',
+		timeSaved: '月額CRM料金節約',
+		level: 'hard',
+		keywords: ['webapp', 'db'],
+		category: null,
+		personas: ['個人事業主', '小規模事業'],
+	},
+
+	// === ERROR / DEBUG ===
+	{
+		id: 'error-quick',
+		scene: 'GASでエラーが出たときの対処法',
+		problem: 'エラー文が英語で読めない',
+		solution: 'エラー逆引き辞典で該当エラーを探す',
+		timeSaved: '1-3時間/回',
+		level: 'easy',
+		keywords: ['error', 'debug'],
+		category: 'gas-basics',
+		personas: ['全員'],
+	},
+
+	// === STARTING GAS ===
+	{
+		id: 'gas-start',
+		scene: 'GASで副業を始めてみたい',
+		problem: 'プログラミング未経験で何から始めればいいかわからない',
+		solution: '入門→基礎文法→自動化の3段階ロードマップ',
+		timeSaved: '学習時間の効率化',
+		level: 'easy',
+		keywords: ['side-business', 'freelance', 'beginner'],
+		category: 'gas-basics',
+		personas: ['未経験者', '副業検討中'],
+	},
 ];
 
-function findArticles(uc: any) {
+// 記事検索ロジック
+function findArticles(uc: UseCase) {
 	return posts.filter((p: any) => {
 		const catMatch = uc.category && p.data.categorySlug === uc.category;
 		const tagMatch = (p.data.tagSlugs || []).some((t: string) => uc.keywords.includes(t));
 		return catMatch || tagMatch;
 	}).slice(0, 3);
 }
+
+// ペルソナ集計
+const allPersonas = [...new Set(useCases.flatMap(uc => uc.personas))];
+
+// 難易度ラベル
+const levelLabel = {
+	easy: { text: '初級', color: '#10b981' },
+	mid: { text: '中級', color: '#f59e0b' },
+	hard: { text: '上級', color: '#dc2626' },
+};
+
+// シーンカテゴリでグループ化
+const sceneGroups = [
+	{
+		title: '⏰ 朝・日次ルーティン',
+		ids: ['morning-line', 'weather-morning', 'daily-todo-line'],
+	},
+	{
+		title: '✉️ Gmail自動化',
+		ids: ['gmail-auto-reply', 'gmail-receipt-extract', 'gmail-attachment-drive', 'gmail-bulk-send'],
+	},
+	{
+		title: '📅 カレンダー・予定管理',
+		ids: ['calendar-bulk-import', 'calendar-form-booking', 'calendar-birthday'],
+	},
+	{
+		title: '📊 スプレッドシート自動化',
+		ids: ['sheet-pdf-monthly', 'sheet-dashboard', 'sheet-dedupe', 'sheet-csv-import', 'sheet-stock-price', 'sheet-translate'],
+	},
+	{
+		title: '💼 副業・確定申告',
+		ids: ['ubereats-mf-csv', 'receipt-ocr', 'freelance-invoice', 'amazon-fba-stock', 'mercari-sales'],
+	},
+	{
+		title: '💬 LINE連携',
+		ids: ['line-chatgpt-bot', 'line-reply-bot'],
+	},
+	{
+		title: '📝 フォーム処理',
+		ids: ['form-cert-pdf', 'form-slack-notify'],
+	},
+	{
+		title: '📁 ドライブ・バックアップ',
+		ids: ['drive-backup', 'drive-cleanup'],
+	},
+	{
+		title: '🌐 Webアプリ',
+		ids: ['webapp-form-db'],
+	},
+	{
+		title: '🩹 困ったときの対処',
+		ids: ['error-quick', 'gas-start'],
+	},
+];
+
+const useCaseMap = Object.fromEntries(useCases.map(uc => [uc.id, uc]));
 ---
 
 <!doctype html>
 <html lang="ja">
 	<head>
-		<BaseHead title={`ユースケース逆引き｜${SITE_TITLE}`} description="「毎朝メール送信したい」「レシートを自動整理したい」など、業務シーンから該当レシピを探せるGAS逆引きインデックスです。" />
+		<BaseHead
+			title={`GASユースケース逆引き（${useCases.length}シーン） | ${SITE_TITLE}`}
+			description={`「毎朝LINEで通知したい」「レシートを自動記帳したい」「Uber Eats確定申告を楽にしたい」など、やりたいことからGASレシピを探せる${useCases.length}シーンの逆引きインデックス。現役ナース×副業Webエンジニアの凛が運営中。`}
+		/>
 	</head>
 	<body>
 		<Header />
@@ -44,25 +458,111 @@ function findArticles(uc: any) {
 			<nav class="breadcrumbs" aria-label="パンくずリスト">
 				<a href="/">ホーム</a> <span>›</span> ユースケース逆引き
 			</nav>
-			<h1>ユースケース逆引き</h1>
-			<p class="lead">「こんなことを自動化したい」というシーンから、該当するGASレシピを探せるインデックスです。</p>
 
-			<div class="uc-grid">
-				{useCases.map((uc) => {
-					const articles = findArticles(uc);
-					if (articles.length === 0) return null;
-					return (
-						<div class="uc-card">
-							<h2>{uc.scene}</h2>
-							<ul>
-								{articles.map((a: any) => (
-									<li><a href={`/blog/${a.id}/`}>{a.data.title}</a></li>
-								))}
-							</ul>
-						</div>
-					);
-				})}
-			</div>
+			<!-- HERO -->
+			<section class="uc-hero">
+				<p class="eyebrow">🎯 Use Case Index</p>
+				<h1>GASユースケース逆引き<br/>「やりたいこと」から探す</h1>
+				<p class="lead">
+					「こんな自動化したい」というシーンから、該当するGASレシピを<strong>即座に</strong>探せるインデックス。
+					全<strong>{useCases.length}シーン</strong>を業務の種類・難易度・節約時間付きで整理しました。
+				</p>
+				<div class="uc-stats">
+					<div class="stat"><strong>{useCases.length}</strong><span>ユースケース</span></div>
+					<div class="stat"><strong>{sceneGroups.length}</strong><span>シーン分類</span></div>
+					<div class="stat"><strong>{allPersonas.length}+</strong><span>対応ペルソナ</span></div>
+				</div>
+			</section>
+
+			<!-- JUMP NAV -->
+			<nav class="jump-nav" aria-label="シーン一覧">
+				{sceneGroups.map((g, i) => (
+					<a href={`#scene-${i}`} class="jump-chip">{g.title}</a>
+				))}
+			</nav>
+
+			<!-- PERSONA SECTION -->
+			<section class="persona-box">
+				<h2>👥 こんな方におすすめのユースケースが揃っています</h2>
+				<div class="persona-tags">
+					{allPersonas.map(p => <span class="persona-tag">{p}</span>)}
+				</div>
+			</section>
+
+			<!-- USECASE GROUPS -->
+			{sceneGroups.map((group, gi) => (
+				<section class="uc-group" id={`scene-${gi}`}>
+					<h2 class="group-title">{group.title}</h2>
+					<div class="uc-grid">
+						{group.ids.map(id => {
+							const uc = useCaseMap[id];
+							if (!uc) return null;
+							const articles = findArticles(uc);
+							const lbl = levelLabel[uc.level];
+							return (
+								<article class="uc-card">
+									<div class="uc-top">
+										<span class="uc-level" style={`background: ${lbl.color}`}>{lbl.text}</span>
+										<span class="uc-time">⏱ {uc.timeSaved}節約</span>
+									</div>
+									<h3>{uc.scene}</h3>
+									<p class="uc-problem"><strong>❓ よくある悩み:</strong> {uc.problem}</p>
+									<p class="uc-solution"><strong>💡 解決方法:</strong> {uc.solution}</p>
+									{articles.length > 0 && (
+										<div class="uc-articles">
+											<p class="uc-art-label">📄 該当レシピ:</p>
+											<ul>
+												{articles.map((a: any) => (
+													<li><a href={`/blog/${a.id}/`}>{a.data.title}</a></li>
+												))}
+											</ul>
+										</div>
+									)}
+									{articles.length === 0 && (
+										<p class="uc-coming">📝 このユースケースの記事は執筆予定です</p>
+									)}
+								</article>
+							);
+						})}
+					</div>
+				</section>
+			))}
+
+			<!-- MID CTA -->
+			<section class="mid-cta">
+				<div class="cta-inner">
+					<p class="cta-eyebrow">🛍️ 学習の時間が取れない方へ</p>
+					<h2>完成済みテンプレートを使うという選択</h2>
+					<p>
+						「自分で書く時間はないけど、自動化の恩恵は欲しい」方向けに、凛が毎日使っているGASの仕組みを6本のテンプレートとしてパッケージ化中。
+						2026年6月リリース予定、事前登録で30%OFFクーポンをお送りします。
+					</p>
+					<a href="/products/" class="cta-btn">テンプレート一覧を見る →</a>
+				</div>
+			</section>
+
+			<!-- REQUEST SECTION -->
+			<section class="request">
+				<h2>📮 記事リクエスト受付中</h2>
+				<p>
+					「こんなシーンの記事が欲しい」というご要望、<a href="/contact/">お問い合わせフォーム</a>からお気軽にどうぞ。
+					優先度を上げて執筆するかもしれません（内容によります）。
+				</p>
+			</section>
+
+			<!-- NEWSLETTER -->
+			<NewsletterSignup />
+
+			<!-- NEXT STEP -->
+			<section class="next-step">
+				<h2>📚 他のページも見る</h2>
+				<ul class="next-list">
+					<li><a href="/guide/">📚 GAS完全ガイド（体系的な目次）</a></li>
+					<li><a href="/errors/">🩹 エラー逆引き辞典（23項目）</a></li>
+					<li><a href="/blog/">🍳 全記事一覧</a></li>
+					<li><a href="/products/">🛍️ テンプレート販売（6月リリース）</a></li>
+				</ul>
+			</section>
 		</main>
 		<Footer />
 		<MobileNav />
@@ -70,27 +570,290 @@ function findArticles(uc: any) {
 			main { width: 960px; max-width: calc(100% - 2rem); margin: 0 auto; padding: 2rem 1rem 4rem; }
 			.breadcrumbs { font-size: 0.88em; color: rgb(var(--gray)); margin-bottom: 1rem; }
 			.breadcrumbs a { color: var(--accent); text-decoration: none; }
-			.lead { color: rgb(var(--gray-dark)); line-height: 1.9; margin: 0 0 2rem; }
-			.uc-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
+
+			/* HERO */
+			.uc-hero {
+				background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+				border-radius: 16px;
+				padding: 2.5rem 2rem;
+				text-align: center;
+				margin-bottom: 2rem;
+				border: 1px solid #6ee7b7;
+			}
+			.eyebrow {
+				display: inline-block;
+				padding: 0.3em 1em;
+				background: white;
+				color: #059669;
+				border-radius: 999px;
+				font-size: 0.82em;
+				font-weight: 700;
+				margin: 0 0 1rem;
+			}
+			.uc-hero h1 {
+				font-size: 1.8em;
+				margin: 0 0 1rem;
+				line-height: 1.4;
+				color: rgb(var(--black));
+				border: none;
+			}
+			.lead {
+				color: rgb(var(--gray-dark));
+				line-height: 1.9;
+				margin: 0 0 1.5rem;
+				max-width: 680px;
+				margin-left: auto;
+				margin-right: auto;
+			}
+			.uc-stats {
+				display: flex;
+				justify-content: center;
+				gap: 2rem;
+				flex-wrap: wrap;
+			}
+			.stat { display: flex; flex-direction: column; align-items: center; }
+			.stat strong { font-size: 1.8em; color: #059669; line-height: 1; }
+			.stat span { font-size: 0.82em; color: rgb(var(--gray)); margin-top: 0.3rem; }
+
+			/* JUMP NAV */
+			.jump-nav {
+				display: flex;
+				flex-wrap: wrap;
+				gap: 0.5rem;
+				margin-bottom: 2rem;
+			}
+			.jump-chip {
+				padding: 0.5em 1em;
+				background: var(--bg-soft);
+				border: 1px solid rgb(var(--gray-light));
+				border-radius: 999px;
+				text-decoration: none;
+				color: rgb(var(--gray-dark));
+				font-size: 0.85em;
+				font-weight: 600;
+				transition: all 0.15s;
+			}
+			.jump-chip:hover {
+				border-color: var(--accent);
+				color: var(--accent);
+				transform: translateY(-1px);
+			}
+
+			/* PERSONA */
+			.persona-box {
+				background: var(--bg-soft);
+				border-left: 4px solid var(--accent);
+				padding: 1.3rem 1.5rem;
+				border-radius: 0 var(--radius) var(--radius) 0;
+				margin-bottom: 2.5rem;
+			}
+			.persona-box h2 {
+				margin: 0 0 0.8rem;
+				font-size: 1em;
+				border: none;
+				padding: 0;
+			}
+			.persona-tags {
+				display: flex;
+				flex-wrap: wrap;
+				gap: 0.4rem;
+			}
+			.persona-tag {
+				padding: 0.3em 0.8em;
+				background: white;
+				border: 1px solid rgb(var(--gray-light));
+				border-radius: 999px;
+				font-size: 0.78em;
+				color: rgb(var(--gray-dark));
+			}
+
+			/* USECASE GROUPS */
+			.uc-group { margin-bottom: 2.5rem; scroll-margin-top: 80px; }
+			.group-title {
+				font-size: 1.3em;
+				margin: 0 0 1rem;
+				padding-bottom: 0.6rem;
+				border-bottom: 2px solid var(--accent);
+			}
+			.uc-grid {
+				display: grid;
+				grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+				gap: 1.2rem;
+			}
 			.uc-card {
 				background: var(--bg);
 				border: 1px solid rgb(var(--gray-light));
-				border-left: 4px solid var(--accent);
-				border-radius: var(--radius);
-				padding: 1.3rem 1.5rem;
+				border-radius: 12px;
+				padding: 1.3rem 1.4rem;
+				display: flex;
+				flex-direction: column;
+				gap: 0.6rem;
+				transition: all 0.2s;
 			}
-			.uc-card h2 {
-				font-size: 1.05em;
-				margin: 0 0 0.8rem;
-				padding: 0;
-				border: none;
-				background: none;
+			.uc-card:hover {
+				transform: translateY(-2px);
+				box-shadow: var(--box-shadow);
+			}
+			.uc-top {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+			}
+			.uc-level {
+				padding: 0.2em 0.7em;
+				color: white;
+				border-radius: 999px;
+				font-size: 0.72em;
+				font-weight: 700;
+			}
+			.uc-time {
+				font-size: 0.78em;
+				color: rgb(var(--gray));
+				font-weight: 600;
+			}
+			.uc-card h3 {
+				margin: 0;
+				font-size: 1em;
 				color: rgb(var(--black));
+				line-height: 1.5;
 			}
-			.uc-card ul { list-style: none; padding: 0; margin: 0; }
-			.uc-card li { margin-bottom: 0.5em; }
-			.uc-card a { color: var(--accent); text-decoration: none; font-size: 0.93em; }
-			.uc-card a:hover { text-decoration: underline; }
+			.uc-problem, .uc-solution {
+				margin: 0;
+				font-size: 0.85em;
+				line-height: 1.7;
+				color: rgb(var(--gray-dark));
+			}
+			.uc-articles {
+				margin-top: auto;
+				padding-top: 0.8rem;
+				border-top: 1px solid rgb(var(--gray-light));
+			}
+			.uc-art-label { margin: 0 0 0.4rem; font-size: 0.78em; color: rgb(var(--gray)); font-weight: 600; }
+			.uc-articles ul { list-style: none; padding: 0; margin: 0; }
+			.uc-articles li { margin-bottom: 0.3em; }
+			.uc-articles a { color: var(--accent); text-decoration: none; font-size: 0.85em; }
+			.uc-articles a:hover { text-decoration: underline; }
+			.uc-coming {
+				margin: 0;
+				padding-top: 0.8rem;
+				border-top: 1px dashed rgb(var(--gray-light));
+				font-size: 0.82em;
+				color: rgb(var(--gray));
+				font-style: italic;
+			}
+
+			/* MID CTA */
+			.mid-cta {
+				margin: 3rem 0;
+				padding: 2.5rem 2rem;
+				background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+				border-radius: 16px;
+				text-align: center;
+			}
+			.cta-inner { max-width: 640px; margin: 0 auto; }
+			.cta-eyebrow {
+				display: inline-block;
+				padding: 0.3em 1em;
+				background: white;
+				color: var(--accent);
+				border-radius: 999px;
+				font-size: 0.82em;
+				font-weight: 700;
+				margin: 0 0 1rem;
+			}
+			.mid-cta h2 {
+				margin: 0 0 1rem;
+				font-size: 1.3em;
+				color: rgb(var(--black));
+				border: none;
+				padding: 0;
+			}
+			.mid-cta p {
+				margin: 0 0 1.5rem;
+				color: rgb(var(--gray-dark));
+				line-height: 1.8;
+			}
+			.cta-btn {
+				display: inline-block;
+				padding: 0.9em 2rem;
+				background: var(--accent);
+				color: white;
+				border-radius: 999px;
+				text-decoration: none;
+				font-weight: 700;
+				box-shadow: 0 6px 14px rgba(59, 130, 246, 0.3);
+			}
+			.cta-btn:hover { transform: translateY(-2px); color: white; }
+
+			/* REQUEST */
+			.request {
+				background: #fef3c7;
+				border: 1px solid #fbbf24;
+				padding: 1.5rem;
+				border-radius: 12px;
+				margin-bottom: 2rem;
+			}
+			.request h2 {
+				margin: 0 0 0.8rem;
+				font-size: 1.1em;
+				color: #78350f;
+				border: none;
+				padding: 0;
+			}
+			.request p { margin: 0; color: #78350f; line-height: 1.8; font-size: 0.92em; }
+			.request a { color: #92400e; font-weight: 700; text-decoration: underline; }
+
+			/* NEXT STEP */
+			.next-step { margin: 2rem 0; }
+			.next-step h2 { font-size: 1.2em; margin: 0 0 1rem; }
+			.next-list {
+				list-style: none;
+				padding: 0;
+				display: grid;
+				grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+				gap: 0.6rem;
+			}
+			.next-list li { margin: 0; }
+			.next-list a {
+				display: block;
+				padding: 0.9rem 1.2rem;
+				background: var(--bg-soft);
+				border-radius: 8px;
+				text-decoration: none;
+				color: rgb(var(--black));
+				font-weight: 600;
+				font-size: 0.92em;
+				border: 1px solid transparent;
+				transition: all 0.15s;
+			}
+			.next-list a:hover {
+				border-color: var(--accent);
+				color: var(--accent);
+			}
+
+			@media (max-width: 720px) {
+				.uc-hero h1 { font-size: 1.4em; }
+				.uc-stats { gap: 1rem; }
+				.stat strong { font-size: 1.4em; }
+			}
+			@media (prefers-color-scheme: dark) {
+				.uc-hero {
+					background: linear-gradient(135deg, #052e16 0%, #064e3b 100%);
+					border-color: #10b981;
+				}
+				.uc-hero h1 { color: #f1f5f9; }
+				.eyebrow { background: var(--bg-soft); color: #6ee7b7; }
+				.persona-tag { background: var(--bg); color: rgb(var(--gray-dark)); }
+				.mid-cta { background: linear-gradient(135deg, #1e293b 0%, #1e3a8a 100%); }
+				.mid-cta h2 { color: #f1f5f9; }
+				.cta-eyebrow { background: var(--bg); }
+				.request {
+					background: #451a03;
+					border-color: #b45309;
+				}
+				.request h2, .request p { color: #fde68a; }
+				.request a { color: #fcd34d; }
+			}
 		</style>
 	</body>
 </html>
