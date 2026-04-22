@@ -1,7 +1,7 @@
 ---
 title: "スプシ自動フィルタをGASで3秒セット"
 description: "スプレッドシートのフィルタ設定をGASで一気に済ませる方法を、看護師が優しく解説。毎回のフィルタ作り直しから卒業しましょう。"
-pubDate: "2026-05-10T19:00:00+09:00"
+pubDate: "TBD"
 heroImage: "/blog-placeholder-3.jpg"
 categorySlug: "spreadsheet"
 categoryName: "スプレッドシート"
@@ -128,5 +128,6 @@ function resetFilter_default()   { resetFilter(SpreadsheetApp.getActive().getShe
 
 ---
 
-**### この記事を書いた人：凛**
-の母で現役ナース。病院勤務のかたわら、Google Apps Scriptで家計簿・副業管理・家族スケジュールを自動化している副業GASプログラマー。「忙しいママでも、コード3行で生活が軽くなる」をモットーに、等身大のレシピを発信中。
+### この記事を書いた人：凛
+
+東京で看護師をしながら、副業でWebエンジニアをしている凛です。病棟の事務仕事を一つずつGASで自動化してきた経験をもとに、「非エンジニアでも読める実務目線のGAS解説」をモットーに発信しています。誇張なし・実務ベースで、今日から使えるレシピをお届けします。
