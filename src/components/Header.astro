@@ -9,11 +9,10 @@ import { SITE_TITLE } from '../consts';
 		<h2><a href="/">{SITE_TITLE}</a></h2>
 		<div class="internal-links">
 			<HeaderLink href="/">ホーム</HeaderLink>
-			<HeaderLink href="/blog">記事一覧</HeaderLink>
-			<HeaderLink href="/about">運営者情報</HeaderLink>
-			<HeaderLink href="/privacy">プライバシーポリシー</HeaderLink>
-		</div>
-		<div class="social-links">
+			<HeaderLink href="/blog/">記事一覧</HeaderLink>
+			<HeaderLink href="/about/">運営者情報</HeaderLink>
+			<HeaderLink href="/contact/">お問い合わせ</HeaderLink>
+			<HeaderLink href="/privacy/">プライバシー</HeaderLink>
 		</div>
 	</nav>
 </header>
@@ -41,10 +40,12 @@ import { SITE_TITLE } from '../consts';
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
+		max-width: 960px;
+		margin: 0 auto;
 	}
 	nav a {
 		padding: 1em 0.5em;
-		color: var(--black);
+		color: rgb(var(--black));
 		border-bottom: 4px solid transparent;
 		text-decoration: none;
 	}
@@ -52,10 +53,8 @@ import { SITE_TITLE } from '../consts';
 		text-decoration: none;
 		border-bottom-color: var(--accent);
 	}
-	.social-links, .social-links a { display: flex; }
 	@media (max-width: 720px) {
-		.internal-links { padding: 0.5em; font-size: 0.9em; }
-		.social-links { display: none; }
+		.internal-links { padding: 0.5em; font-size: 0.85em; }
 		nav { flex-direction: column; }
 	}
 </style>
