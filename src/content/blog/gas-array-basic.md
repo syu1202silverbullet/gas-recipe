@@ -1,7 +1,7 @@
 ---
 title: "GAS配列操作push/map/filter早見表15個｜2次元配列もこれで攻略"
 description: "GASでよく使う配列メソッド15個を早見表で整理。push・map・filter・reduce・find・sortなど、2次元配列でのスプシ自動化例まで現役ナース副業プログラマーが実務コード付きで解説します。"
-pubDate: "TBD"
+pubDate: "2026-06-02T19:00:00+09:00"
 heroImage: "/blog-placeholder-4.jpg"
 categorySlug: "gas-basics"
 categoryName: "GAS入門"
