@@ -199,6 +199,24 @@ https://...（ポートフォリオURL）
 
 この記事を読み終わったら、クラウドワークスを開き、GASで検索し、**今日中に1件だけ応募**してみてください。2026年4月時点の私からのアドバイスとしては、それが一番効きます。
 
+
+## 💼 確定申告・会計ソフト比較
+
+<div class="ad-block">
+<p class="ad-label">PR：本記事には広告（A8.net）が含まれます</p>
+
+GASで自動化した記帳データは最終的に会計ソフトで確定申告する流れが一般的です。副業レベルで使いやすい定番3サービス：
+
+- **<a href="https://px.a8.net/svt/ejp?a8mat=4B1R5U+EV8SPE+3SPO+9FDI8Y" rel="sponsored nofollow" target="_blank">freee会計</a>** – 確定申告書類の自動作成、銀行連携が強い
+- **<a href="https://px.a8.net/svt/ejp?a8mat=3T8I4R+2PN72Q+35XE+5YJRM" rel="sponsored nofollow" target="_blank">やよいの青色申告オンライン</a>** – 白色申告は永年無料、シェアNo.1の実績
+- **<a href="https://px.a8.net/svt/ejp?a8mat=3NERNS+AC40YA+4JGQ+BWVTE" rel="sponsored nofollow" target="_blank">マネーフォワード クラウド確定申告</a>** – MFクラウド連携でUber Eats等の副業収入集計に便利
+
+自分の業態に合うものを選んでください。
+<img border="0" width="1" height="1" src="https://www19.a8.net/0.gif?a8mat=4B1R5U+EV8SPE+3SPO+9FDI8Y" alt="">
+<img border="0" width="1" height="1" src="https://www17.a8.net/0.gif?a8mat=3T8I4R+2PN72Q+35XE+5YJRM" alt="">
+<img border="0" width="1" height="1" src="https://www14.a8.net/0.gif?a8mat=3NERNS+AC40YA+4JGQ+BWVTE" alt="">
+</div>
+
 ## 関連記事
 
 - GASで副業月5万円を目指すロードマップ完全版
