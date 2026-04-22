@@ -1,7 +1,7 @@
 ---
 title: "毎朝ToDoをLINEに届けるGASリマインダー"
 description: "Google Apps Scriptで毎朝のToDoリストをLINEに自動送信するリマインダーの作り方。スプシで管理するタスクを朝7時に配信する、看護師流の朝活レシピをやさしく紹介します。"
-pubDate: "TBD"
+pubDate: "2026-05-17T19:00:00+09:00"
 heroImage: "/blog-placeholder-5.jpg"
 categorySlug: "line"
 categoryName: "LINE連携"
