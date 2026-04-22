@@ -1,7 +1,7 @@
 ---
 title: "Gmail未読を条件検索してラベル付与するGAS"
 description: "Gmailの未読メールを条件検索し、自動でラベルを付けて仕分けするGoogle Apps Scriptのレシピ。夜勤明けでも受信箱がスッキリ整う時短テクを、看護師目線でやさしく解説します。"
-pubDate: "TBD"
+pubDate: "2026-05-13T19:00:00+09:00"
 heroImage: "/blog-placeholder-1.jpg"
 categorySlug: "gmail"
 categoryName: "Gmail自動化"
