@@ -1,7 +1,7 @@
 ---
 title: "CSVインポートをGASで自動化する3手順"
 description: "GASでCSVを取り込む基本3ステップを、看護師目線でやさしく解説。Drive上のCSVをスプレッドシートへ流し込み、日々の手作業をゼロに近づけます。"
-pubDate: "TBD"
+pubDate: "2026-05-08T19:00:00+09:00"
 heroImage: "/blog-placeholder-1.jpg"
 categorySlug: "spreadsheet"
 categoryName: "スプレッドシート"
