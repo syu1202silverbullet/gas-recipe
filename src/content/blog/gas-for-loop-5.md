@@ -1,7 +1,7 @@
 ---
 title: "GASループfor文5種類使い分け完全マスター｜for/for…of/forEach/while徹底比較"
 description: "GASで使えるfor・for…of・for…in・forEach・whileの5種類を、現役ナース副業プログラマーの凛が実務目線で使い分け解説。2次元配列のループや無限ループ対策まで網羅します。"
-pubDate: "TBD"
+pubDate: "2026-06-04T19:00:00+09:00"
 heroImage: "/blog-placeholder-3.jpg"
 categorySlug: "gas-basics"
 categoryName: "GAS入門"
