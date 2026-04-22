@@ -1,7 +1,7 @@
 ---
 title: "GAS関数の書き方7例とreturn徹底解説｜アロー関数・早期リターン・複数戻り値まで"
 description: "GAS関数の基本形から無名関数・アロー関数・デフォルト引数・分割代入まで、7つの具体例で学ぶ入門ガイド。returnの役割と早期リターンのコツも現役ナース副業プログラマーがやさしく解説します。"
-pubDate: "TBD"
+pubDate: "2026-06-05T19:00:00+09:00"
 heroImage: "/blog-placeholder-2.jpg"
 categorySlug: "gas-basics"
 categoryName: "GAS入門"
