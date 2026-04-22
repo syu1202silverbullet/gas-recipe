@@ -8,49 +8,136 @@ import { SITE_TITLE } from '../consts';
 <!doctype html>
 <html lang="ja">
 	<head>
-		<BaseHead title={`運営者情報 | ${SITE_TITLE}`} description="GAS Recipe運営者情報。Google Apps Scriptで日常を自動化する実用ノウハウを発信しています" />
+		<BaseHead title={`運営者情報 | ${SITE_TITLE}`} description="GAS Recipe運営者プロフィール・サイトの方針・連絡先。Google Apps Scriptで日常を自動化する実用ノウハウを発信中。" />
 	</head>
 	<body>
 		<Header />
 		<main>
+			<nav class="breadcrumbs" aria-label="パンくずリスト">
+				<a href="/">ホーム</a> <span>›</span> 運営者情報
+			</nav>
+
 			<h1>運営者情報</h1>
 
-			<h2>サイト名</h2>
-			<p>GAS Recipe ｜ Google Apps Scriptで日常を自動化</p>
+			<div class="profile-card">
+				<div class="profile-header">
+					<div class="avatar">G</div>
+					<div>
+						<h2 class="profile-name">ガスこ</h2>
+						<p class="profile-role">副業実践者 / Google Apps Script愛好家</p>
+					</div>
+				</div>
+				<p>都内在住の副業実践者。自分の業務を「手で動かさない」ための仕組みづくりを7年以上続けており、これまで20以上のGoogle Apps Scriptアプリを自作。スプレッドシートの集計自動化、OCRによるレシート記帳、Uber Eats配達記録のCSV化、買い物リスト共有アプリなど、日常のちょっとした面倒を「一度書いて永遠に解放される」仕組みに変える実験を続けています。</p>
+				<p>GAS Recipeは、その過程で得た実用的なノウハウを、プログラミング初心者にも再現しやすい形でシェアするために運営しています。</p>
+			</div>
 
-			<h2>URL</h2>
-			<p><a href="https://gas-recipe.com">https://gas-recipe.com</a></p>
+			<h2>サイト基本情報</h2>
+			<table class="info-table">
+				<tr><th>サイト名</th><td>GAS Recipe｜Google Apps Scriptで日常を自動化</td></tr>
+				<tr><th>URL</th><td><a href="https://gas-recipe.com">https://gas-recipe.com</a></td></tr>
+				<tr><th>運営開始</th><td>2026年4月</td></tr>
+				<tr><th>運営者</th><td>ガスこ（匿名運営）</td></tr>
+				<tr><th>連絡先</th><td><a href="/contact/">お問い合わせフォーム</a></td></tr>
+			</table>
 
-			<h2>サイトの目的</h2>
-			<p>本サイトは、Google Apps Script（GAS）を活用して日常の業務や生活を自動化するためのノウハウ・レシピを発信しています。スプレッドシート・Gmail・カレンダー・LINE等の連携、OCRによるレシート自動集計、副業・個人事業向けの実用的な自動化事例を、初心者にも再現しやすい形で解説することを目的としています。</p>
+			<h2>サイトの方針</h2>
+			<p>本サイトでは、以下のポリシーで記事を執筆しています。</p>
+			<ul>
+				<li><strong>実体験ベース</strong>：運営者が実際に使用しているツール・実装したコードをもとに解説</li>
+				<li><strong>再現性重視</strong>：初心者でもコピペで動作するサンプルを優先</li>
+				<li><strong>誇大表現NG</strong>：「絶対稼げる」「必ず成功する」等の表現は使用しません</li>
+				<li><strong>広告の明示</strong>：アフィリエイトを含む記事は冒頭で開示</li>
+			</ul>
 
 			<h2>対象読者</h2>
 			<ul>
-				<li>日常業務をもっと効率化したい個人事業主・フリーランス</li>
+				<li>日常業務の効率化に興味のある個人事業主・フリーランス</li>
 				<li>GASを学び始めた初心者エンジニア</li>
 				<li>副業を効率化したい会社員の方</li>
 				<li>確定申告・経費精算を自動化したい方</li>
 			</ul>
 
-			<h2>掲載内容について</h2>
-			<p>記事内のコード・手順は執筆時点で動作確認しています。ただしGoogleのアップデートや各種APIの仕様変更により、将来的に動作が変わる可能性があります。利用の際は必ずご自身の責任でテストしてください。</p>
+			<h2>掲載内容と免責</h2>
+			<p>記事内のコード・手順は執筆時点で動作確認しています。ただしGoogle各種サービスの仕様変更により、将来的に動作が変わる可能性があります。利用の際は必ずご自身の責任でテストしてください。</p>
 
-			<h2>広告について</h2>
+			<h2>広告・アフィリエイトについて</h2>
 			<p>本サイトは以下のアフィリエイトプログラムに参加しています。</p>
 			<ul>
 				<li>A8.net</li>
 				<li>もしもアフィリエイト</li>
 				<li>アクセストレード</li>
 			</ul>
-			<p>記事内で紹介する商品・サービスには、運営者が実際に利用したもの、または客観的な情報に基づき紹介する価値があると判断したものを掲載しています。「絶対」「必ず稼げる」等の誇大表現は行いません。</p>
+			<p>記事内で紹介する商品・サービスには、運営者が実際に利用したもの、または客観的な情報に基づき紹介する価値があると判断したものを掲載しています。詳細は<a href="/privacy/">プライバシーポリシー</a>をご確認ください。</p>
 
 			<h2>お問い合わせ</h2>
-			<p>ご意見・ご質問・記事の誤りのご指摘など、お気軽にX（Twitter）のDMまたはメールにてご連絡ください。連絡先は準備中です。</p>
+			<p>ご意見・ご質問・記事の誤りのご指摘などは、<a href="/contact/">お問い合わせフォーム</a>よりお送りください。お返事には数日いただく場合があります。</p>
 
-			<p>詳細は <a href="/privacy/">プライバシーポリシー</a> もご確認ください。</p>
-
-			<p><em>最終更新日: 2026-04-22</em></p>
+			<p class="updated"><em>最終更新日: 2026-04-22</em></p>
 		</main>
 		<Footer />
+		<style>
+			main { width: 760px; max-width: calc(100% - 2rem); padding: 2rem 1rem 4rem; }
+			.breadcrumbs {
+				font-size: 0.88em;
+				color: rgb(var(--gray));
+				margin-bottom: 1rem;
+			}
+			.breadcrumbs a { color: var(--accent); text-decoration: none; }
+			.breadcrumbs a:hover { text-decoration: underline; }
+			.profile-card {
+				background: var(--bg-soft);
+				border-radius: var(--radius);
+				padding: 1.5rem;
+				margin: 1.5rem 0 2rem;
+			}
+			.profile-header {
+				display: flex;
+				align-items: center;
+				gap: 1rem;
+				margin-bottom: 1rem;
+			}
+			.avatar {
+				width: 64px;
+				height: 64px;
+				border-radius: 50%;
+				background: linear-gradient(135deg, #2563eb, #7c3aed);
+				color: white;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				font-size: 1.8em;
+				font-weight: 700;
+				flex-shrink: 0;
+			}
+			.profile-name {
+				margin: 0;
+				padding: 0;
+				border: none;
+				background: none;
+				font-size: 1.3em;
+			}
+			.profile-role {
+				margin: 0.2rem 0 0;
+				font-size: 0.9em;
+				color: rgb(var(--gray-dark));
+			}
+			.info-table {
+				width: 100%;
+				border-collapse: collapse;
+				margin: 1rem 0 1.5rem;
+			}
+			.info-table th, .info-table td {
+				padding: 0.7rem 1rem;
+				text-align: left;
+				border-bottom: 1px solid rgb(var(--gray-light));
+				font-size: 0.95em;
+			}
+			.info-table th {
+				width: 30%;
+				background: var(--bg-soft);
+				font-weight: 600;
+			}
+			.updated { text-align: right; font-size: 0.85em; color: rgb(var(--gray)); }
+		</style>
 	</body>
 </html>
