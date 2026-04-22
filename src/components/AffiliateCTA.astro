@@ -1,0 +1,89 @@
+---
+interface Props {
+	type?: 'school' | 'server' | 'book' | 'service';
+}
+const { type = 'school' } = Astro.props;
+
+const messages = {
+	school: {
+		icon: '🎓',
+		title: 'GASを効率よく身につけたい方へ',
+		body: 'GASの基礎から副業で稼ぐレベルまで、プログラミングスクールで短期集中で学べば、独学の3倍速で到達できます。無料カウンセリングだけでも自分の学習戦略を見直すヒントになります。',
+		cta: '無料カウンセリングを受ける',
+	},
+	server: {
+		icon: '🖥️',
+		title: 'GAS外の処理に手軽なサーバーを',
+		body: 'GASで処理しきれない重い処理、Webhook受信、独自ドメインでのWebアプリ公開には、コスパ良いレンタルサーバーが便利です。ConoHa WINGは月660円〜の国内最速クラス。',
+		cta: 'レンタルサーバーを見る',
+	},
+	book: {
+		icon: '📖',
+		title: 'GASを体系的に学べる定番書',
+		body: '評判の良いGAS入門書・実践書は、Web記事の断片情報を補う体系学習に最適です。',
+		cta: 'おすすめ書籍を見る',
+	},
+	service: {
+		icon: '🛠️',
+		title: 'GASと相性の良いツール',
+		body: 'この記事で紹介したツールの無料トライアル・資料請求はこちらから。',
+		cta: '詳細を見る',
+	},
+};
+
+const m = messages[type];
+---
+
+<aside class="cta-box">
+	<p class="cta-icon">{m.icon}</p>
+	<p class="cta-title">{m.title}</p>
+	<p class="cta-body">{m.body}</p>
+	<a href="#" class="cta-btn" data-affiliate={type}>{m.cta} →</a>
+	<p class="cta-note">※ アフィリエイトリンクは準備中です</p>
+</aside>
+
+<style>
+	.cta-box {
+		margin: 2rem 0;
+		padding: 1.5rem 1.8rem;
+		background: linear-gradient(135deg, #dbeafe 0%, #fce7f3 100%);
+		border-radius: var(--radius);
+		border: 1px solid rgba(37, 99, 235, 0.2);
+		text-align: center;
+	}
+	.cta-icon { font-size: 2.2em; margin: 0 0 0.3rem; }
+	.cta-title {
+		font-weight: 700;
+		font-size: 1.1em;
+		margin: 0 0 0.6rem;
+		color: rgb(var(--black));
+	}
+	.cta-body {
+		color: rgb(var(--gray-dark));
+		font-size: 0.92em;
+		line-height: 1.8;
+		margin: 0 0 1.2rem;
+	}
+	.cta-btn {
+		display: inline-block;
+		padding: 0.8em 2em;
+		background: var(--accent);
+		color: white;
+		font-weight: 700;
+		border-radius: 999px;
+		text-decoration: none;
+		border: none;
+		font-size: 0.95em;
+	}
+	.cta-btn:hover { background: var(--accent-dark); color: white; }
+	.cta-note {
+		margin: 0.6rem 0 0;
+		font-size: 0.75em;
+		color: rgb(var(--gray));
+	}
+	@media (prefers-color-scheme: dark) {
+		.cta-box { background: linear-gradient(135deg, #1e3a8a 0%, #831843 100%); }
+		.cta-title { color: white; }
+		.cta-body { color: #e5e7eb; }
+	}
+</style>
