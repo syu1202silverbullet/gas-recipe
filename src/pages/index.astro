@@ -110,13 +110,13 @@ const categories = [
 				<p class="view-all"><a href="/blog/">すべての記事を見る →</a></p>
 			</section>
 
-			<!-- SIDEFIRE SISTER SITE -->
-			<section class="sidefire-hero">
-				<div class="sf-content">
-					<p class="sf-label">🔥 姉妹サイト</p>
-					<h2>サイドFIREを目指す！</h2>
-					<p>副業で得た収入を投資に回し、経済的半自由を目指す記録ブログ。投資・節約・家計管理のリアルを更新中。</p>
-					<a href="https://sidefire150000000.com/" target="_blank" rel="noopener" class="sf-btn">姉妹サイトを見る →</a>
+			<!-- PRODUCTS PROMO -->
+			<section class="products-hero">
+				<div class="ph-content">
+					<p class="ph-label">🛍️ 2026年6月リリース予定</p>
+					<h2>GASテンプレート販売</h2>
+					<p>予定管理・確定申告・買い物リスト・アイデアメモなど、日常の自動化キットを全6本でご用意。事前登録で30%OFFクーポンをお送りします。</p>
+					<a href="/products/" class="ph-btn">テンプレート一覧を見る →</a>
 				</div>
 			</section>
 
@@ -186,7 +186,7 @@ const categories = [
 			.search-input { flex: 1; border: none; outline: none; background: transparent; font-size: 0.95em; padding: 0.7em 0.3em; color: rgb(var(--black)); }
 			.search-btn { background: var(--accent); color: white; border: none; border-radius: 999px; padding: 0.5em 1.3em; font-weight: 600; cursor: pointer; font-size: 0.9em; }
 
-			.featured, .categories, .latest, .sidefire-hero, .subscribe {
+			.featured, .categories, .latest, .products-hero, .subscribe {
 				max-width: 960px;
 				margin: 3rem auto;
 				padding: 0 1rem;
@@ -261,18 +261,18 @@ const categories = [
 			.view-all { text-align: right; margin-top: 1rem; }
 			.view-all a { font-weight: 600; }
 
-			.sidefire-hero {
-				background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+			.products-hero {
+				background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
 				border-radius: var(--radius);
 				padding: 2.5rem 2rem;
-				border: 1px solid #f59e0b;
+				border: 1px solid #93c5fd;
 			}
-			.sf-content { max-width: 640px; margin: 0 auto; text-align: center; }
-			.sf-label { margin: 0 0 0.5rem; color: #78350f; font-size: 0.9em; font-weight: 600; }
-			.sidefire-hero h2 { margin: 0 0 0.8rem; border: none; padding: 0; background: none; font-size: 1.6em; color: #78350f; }
-			.sidefire-hero p { color: #78350f; line-height: 1.8; margin: 0 0 1.5rem; }
-			.sf-btn { display: inline-block; padding: 0.7em 2em; background: #f59e0b; color: white; border-radius: 999px; text-decoration: none; font-weight: 700; border: none; }
-			.sf-btn:hover { background: #d97706; color: white; }
+			.ph-content { max-width: 640px; margin: 0 auto; text-align: center; }
+			.ph-label { margin: 0 0 0.5rem; color: #1e3a8a; font-size: 0.9em; font-weight: 600; }
+			.products-hero h2 { margin: 0 0 0.8rem; border: none; padding: 0; background: none; font-size: 1.6em; color: #1e3a8a; }
+			.products-hero p { color: #1e40af; line-height: 1.8; margin: 0 0 1.5rem; }
+			.ph-btn { display: inline-block; padding: 0.7em 2em; background: var(--accent); color: white; border-radius: 999px; text-decoration: none; font-weight: 700; border: none; }
+			.ph-btn:hover { background: #2563eb; color: white; }
 
 			.subscribe { text-align: center; padding: 2rem 1rem; }
 			.subscribe p { color: rgb(var(--gray-dark)); margin: 0 auto 1.5rem; max-width: 480px; }
@@ -284,7 +284,7 @@ const categories = [
 				.hero { padding: 3rem 1rem 2.5rem; }
 				.hero h1 { font-size: 1.7em; }
 				.hero-lead { font-size: 0.95em; }
-				.categories h2, .latest h2, .sidefire-hero h2, .subscribe h2 { font-size: 1.25em; }
+				.categories h2, .latest h2, .products-hero h2, .subscribe h2 { font-size: 1.25em; }
 				.featured-card { grid-template-columns: 1fr; gap: 0; }
 				.featured-img img { height: 200px; }
 				.featured-body { padding: 1.5rem; }
