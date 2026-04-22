@@ -6,7 +6,6 @@ import Footer from '../components/Footer.astro';
 import FormattedDate from '../components/FormattedDate.astro';
 import AuthorCard from '../components/AuthorCard.astro';
 import NewsletterSignup from '../components/NewsletterSignup.astro';
-import SideFireLink from '../components/SideFireLink.astro';
 import AffiliateCTA from '../components/AffiliateCTA.astro';
 import MobileNav from '../components/MobileNav.astro';
 import { getCollection } from 'astro:content';
@@ -191,7 +190,7 @@ else ctaType = 'service';
 							<span class="meta-item">📅 <FormattedDate date={pubDate} /></span>
 							{updatedDate && (<span class="meta-item last-updated-on">🔄 <FormattedDate date={updatedDate} /></span>)}
 							{readingTime && (<span class="meta-item">⏱ 読了 約{readingTime}分</span>)}
-							<span class="meta-item">✍️ みっちゃんママ</span>
+							<span class="meta-item">✍️ 凛</span>
 						</div>
 					</div>
 
@@ -221,8 +220,6 @@ else ctaType = 'service';
 					<AuthorCard />
 
 					<NewsletterSignup />
-
-					<SideFireLink />
 
 					{related.length > 0 && (
 						<aside class="related">
