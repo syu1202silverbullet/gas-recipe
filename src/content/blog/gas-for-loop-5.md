@@ -1,6 +1,6 @@
 ---
 title: "GASループfor文5種類使い分け完全マスター｜for/for…of/forEach/while徹底比較"
-description: "GASで使えるfor・for…of・for…in・forEach・whileの5種類を、現役ナース副業プログラマーのみっちゃんママが実務目線で使い分け解説。2次元配列のループや無限ループ対策まで網羅します。"
+description: "GASで使えるfor・for…of・for…in・forEach・whileの5種類を、現役ナース副業プログラマーの凛が実務目線で使い分け解説。2次元配列のループや無限ループ対策まで網羅します。"
 pubDate: "TBD"
 heroImage: "/blog-placeholder-3.jpg"
 categorySlug: "gas-basics"
@@ -11,7 +11,7 @@ readingTime: 8
 keywords: ["GAS for文","GAS forEach","GAS ループ","GAS for of"]
 ---
 
-こんにちは、みっちゃんママです。三姉妹を育てながら夜勤ナースをして、副業でGASを書いています。今日は「**GASのfor文**」について、5種類の書き方とその使い分けをがっつり解説します。ループが書けるようになると、スプレッドシートの自動処理が一気に楽になりますよ。
+こんにちは、凛です。都内で看護師をしながら、副業でWebエンジニアをしています。今日は「**GASのfor文**」について、5種類の書き方とその使い分けをがっつり解説します。ループが書けるようになると、スプレッドシートの自動処理が一気に楽になりますよ。
 
 「GAS for文」で検索してここに来た方が、読み終わったあとすぐコードに戻れるレベルを意識して書いています。
 
@@ -80,7 +80,7 @@ for (let i = 0; i < values.length; i++) {
 ```javascript
 const names = ['長女', '次女', '三女'];
 for (const name of names) {
-  console.log(name + 'のお弁当を詰める');
+  console.log(name + 'さんに連絡する');
 }
 ```
 
@@ -127,7 +127,7 @@ prices.forEach((price) => {
 ### `for...in`はオブジェクト向け
 
 ```javascript
-const user = { name: 'みっちゃん', role: 'ナース', shift: '夜勤' };
+const user = { name: '佐藤', role: 'ナース', shift: '夜勤' };
 for (const key in user) {
   console.log(key + ': ' + user[key]);
 }
@@ -226,6 +226,6 @@ sheet.getRange(1, 1, output.length, 1).setValues(output); // 1回だけ
 
 ---
 
-### この記事を書いた人：みっちゃんママ
+### この記事を書いた人：凛
 
-三姉妹の母で現役ナース、夜勤明けにGASを書いている副業プログラマーです。病棟の事務仕事をGASで片っ端から自動化してきた経験をもとに、「コードが苦手なママでも読めるGAS解説」をモットーに発信しています。誇張なし・実務ベースで、今日から使えるレシピをお届けします。
+東京で看護師をしながら、副業でWebエンジニアをしている凛です。病棟の事務仕事を一つずつGASで自動化してきた経験をもとに、「非エンジニアでも読める実務目線のGAS解説」をモットーに発信しています。誇張なし・実務ベースで、今日から使えるレシピをお届けします。
