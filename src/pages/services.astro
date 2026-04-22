@@ -1,0 +1,409 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import MobileNav from '../components/MobileNav.astro';
+import { SITE_TITLE } from '../consts';
+
+const services = [
+	{
+		id: 'gas-custom',
+		icon: '⚙️',
+		title: 'GASカスタム開発',
+		tagline: 'スプシ・Gmail・カレンダー等を組み合わせた業務自動化を個別受注',
+		priceFrom: '3万円〜',
+		deliverable: 'カスタマイズされたGASスクリプト＋設置済みGoogleドライブ',
+		examples: [
+			'シフト表・勤怠管理の自動化',
+			'定期レポートの自動生成（毎朝7時等）',
+			'フォーム送信→Slack/LINE通知',
+			'Gmail→スプシ自動転記・集計',
+			'既存GASのバグ修正・機能追加',
+		],
+		goodFor: '個人事業主・小規模事業・部内の業務自動化担当',
+	},
+	{
+		id: 'static-site',
+		icon: '🌐',
+		title: '静的サイト制作',
+		tagline: '高速・低コストの名刺代わり1ページサイト〜小規模コーポレート',
+		priceFrom: '5万円〜',
+		deliverable: 'Astro+CloudflareでデプロイされたHP（独自ドメイン対応可）',
+		examples: [
+			'名刺代わりの1ページサイト',
+			'プロフィール公開ページ',
+			'店舗・教室の案内ページ',
+			'イベント告知・LP',
+			'本gas-recipe.comと同じ構成での提供',
+		],
+		goodFor: '店舗オーナー・フリーランス・個人事業主',
+	},
+	{
+		id: 'consulting',
+		icon: '💡',
+		title: 'スポット相談・レビュー',
+		tagline: '既存GASコードのレビュー・設計相談・トラブル解決（1時間単位）',
+		priceFrom: '5000円/時〜',
+		deliverable: '60分のオンラインMTG＋議事録＋推奨対応策のメモ',
+		examples: [
+			'既存コードのパフォーマンス相談',
+			'どのASP/サーバーを使うべきかの相談',
+			'自動化したい業務のヒアリング・見積もり',
+			'GAS学習のつまずき解決',
+		],
+		goodFor: 'まず相談してから発注判断したい方',
+	},
+];
+---
+
+<!doctype html>
+<html lang="ja">
+	<head>
+		<BaseHead
+			title={`制作・開発サービス | ${SITE_TITLE}`}
+			description="GAS Recipe運営・凛の制作受注窓口。Google Apps Scriptによる業務自動化、静的サイト制作、スポット相談を承っています。"
+		/>
+	</head>
+	<body>
+		<Header />
+		<main>
+			<nav class="breadcrumbs" aria-label="パンくずリスト">
+				<a href="/">ホーム</a> <span>›</span> 制作・開発サービス
+			</nav>
+
+			<section class="hero">
+				<p class="eyebrow">🛠️ Services</p>
+				<h1>制作・開発のご依頼</h1>
+				<p class="lead">
+					GAS Recipe運営の凛が、Google Apps Scriptによる業務自動化・静的サイト制作・スポット相談を個別にお受けしています。
+					小さな自動化から個人事業主向けのサイト制作まで、気軽にご相談ください。
+				</p>
+			</section>
+
+			<section class="services">
+				<h2>提供サービス</h2>
+				<div class="service-grid">
+					{services.map((s) => (
+						<article class="service-card" id={s.id}>
+							<div class="service-head">
+								<span class="service-icon">{s.icon}</span>
+								<div>
+									<h3>{s.title}</h3>
+									<p class="service-tag">{s.tagline}</p>
+								</div>
+							</div>
+							<div class="service-price">
+								<span class="price-label">目安料金</span>
+								<span class="price-value">{s.priceFrom}</span>
+							</div>
+							<div class="service-body">
+								<p><strong>納品物：</strong>{s.deliverable}</p>
+								<p><strong>こんな依頼を受け付けます：</strong></p>
+								<ul>
+									{s.examples.map((e) => <li>{e}</li>)}
+								</ul>
+								<p class="service-target"><strong>向いている方：</strong>{s.goodFor}</p>
+							</div>
+						</article>
+					))}
+				</div>
+			</section>
+
+			<section class="flow">
+				<h2>ご依頼の流れ</h2>
+				<ol class="flow-list">
+					<li>
+						<strong>1. お問い合わせ</strong>
+						<p>下記フォームまたは<a href="/contact/">問い合わせページ</a>から、実現したいこと・ご予算・希望納期をお送りください。</p>
+					</li>
+					<li>
+						<strong>2. ヒアリング（無料）</strong>
+						<p>必要に応じてオンラインMTG（30分程度）で詳細を伺い、実現可能性を判定します。</p>
+					</li>
+					<li>
+						<strong>3. お見積もり</strong>
+						<p>作業内容・納期・金額を明記したお見積もりをお送りします。ご検討ください。</p>
+					</li>
+					<li>
+						<strong>4. ご発注・着手金</strong>
+						<p>合意後、総額の50%を着手金としてお支払いいただき、作業開始します。</p>
+					</li>
+					<li>
+						<strong>5. 納品・残金支払い</strong>
+						<p>動作確認後、残金をお支払いいただき完了です。</p>
+					</li>
+				</ol>
+			</section>
+
+			<section class="notes">
+				<h2>ご依頼前にご確認ください</h2>
+				<ul>
+					<li>稼働：副業のため平日夜・土日を中心とした対応となります</li>
+					<li>対応範囲：Google Apps Scriptで実現可能な範囲に限ります（iOSアプリ開発等は対象外）</li>
+					<li>お受けできない案件：出会い系・金融勧誘・情報商材販売・反社会的な内容</li>
+					<li>個人情報を扱う案件：個人情報保護の観点から慎重に対応します。場合によりお断りすることがあります</li>
+					<li>秘密保持：ご要望に応じてNDA締結可能です</li>
+				</ul>
+			</section>
+
+			<section class="cta">
+				<div class="cta-inner">
+					<h2>📮 お問い合わせ</h2>
+					<p>まずはお気軽にご相談ください。ご予算・納期・実現したいことを添えてお送りいただけるとスムーズです。</p>
+					<a href="/contact/" class="cta-btn">お問い合わせフォームへ →</a>
+				</div>
+			</section>
+
+			<section class="related">
+				<h2>関連ページ</h2>
+				<ul class="rel-list">
+					<li><a href="/about/">👤 運営者プロフィール</a></li>
+					<li><a href="/guide/">📚 GAS完全ガイド</a></li>
+					<li><a href="/blog/">🍳 全記事一覧</a></li>
+					<li><a href="/usecase/">🎯 ユースケース逆引き</a></li>
+				</ul>
+			</section>
+		</main>
+		<Footer />
+		<MobileNav />
+		<style>
+			main { width: 960px; max-width: calc(100% - 2rem); margin: 0 auto; padding: 2rem 1rem 4rem; }
+			.breadcrumbs { font-size: 0.88em; color: rgb(var(--gray)); margin-bottom: 1rem; }
+			.breadcrumbs a { color: var(--accent); text-decoration: none; }
+
+			.hero {
+				background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+				border-radius: 16px;
+				padding: 3rem 2rem;
+				text-align: center;
+				margin-bottom: 2.5rem;
+			}
+			.eyebrow {
+				display: inline-block;
+				padding: 0.3em 1em;
+				background: white;
+				color: var(--accent);
+				border-radius: 999px;
+				font-size: 0.82em;
+				font-weight: 700;
+				margin: 0 0 1rem;
+			}
+			.hero h1 {
+				font-size: 1.8em;
+				margin: 0 0 1rem;
+				color: rgb(var(--black));
+				border: none;
+			}
+			.lead {
+				color: rgb(var(--gray-dark));
+				line-height: 1.9;
+				max-width: 700px;
+				margin: 0 auto;
+			}
+
+			.services h2, .flow h2, .notes h2, .cta h2, .related h2 {
+				font-size: 1.4em;
+				margin: 0 0 1.5rem;
+				padding-bottom: 0.6rem;
+				border-bottom: 2px solid var(--accent);
+			}
+			.service-grid {
+				display: grid;
+				grid-template-columns: 1fr;
+				gap: 1.5rem;
+				margin-bottom: 3rem;
+			}
+			.service-card {
+				background: var(--bg);
+				border: 1px solid rgb(var(--gray-light));
+				border-radius: 12px;
+				padding: 1.8rem;
+				transition: all 0.2s;
+			}
+			.service-card:hover {
+				box-shadow: var(--box-shadow);
+				border-color: var(--accent);
+			}
+			.service-head {
+				display: flex;
+				align-items: flex-start;
+				gap: 1rem;
+				margin-bottom: 1.2rem;
+			}
+			.service-icon {
+				font-size: 2.4em;
+				flex-shrink: 0;
+			}
+			.service-card h3 {
+				margin: 0 0 0.3rem;
+				font-size: 1.2em;
+				color: rgb(var(--black));
+			}
+			.service-tag {
+				margin: 0;
+				font-size: 0.9em;
+				color: rgb(var(--gray-dark));
+				line-height: 1.5;
+			}
+			.service-price {
+				background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+				padding: 0.7rem 1rem;
+				border-radius: 8px;
+				margin-bottom: 1.2rem;
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+			}
+			.price-label {
+				font-size: 0.85em;
+				color: #78350f;
+				font-weight: 600;
+			}
+			.price-value {
+				font-size: 1.3em;
+				font-weight: 700;
+				color: #78350f;
+			}
+			.service-body p {
+				margin: 0 0 0.6rem;
+				font-size: 0.92em;
+				line-height: 1.8;
+				color: rgb(var(--gray-dark));
+			}
+			.service-body ul {
+				margin: 0 0 1rem;
+				padding-left: 1.4rem;
+				font-size: 0.88em;
+				line-height: 1.9;
+				color: rgb(var(--gray-dark));
+			}
+			.service-target {
+				padding: 0.7rem 1rem;
+				background: var(--bg-soft);
+				border-radius: 6px;
+				font-size: 0.88em;
+				color: rgb(var(--gray-dark));
+			}
+
+			.flow { margin-bottom: 3rem; }
+			.flow-list {
+				list-style: none;
+				padding: 0;
+				display: flex;
+				flex-direction: column;
+				gap: 1rem;
+			}
+			.flow-list li {
+				padding: 1.3rem 1.5rem;
+				background: var(--bg-soft);
+				border-left: 4px solid var(--accent);
+				border-radius: 0 8px 8px 0;
+			}
+			.flow-list li strong {
+				display: block;
+				margin-bottom: 0.4rem;
+				color: rgb(var(--black));
+				font-size: 1em;
+			}
+			.flow-list li p {
+				margin: 0;
+				font-size: 0.92em;
+				line-height: 1.8;
+				color: rgb(var(--gray-dark));
+			}
+			.flow-list li a { color: var(--accent); }
+
+			.notes {
+				margin-bottom: 3rem;
+				padding: 1.5rem;
+				background: var(--bg-soft);
+				border-radius: 12px;
+			}
+			.notes h2 {
+				border: none;
+				padding: 0;
+				font-size: 1.1em;
+				margin-bottom: 1rem;
+			}
+			.notes ul {
+				margin: 0;
+				padding-left: 1.4rem;
+				font-size: 0.9em;
+				line-height: 1.9;
+				color: rgb(var(--gray-dark));
+			}
+
+			.cta {
+				background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+				border-radius: 12px;
+				padding: 2.5rem 2rem;
+				text-align: center;
+				margin-bottom: 3rem;
+			}
+			.cta h2 {
+				border: none;
+				padding: 0;
+				color: #047857;
+				margin-bottom: 1rem;
+			}
+			.cta p {
+				color: #065f46;
+				margin: 0 0 1.5rem;
+				line-height: 1.8;
+			}
+			.cta-btn {
+				display: inline-block;
+				padding: 0.9em 2rem;
+				background: var(--accent);
+				color: white;
+				border-radius: 999px;
+				text-decoration: none;
+				font-weight: 700;
+				box-shadow: 0 6px 14px rgba(59, 130, 246, 0.3);
+				transition: transform 0.15s;
+			}
+			.cta-btn:hover {
+				transform: translateY(-2px);
+				color: white;
+			}
+
+			.related { margin-bottom: 2rem; }
+			.rel-list {
+				list-style: none;
+				padding: 0;
+				display: grid;
+				grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+				gap: 0.6rem;
+			}
+			.rel-list a {
+				display: block;
+				padding: 0.9rem 1.2rem;
+				background: var(--bg-soft);
+				border-radius: 8px;
+				text-decoration: none;
+				color: rgb(var(--black));
+				font-weight: 600;
+				font-size: 0.92em;
+				border: 1px solid transparent;
+			}
+			.rel-list a:hover {
+				border-color: var(--accent);
+				color: var(--accent);
+			}
+
+			@media (max-width: 720px) {
+				.hero h1 { font-size: 1.4em; }
+				.service-head { flex-direction: column; }
+			}
+			@media (prefers-color-scheme: dark) {
+				.hero { background: linear-gradient(135deg, #1e293b 0%, #1e3a8a 100%); }
+				.hero h1 { color: #f1f5f9; }
+				.eyebrow { background: var(--bg-soft); }
+				.service-price { background: linear-gradient(135deg, #451a03 0%, #78350f 100%); }
+				.price-label, .price-value { color: #fef3c7; }
+				.cta { background: linear-gradient(135deg, #052e16 0%, #064e3b 100%); }
+				.cta h2, .cta p { color: #d1fae5; }
+			}
+		</style>
+	</body>
+</html>
