@@ -1,7 +1,7 @@
 ---
 title: "Uber Eats配達記録をMF会計CSV化するGAS"
 description: "Uber Eats配達パートナーの記録をGASで集計し、マネーフォワード取込用CSVに変換する方法を看護師が実例で解説。確定申告の前日に泣かない仕組みです。"
-pubDate: "TBD"
+pubDate: "2026-05-22T19:00:00+09:00"
 heroImage: "/blog-placeholder-5.jpg"
 categorySlug: "side-business"
 categoryName: "副業・確定申告"
