@@ -3,37 +3,261 @@ import BaseHead from '../components/BaseHead.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import MobileNav from '../components/MobileNav.astro';
+import NewsletterSignup from '../components/NewsletterSignup.astro';
 import { SITE_TITLE } from '../consts';
 
-const errors = [
-	{ code: "TypeError: Cannot read properties of undefined", cause: "存在しないプロパティを参照", solution: "オプショナルチェーン ?. を使う。先にnullチェック。", detail: "/blog/gas-error-exception/" },
-	{ code: "ReferenceError: XXX is not defined", cause: "変数名のタイプミス・宣言忘れ", solution: "スペル確認とconst/let宣言を追加", detail: "/blog/gas-error-exception/" },
-	{ code: "Exception: Service Spreadsheets failed", cause: "シート名変更・同時編集", solution: "getSheetByName直後にnullチェック", detail: "/blog/gas-error-exception/" },
-	{ code: "Exception: Authorization is required", cause: "初回実行の権限未承認", solution: "手動で1回実行して権限承認する", detail: "/blog/gas-error-exception/" },
-	{ code: "Exception: Service invoked too many times", cause: "API呼び出し上限超過（Gmail100通/日など）", solution: "Utilities.sleep()または処理分割", detail: "/blog/gas-error-exception/" },
-	{ code: "Exception: Script took too long", cause: "6分実行制限超過", solution: "バッチ分割+トリガー再起動", detail: "/blog/gas-trigger-6min-limit/" },
-	{ code: "SyntaxError: Unexpected token", cause: "構文ミス（カンマ/括弧忘れ等）", solution: "エディタの赤波線をたどる", detail: "/blog/gas-error-exception/" },
-	{ code: "Exception: Range not found", cause: "無効な範囲指定", solution: "数値で明示的に getRange(1,1,lastRow,lastCol)", detail: "/blog/gas-error-exception/" },
-	{ code: "TypeError: XXX.map is not a function", cause: "配列でない変数に対して配列メソッドを使用", solution: "Array.isArray()でチェック後、必要なら配列化", detail: "/blog/gas-error-exception/" },
-	{ code: "Exception: Rate Limit Exceeded", cause: "外部API連打（UrlFetchApp等）", solution: "指数バックオフで再試行", detail: "/blog/gas-error-exception/" },
+// エラー全エントリ（カテゴリ別）
+const errorCategories = [
+	{
+		slug: 'auth',
+		name: '認証・権限系',
+		icon: '🔐',
+		desc: '初回実行・OAuth・スコープ関連のエラー',
+		errors: [
+			{
+				code: "Exception: Authorization is required to perform that action",
+				cause: "GASプロジェクトが初回実行時にGoogleサービスへのアクセス権限を要求しているが、未承認",
+				solution: "GASエディタで手動で1回関数を実行し、権限承認ダイアログで「許可」をクリック",
+				example: `// 初回はエディタで [▶ 実行] を手動クリックして権限承認\nfunction init() {\n  SpreadsheetApp.getActiveSpreadsheet(); // これで権限要求が発生\n}`,
+				detail: "/blog/gas-error-exception/",
+			},
+			{
+				code: "Exception: You do not have permission to access the requested document",
+				cause: "スプシ/ドライブへのアクセス権がGoogleアカウントに付与されていない",
+				solution: "対象ファイルの「共有」設定で、実行アカウントに閲覧/編集権限を付与",
+				example: `// 権限エラーになったら\nconst ss = SpreadsheetApp.openById('XXX'); // 失敗\n// → ファイルのオーナーから「編集者」として共有してもらう`,
+				detail: "/blog/gas-error-exception/",
+			},
+			{
+				code: "GoogleJsonResponseException: insufficient authentication scopes",
+				cause: "実行しようとしているAPIに必要なOAuthスコープが宣言されていない",
+				solution: "appsscript.json の oauthScopes を確認し、必要スコープを追加",
+				example: `// appsscript.json に追加\n"oauthScopes": [\n  "https://www.googleapis.com/auth/spreadsheets",\n  "https://www.googleapis.com/auth/gmail.send"\n]`,
+				detail: "/blog/gas-error-exception/",
+			},
+		],
+	},
+	{
+		slug: 'syntax',
+		name: '構文・型系',
+		icon: '📝',
+		desc: 'JavaScriptの基本構文・型違反エラー',
+		errors: [
+			{
+				code: "SyntaxError: Unexpected token",
+				cause: "カンマ・括弧・セミコロン忘れ、文字列クォート未閉じ等の構文エラー",
+				solution: "エディタの赤波線をたどる。前後の括弧対応を確認",
+				example: `// NG\nconst arr = [1, 2, 3  // ] が抜けている\n\n// OK\nconst arr = [1, 2, 3];`,
+				detail: "/blog/gas-error-exception/",
+			},
+			{
+				code: "ReferenceError: XXX is not defined",
+				cause: "変数名のタイプミス、宣言忘れ、スコープ外参照",
+				solution: "スペル確認、const/let宣言を追加、スコープを確認",
+				example: `function demo() {\n  if (true) {\n    const x = 1; // ブロックスコープ\n  }\n  console.log(x); // ❌ ReferenceError\n}`,
+				detail: "/blog/gas-variable-const-let/",
+			},
+			{
+				code: "TypeError: Cannot read properties of undefined (reading 'xxx')",
+				cause: "存在しないオブジェクトのプロパティを参照している",
+				solution: "オプショナルチェーン ?. を使う、もしくは先にnullチェック",
+				example: `// NG\nconst name = user.profile.name; // userがundefinedだとエラー\n\n// OK\nconst name = user?.profile?.name ?? '不明';`,
+				detail: "/blog/gas-error-exception/",
+			},
+			{
+				code: "TypeError: XXX.map is not a function",
+				cause: "配列でない値に対して配列メソッドを呼び出している",
+				solution: "Array.isArray() でチェック、必要なら配列化",
+				example: `const data = sheet.getRange('A1').getValue(); // 単一値\n// ❌ data.map(...)\n// ✅ まず配列化\nconst arr = Array.isArray(data) ? data : [data];`,
+				detail: "/blog/gas-array-basic/",
+			},
+			{
+				code: "TypeError: Assignment to constant variable",
+				cause: "const で宣言した変数に再代入しようとしている",
+				solution: "再代入するなら let を使う。定数に保つなら別変数を作る",
+				example: `// NG\nconst count = 0;\ncount = count + 1; // ❌\n\n// OK\nlet count = 0;\ncount = count + 1; // ✅`,
+				detail: "/blog/gas-variable-const-let/",
+			},
+			{
+				code: "SyntaxError: Identifier 'XXX' has already been declared",
+				cause: "同じ名前の変数を const/let で2回宣言している",
+				solution: "別名にするか、再代入するなら let に統一",
+				example: `const name = 'A';\nconst name = 'B'; // ❌ 同名で再宣言不可`,
+				detail: "/blog/gas-variable-const-let/",
+			},
+		],
+	},
+	{
+		slug: 'quota',
+		name: 'API制限・リソース系',
+		icon: '⏱️',
+		desc: '実行時間・送信数・クォータ制限',
+		errors: [
+			{
+				code: "Exception: Script took too long to execute",
+				cause: "6分（無料版）または30分（有料版）の実行時間制限を超過",
+				solution: "バッチ分割 + スクリプトプロパティで進捗保存 + トリガー再起動",
+				example: `// 進捗を保存して継続\nconst prop = PropertiesService.getScriptProperties();\nlet startRow = Number(prop.getProperty('row')) || 1;\n// 処理 ...\nprop.setProperty('row', nextRow);`,
+				detail: "/blog/gas-trigger-6min-limit/",
+			},
+			{
+				code: "Exception: Service invoked too many times for one day: email",
+				cause: "Gmail送信の1日上限超過（無料100通/日、Workspace 1500通/日）",
+				solution: "MailApp.getRemainingDailyQuota() で残数確認、分散送信に変更",
+				example: `const remaining = MailApp.getRemainingDailyQuota();\nif (remaining < recipients.length) {\n  // 翌日に回す処理\n  return;\n}`,
+				detail: "/blog/gas-error-exception/",
+			},
+			{
+				code: "Exception: Rate Limit Exceeded",
+				cause: "UrlFetchApp等の外部API連打、短時間に大量呼び出し",
+				solution: "Utilities.sleep(1000) 挿入、指数バックオフで再試行",
+				example: `function fetchWithRetry(url, retries = 3) {\n  for (let i = 0; i < retries; i++) {\n    try { return UrlFetchApp.fetch(url); }\n    catch (e) { Utilities.sleep(Math.pow(2, i) * 1000); }\n  }\n  throw new Error('fetch failed');\n}`,
+				detail: "/blog/gas-error-exception/",
+			},
+			{
+				code: "Exception: Service using too much computer time for one day",
+				cause: "GAS1日の累積実行時間上限（無料90分/日、Workspace 6時間/日）到達",
+				solution: "トリガーを減らす、処理を効率化、またはWorkspace契約検討",
+				example: `// トリガーの頻度を見直す\n// ❌ 1分ごと（1日1440回）\n// ✅ 5-10分ごとでも済むケースが大半`,
+				detail: "/blog/gas-error-exception/",
+			},
+		],
+	},
+	{
+		slug: 'resource',
+		name: 'リソース・範囲系',
+		icon: '📦',
+		desc: 'シート・範囲・ファイルが見つからない系',
+		errors: [
+			{
+				code: "Exception: Range not found",
+				cause: "無効な範囲指定、存在しない行列、getRange の引数ミス",
+				solution: "数値で明示的に getRange(1, 1, lastRow, lastCol) を使う",
+				example: `// NG: 名前付き範囲が消えているかも\nsheet.getRange('MyRange').getValue();\n\n// OK: 数値指定が安全\nsheet.getRange(1, 1, sheet.getLastRow(), sheet.getLastColumn());`,
+				detail: "/blog/gas-error-exception/",
+			},
+			{
+				code: "Exception: Service Spreadsheets failed while accessing document",
+				cause: "シート名変更、同時編集、API一時エラー",
+				solution: "getSheetByName() 直後に null チェック、リトライ処理追加",
+				example: `const sheet = ss.getSheetByName('在庫');\nif (!sheet) throw new Error('シート「在庫」が見つかりません');`,
+				detail: "/blog/gas-error-exception/",
+			},
+			{
+				code: "Exception: The starting row of the range is too small",
+				cause: "getRange(0, ...) など、1未満の行/列を指定",
+				solution: "GASのシート座標は1始まり。0ではなく1以上を指定",
+				example: `// NG\nsheet.getRange(0, 1); // ❌ 行は1以上\n\n// OK\nsheet.getRange(1, 1);`,
+				detail: "/blog/gas-error-exception/",
+			},
+			{
+				code: "Exception: Invalid argument: id",
+				cause: "DriveApp.getFileById / SpreadsheetApp.openById のID形式が不正",
+				solution: "URLの /d/ と /edit の間の部分が正しいIDか確認",
+				example: `// URLから抜き出す部分\n// https://docs.google.com/spreadsheets/d/[ここがID]/edit\nconst ss = SpreadsheetApp.openById('1AbCdEf...');`,
+				detail: "/blog/gas-error-exception/",
+			},
+		],
+	},
+	{
+		slug: 'trigger',
+		name: 'トリガー系',
+		icon: '⏰',
+		desc: '時間・イベント主導トリガーのエラー',
+		errors: [
+			{
+				code: "トリガーが実行されない",
+				cause: "トリガーが削除された、実行上限到達、エラーで自動無効化",
+				solution: "ScriptApp.getProjectTriggers() で一覧確認、「トリガー」ページでエラー履歴を見る",
+				example: `function listTriggers() {\n  const triggers = ScriptApp.getProjectTriggers();\n  triggers.forEach(t => console.log(t.getHandlerFunction()));\n}`,
+				detail: "/blog/gas-trigger-setup/",
+			},
+			{
+				code: "Exception: Too many triggers set for this user",
+				cause: "GASプロジェクト内のトリガー数が上限（20件/スクリプト）を超過",
+				solution: "不要なトリガーを削除。ScriptApp.deleteTrigger で整理",
+				example: `// 重複トリガー削除\nScriptApp.getProjectTriggers()\n  .filter(t => t.getHandlerFunction() === 'oldFunction')\n  .forEach(t => ScriptApp.deleteTrigger(t));`,
+				detail: "/blog/gas-trigger-setup/",
+			},
+			{
+				code: "onEdit トリガーが動かない",
+				cause: "onEdit は simple trigger で外部API呼び出し不可、または installable trigger で権限不足",
+				solution: "外部API使うなら installable trigger として手動登録",
+				example: `// 手動インストール型トリガー作成\nScriptApp.newTrigger('myOnEdit')\n  .forSpreadsheet(SpreadsheetApp.getActive())\n  .onEdit()\n  .create();`,
+				detail: "/blog/gas-trigger-setup/",
+			},
+		],
+	},
+	{
+		slug: 'misc',
+		name: 'その他よくある',
+		icon: '🧩',
+		desc: 'ネットワーク・データ処理・環境系',
+		errors: [
+			{
+				code: "Exception: Request failed for https://... returned code 429",
+				cause: "外部APIのレート制限（HTTP 429 Too Many Requests）",
+				solution: "リトライ間隔を長くする、並列度を下げる、API側のQuota確認",
+				example: `// 429対策\nUrlFetchApp.fetch(url, {\n  muteHttpExceptions: true\n});\nif (res.getResponseCode() === 429) {\n  Utilities.sleep(5000);\n}`,
+				detail: "/blog/gas-error-exception/",
+			},
+			{
+				code: "SyntaxError: JSON.parse: unexpected character",
+				cause: "UrlFetchAppの戻り値がJSON形式でない（HTMLエラーページが返った等）",
+				solution: "getContentText() の中身をconsole.logで確認、JSONかチェック",
+				example: `const res = UrlFetchApp.fetch(url);\nconsole.log(res.getContentText().slice(0, 200)); // 先頭200文字確認`,
+				detail: "/blog/gas-error-exception/",
+			},
+			{
+				code: "TypeError: Cannot redefine property",
+				cause: "Object.freeze されたオブジェクトのプロパティ書き換え",
+				solution: "freezeを外す、またはスプレッド構文でコピーしてから変更",
+				example: `const frozen = Object.freeze({ a: 1 });\nconst copy = { ...frozen, a: 2 }; // スプレッドでコピー編集`,
+				detail: "/blog/gas-error-exception/",
+			},
+			{
+				code: "日付がUTCでズレる",
+				cause: "Date オブジェクトは UTC基準、日本時間で扱う設定が抜けている",
+				solution: "Utilities.formatDate(date, 'Asia/Tokyo', 'yyyy-MM-dd') で明示指定",
+				example: `const today = Utilities.formatDate(new Date(), 'Asia/Tokyo', 'yyyy-MM-dd');\n// 2026-04-22 のように日本時間で取れる`,
+				detail: "/blog/gas-error-exception/",
+			},
+			{
+				code: "空文字 '' と null が混在して判定ミス",
+				cause: "getValue() は空セルで '' を返し、undefined/null との比較で想定外に",
+				solution: "厳密比較 === '' や、typeof チェックを明示",
+				example: `const v = sheet.getRange('A1').getValue();\nif (v === '' || v === null || v === undefined) {\n  // 空セル処理\n}`,
+				detail: "/blog/gas-error-exception/",
+			},
+		],
+	},
 ];
 
-// FAQ JSON-LD
+// フラットな配列に
+const allErrors = errorCategories.flatMap(cat => cat.errors);
+
+// FAQ JSON-LD（構造化データ）
 const faqJsonLd = {
 	"@context": "https://schema.org",
 	"@type": "FAQPage",
-	"mainEntity": errors.map((e) => ({
+	"mainEntity": allErrors.map((e) => ({
 		"@type": "Question",
 		"name": e.code,
-		"acceptedAnswer": { "@type": "Answer", "text": `${e.cause} / 解決: ${e.solution}` }
-	}))
+		"acceptedAnswer": {
+			"@type": "Answer",
+			"text": `原因: ${e.cause} / 解決: ${e.solution}`,
+		},
+	})),
 };
 ---
 
 <!doctype html>
 <html lang="ja">
 	<head>
-		<BaseHead title={`GASエラー逆引き辞典｜${SITE_TITLE}`} description="GASでよく出るエラーメッセージから原因と解決方法を逆引きで探せる辞典ページ。TypeError、Quota超過、権限エラー等を網羅しています。" />
+		<BaseHead
+			title={`GASエラー逆引き辞典（${allErrors.length}項目） | ${SITE_TITLE}`}
+			description={`GASでよく出るエラー${allErrors.length}項目を認証・構文・API・リソース・トリガー別に分類。原因・解決コード・詳細記事リンクを即座に逆引きできる辞典ページ。現役ナース×副業Webエンジニアの凛が運営中。`}
+		/>
 		<script type="application/ld+json" set:html={JSON.stringify(faqJsonLd)} />
 	</head>
 	<body>
@@ -42,54 +266,337 @@ const faqJsonLd = {
 			<nav class="breadcrumbs" aria-label="パンくずリスト">
 				<a href="/">ホーム</a> <span>›</span> エラー逆引き辞典
 			</nav>
-			<h1>GASエラー逆引き辞典</h1>
-			<p class="lead">エラーメッセージから原因と解決方法を即座に探せる辞典ページ。本ページをブックマークしておけば、次のエラー遭遇時に検索時間ゼロで解決できます。</p>
 
-			<div class="err-table">
-				{errors.map((e) => (
-					<details class="err-row">
-						<summary>
-							<code>{e.code}</code>
-						</summary>
-						<div class="err-body">
-							<p><strong>原因:</strong> {e.cause}</p>
-							<p><strong>解決:</strong> {e.solution}</p>
-							<p><a href={e.detail}>詳細記事を読む →</a></p>
-						</div>
-					</details>
-				))}
+			<!-- HERO -->
+			<section class="err-hero">
+				<p class="eyebrow">🩹 Cheat Sheet</p>
+				<h1>GASエラー逆引き辞典</h1>
+				<p class="lead">
+					Google Apps Scriptでよく出るエラー<strong>{allErrors.length}項目</strong>を、原因・解決コード・詳細記事リンクと合わせて逆引きできる辞典ページ。
+					本ページをブックマークしておけば、次のエラー遭遇時に検索時間ゼロで解決できます。
+				</p>
+				<div class="err-stats">
+					<div class="stat"><strong>{allErrors.length}</strong><span>エラー項目</span></div>
+					<div class="stat"><strong>{errorCategories.length}</strong><span>カテゴリ</span></div>
+					<div class="stat"><strong>100%</strong><span>解決コード付き</span></div>
+				</div>
+			</section>
+
+			<!-- SEARCH HINT -->
+			<div class="search-hint">
+				<p>
+					🔍 <strong>エラーを探すコツ:</strong>
+					ブラウザで <kbd>Ctrl</kbd>+<kbd>F</kbd> （Macは <kbd>⌘</kbd>+<kbd>F</kbd>）→ エラー文の一部を貼り付けて検索すると即座にヒットします。
+				</p>
 			</div>
+
+			<!-- CATEGORY NAV -->
+			<nav class="cat-nav" aria-label="カテゴリ一覧">
+				{errorCategories.map((cat) => (
+					<a href={`#${cat.slug}`} class="cat-chip">
+						<span class="cat-icon">{cat.icon}</span>
+						<span class="cat-name">{cat.name}</span>
+						<span class="cat-num">{cat.errors.length}</span>
+					</a>
+				))}
+			</nav>
+
+			<!-- ERROR SECTIONS BY CATEGORY -->
+			{errorCategories.map((cat) => (
+				<section class="err-cat" id={cat.slug}>
+					<div class="cat-header">
+						<h2>{cat.icon} {cat.name}</h2>
+						<p class="cat-desc">{cat.desc}</p>
+					</div>
+					<div class="err-list">
+						{cat.errors.map((e) => (
+							<details class="err-row">
+								<summary>
+									<code>{e.code}</code>
+								</summary>
+								<div class="err-body">
+									<p><strong>🔎 原因:</strong> {e.cause}</p>
+									<p><strong>✅ 解決策:</strong> {e.solution}</p>
+									{e.example && (
+										<div class="err-example">
+											<p class="example-label">💻 コード例:</p>
+											<pre><code>{e.example}</code></pre>
+										</div>
+									)}
+									<p class="err-link"><a href={e.detail}>詳細記事を読む →</a></p>
+								</div>
+							</details>
+						))}
+					</div>
+				</section>
+			))}
+
+			<!-- TIPS SECTION -->
+			<section class="tips">
+				<h2>🛠 エラー対処の基本フロー</h2>
+				<ol>
+					<li><strong>エラーメッセージを正確に読む</strong> - 英語でも怖がらず、まず全文を確認</li>
+					<li><strong>エラーが出た行を特定</strong> - GASエディタの赤線・実行ログの行番号を見る</li>
+					<li><strong>console.log で値を確認</strong> - エラー直前の変数の中身を出力</li>
+					<li><strong>本辞典で逆引き</strong> - 似たエラー文を Ctrl+F で探す</li>
+					<li><strong>解決しなければ Google検索</strong> - エラー文をそのままコピペ</li>
+					<li><strong>最終手段: 公式ドキュメント</strong> - <a href="https://developers.google.com/apps-script/reference" target="_blank" rel="noopener">Apps Script Reference</a></li>
+				</ol>
+			</section>
+
+			<!-- NEWSLETTER -->
+			<NewsletterSignup />
+
+			<!-- NEXT STEP -->
+			<section class="next-step">
+				<h2>📚 あわせて読みたい</h2>
+				<ul class="next-list">
+					<li><a href="/blog/gas-error-exception/">GASよく出るエラー10選と解決コード集</a></li>
+					<li><a href="/blog/gas-trigger-6min-limit/">GAS6分制限を回避する3パターン</a></li>
+					<li><a href="/blog/gas-variable-const-let/">変数const/letの違いと使い分け</a></li>
+					<li><a href="/blog/gas-console-log-debug/">console.logでデバッグ完全版</a></li>
+					<li><a href="/guide/">GAS完全ガイド（全体目次）</a></li>
+				</ul>
+			</section>
 		</main>
 		<Footer />
 		<MobileNav />
 		<style>
-			main { width: 860px; max-width: calc(100% - 2rem); margin: 0 auto; padding: 2rem 1rem 4rem; }
+			main { width: 900px; max-width: calc(100% - 2rem); margin: 0 auto; padding: 2rem 1rem 4rem; }
 			.breadcrumbs { font-size: 0.88em; color: rgb(var(--gray)); margin-bottom: 1rem; }
 			.breadcrumbs a { color: var(--accent); text-decoration: none; }
-			.lead { color: rgb(var(--gray-dark)); line-height: 1.9; margin: 0 0 2rem; }
+
+			/* HERO */
+			.err-hero {
+				background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+				border-radius: 16px;
+				padding: 2.5rem 2rem;
+				text-align: center;
+				margin-bottom: 2rem;
+				border: 1px solid #fca5a5;
+			}
+			.eyebrow {
+				display: inline-block;
+				padding: 0.3em 1em;
+				background: white;
+				color: #dc2626;
+				border-radius: 999px;
+				font-size: 0.82em;
+				font-weight: 700;
+				margin: 0 0 1rem;
+			}
+			.err-hero h1 {
+				font-size: 1.8em;
+				margin: 0 0 1rem;
+				color: rgb(var(--black));
+				border: none;
+			}
+			.lead {
+				color: rgb(var(--gray-dark));
+				line-height: 1.9;
+				margin: 0 0 1.5rem;
+				max-width: 680px;
+				margin-left: auto;
+				margin-right: auto;
+			}
+			.err-stats {
+				display: flex;
+				justify-content: center;
+				gap: 2rem;
+				flex-wrap: wrap;
+			}
+			.stat { display: flex; flex-direction: column; align-items: center; }
+			.stat strong { font-size: 1.8em; color: #dc2626; line-height: 1; }
+			.stat span { font-size: 0.82em; color: rgb(var(--gray)); margin-top: 0.3rem; }
+
+			/* SEARCH HINT */
+			.search-hint {
+				background: #eff6ff;
+				border-left: 4px solid var(--accent);
+				padding: 1rem 1.2rem;
+				border-radius: 0 8px 8px 0;
+				margin-bottom: 2rem;
+			}
+			.search-hint p { margin: 0; font-size: 0.92em; line-height: 1.8; color: rgb(var(--gray-dark)); }
+			kbd {
+				display: inline-block;
+				padding: 0.1em 0.5em;
+				background: white;
+				border: 1px solid rgb(var(--gray-light));
+				border-radius: 4px;
+				font-family: monospace;
+				font-size: 0.88em;
+			}
+
+			/* CATEGORY NAV */
+			.cat-nav {
+				display: flex;
+				flex-wrap: wrap;
+				gap: 0.6rem;
+				margin-bottom: 2.5rem;
+			}
+			.cat-chip {
+				display: flex;
+				align-items: center;
+				gap: 0.5rem;
+				padding: 0.6em 1em;
+				background: var(--bg-soft);
+				border: 1px solid rgb(var(--gray-light));
+				border-radius: 999px;
+				text-decoration: none;
+				color: rgb(var(--gray-dark));
+				font-size: 0.88em;
+				font-weight: 600;
+				transition: all 0.15s;
+			}
+			.cat-chip:hover {
+				border-color: var(--accent);
+				color: var(--accent);
+				transform: translateY(-1px);
+			}
+			.cat-num {
+				padding: 0.1em 0.5em;
+				background: var(--accent);
+				color: white;
+				border-radius: 999px;
+				font-size: 0.75em;
+			}
+
+			/* ERROR CATEGORY */
+			.err-cat { margin-bottom: 3rem; scroll-margin-top: 80px; }
+			.cat-header {
+				margin-bottom: 1rem;
+				padding-bottom: 0.8rem;
+				border-bottom: 2px solid var(--accent);
+			}
+			.cat-header h2 { margin: 0 0 0.4rem; font-size: 1.3em; border: none; padding: 0; }
+			.cat-desc { margin: 0; font-size: 0.9em; color: rgb(var(--gray-dark)); }
+
+			.err-list { display: flex; flex-direction: column; gap: 0.6rem; }
 			.err-row {
 				background: var(--bg);
 				border: 1px solid rgb(var(--gray-light));
 				border-radius: 8px;
-				margin-bottom: 0.6rem;
+				transition: border-color 0.15s;
 			}
+			.err-row[open] { border-color: var(--accent); }
 			.err-row summary {
 				padding: 1rem 1.2rem;
 				cursor: pointer;
 				font-weight: 600;
 				color: rgb(var(--black));
+				list-style: none;
+				position: relative;
+				padding-right: 2.5rem;
 			}
+			.err-row summary::-webkit-details-marker { display: none; }
+			.err-row summary::after {
+				content: '+';
+				position: absolute;
+				right: 1.2rem;
+				top: 50%;
+				transform: translateY(-50%);
+				color: var(--accent);
+				font-weight: 700;
+				font-size: 1.4em;
+				transition: transform 0.15s;
+			}
+			.err-row[open] summary::after { transform: translateY(-50%) rotate(45deg); }
 			.err-row[open] summary { border-bottom: 1px solid rgb(var(--gray-light)); }
 			.err-row code {
-				font-family: 'JetBrains Mono', monospace;
-				font-size: 0.88em;
-				background: var(--code-bg);
-				color: var(--code-text);
+				font-family: 'JetBrains Mono', ui-monospace, monospace;
+				font-size: 0.85em;
+				background: var(--code-bg, #f1f5f9);
+				color: var(--code-text, #dc2626);
 				padding: 0.2em 0.6em;
 				border-radius: 4px;
+				word-break: break-all;
 			}
-			.err-body { padding: 1rem 1.2rem; color: rgb(var(--gray-dark)); line-height: 1.8; font-size: 0.92em; }
-			.err-body a { color: var(--accent); text-decoration: none; font-weight: 600; }
+			.err-body { padding: 1.2rem; color: rgb(var(--gray-dark)); line-height: 1.8; font-size: 0.92em; }
+			.err-body p { margin: 0 0 0.6rem; }
+			.err-body p:last-child { margin-bottom: 0; }
+			.err-example {
+				margin: 0.8rem 0;
+			}
+			.example-label { margin: 0 0 0.4rem; font-size: 0.85em; font-weight: 600; }
+			.err-example pre {
+				background: #1e293b;
+				color: #e2e8f0;
+				padding: 1rem;
+				border-radius: 6px;
+				overflow-x: auto;
+				font-size: 0.82em;
+				line-height: 1.6;
+				margin: 0;
+			}
+			.err-example code {
+				background: none;
+				color: inherit;
+				padding: 0;
+				font-size: inherit;
+			}
+			.err-link a { color: var(--accent); text-decoration: none; font-weight: 600; }
+			.err-link a:hover { text-decoration: underline; }
+
+			/* TIPS */
+			.tips {
+				margin: 3rem 0;
+				padding: 2rem;
+				background: var(--bg-soft);
+				border-radius: 12px;
+				border-left: 4px solid var(--accent);
+			}
+			.tips h2 { margin: 0 0 1rem; font-size: 1.2em; border: none; padding: 0; }
+			.tips ol { margin: 0; padding-left: 1.5rem; }
+			.tips li { margin-bottom: 0.6rem; line-height: 1.8; color: rgb(var(--gray-dark)); }
+			.tips a { color: var(--accent); }
+
+			/* NEXT STEP */
+			.next-step { margin: 2rem 0; }
+			.next-step h2 { font-size: 1.2em; margin: 0 0 1rem; }
+			.next-list {
+				list-style: none;
+				padding: 0;
+				display: grid;
+				grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+				gap: 0.6rem;
+			}
+			.next-list li { margin: 0; }
+			.next-list a {
+				display: block;
+				padding: 0.9rem 1.2rem;
+				background: var(--bg-soft);
+				border-radius: 8px;
+				text-decoration: none;
+				color: rgb(var(--black));
+				font-weight: 600;
+				font-size: 0.92em;
+				border: 1px solid transparent;
+				transition: all 0.15s;
+			}
+			.next-list a:hover {
+				border-color: var(--accent);
+				color: var(--accent);
+			}
+
+			@media (max-width: 720px) {
+				.err-hero h1 { font-size: 1.4em; }
+				.err-stats { gap: 1rem; }
+				.stat strong { font-size: 1.4em; }
+				.cat-nav { gap: 0.4rem; }
+				.cat-chip { padding: 0.5em 0.8em; font-size: 0.82em; }
+			}
+			@media (prefers-color-scheme: dark) {
+				.err-hero {
+					background: linear-gradient(135deg, #1f1f1f 0%, #450a0a 100%);
+					border-color: #7f1d1d;
+				}
+				.err-hero h1 { color: #f1f5f9; }
+				.eyebrow { background: var(--bg-soft); }
+				.search-hint { background: var(--bg-soft); }
+				kbd { background: var(--bg-soft); }
+				.err-row code { background: #1e293b; color: #fca5a5; }
+			}
 		</style>
 	</body>
 </html>
