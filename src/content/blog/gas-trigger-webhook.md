@@ -1,7 +1,7 @@
 ---
 title: "Webhook受信でGAS即時実行する設定方法"
 description: "時間トリガーじゃ遅すぎる…そんなときに使えるのがWebhook経由の即時実行。doPostの基本から安全な受け取り方まで、看護師目線でまとめました。"
-pubDate: "TBD"
+pubDate: "2026-05-19T19:00:00+09:00"
 heroImage: "/blog-placeholder-2.jpg"
 categorySlug: "gas-basics"
 categoryName: "GAS入門"
