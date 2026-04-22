@@ -1,7 +1,7 @@
 ---
 title: "条件付き書式をGASで一括設定する10例"
 description: "スプレッドシートの条件付き書式をGASでまとめて設定する10パターンを、看護師がやさしく紹介。体温チェック表から売上管理まで応用できます。"
-pubDate: "TBD"
+pubDate: "2026-05-11T19:00:00+09:00"
 heroImage: "/blog-placeholder-4.jpg"
 categorySlug: "spreadsheet"
 categoryName: "スプレッドシート"
