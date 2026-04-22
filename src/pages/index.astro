@@ -52,9 +52,8 @@ const categories = [
 
 			<!-- SEARCH -->
 			<section class="search-row">
-				<form class="search-form" action="https://www.google.com/search" method="get" target="_blank">
-					<input type="hidden" name="q" id="q-input" value="site:gas-recipe.com " />
-					<input type="text" placeholder="🔍 サイト内検索（例：Gmail 自動返信）" class="search-input" aria-label="サイト内検索" oninput="document.getElementById('q-input').value='site:gas-recipe.com '+this.value" />
+				<form class="search-form" action="/search/" method="get">
+					<input type="text" name="q" placeholder="🔍 サイト内検索（例：Gmail 自動返信）" class="search-input" aria-label="サイト内検索" />
 					<button type="submit" class="search-btn">検索</button>
 				</form>
 			</section>
