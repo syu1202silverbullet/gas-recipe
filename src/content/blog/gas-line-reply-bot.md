@@ -1,7 +1,7 @@
 ---
 title: "GASで作るLINE返信Bot最小コード30行"
 description: "Google Apps ScriptとLINE Messaging APIで作る返信Botの最小サンプル。Webhookの受け取りから返信まで30行で、看護師が副業で培ったコツを添えてやさしく解説します。"
-pubDate: "TBD"
+pubDate: "2026-05-16T19:00:00+09:00"
 heroImage: "/blog-placeholder-4.jpg"
 categorySlug: "line"
 categoryName: "LINE連携"
