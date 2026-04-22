@@ -1,7 +1,7 @@
 ---
 title: "GASでGmail自動返信を5分で作る最短レシピ"
 description: "夜勤明けでもGmailの定型返信を自動化したい看護師が実践した、GAS（Google Apps Script）で作るGmail自動返信の最短手順を、コピペ用コードと落とし穴まで丁寧に解説します。"
-pubDate: "TBD"
+pubDate: "2026-06-01T19:00:00+09:00"
 heroImage: "/blog-placeholder-1.jpg"
 categorySlug: "gmail"
 categoryName: "Gmail自動化"
