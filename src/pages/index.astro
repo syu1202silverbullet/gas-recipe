@@ -2,15 +2,26 @@
 import BaseHead from '../components/BaseHead.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import MobileNav from '../components/MobileNav.astro';
 import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 import { getCollection } from 'astro:content';
 import FormattedDate from '../components/FormattedDate.astro';
 
 const now = new Date();
-const posts = (await getCollection('blog'))
-	.filter((post) => post.data.pubDate.valueOf() <= now.valueOf())
-	.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
-	.slice(0, 6);
+const allPosts = (await getCollection('blog'))
+	.filter((post: any) => post.data.pubDate.valueOf() <= now.valueOf())
+	.sort((a: any, b: any) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+const latest = allPosts.slice(0, 6);
+
+const categories = [
+	{ slug: 'gas-basics', name: 'GAS入門', icon: '🌱', desc: '初めての1行コードからトリガー設定まで。' },
+	{ slug: 'gmail', name: 'Gmail自動化', icon: '✉️', desc: '自動返信・添付保存・差し込みメール。' },
+	{ slug: 'calendar', name: 'Googleカレンダー', icon: '📅', desc: '予定一括登録・空き時間抽出・通知連携。' },
+	{ slug: 'spreadsheet', name: 'スプレッドシート', icon: '📊', desc: '集計・自動更新・PDF出力のベストプラクティス。' },
+	{ slug: 'line', name: 'LINE連携', icon: '💬', desc: 'Messaging APIで作るBot・毎朝通知。' },
+	{ slug: 'side-business', name: '副業・確定申告', icon: '💼', desc: 'Uber・物販・フリーランス実務の自動化。' },
+];
 ---
 
 <!doctype html>
@@ -21,36 +32,56 @@ const posts = (await getCollection('blog'))
 	<body>
 		<Header />
 		<main>
+			<!-- HERO -->
 			<section class="hero">
-				<h1>Google Apps Scriptで日常を自動化しよう</h1>
-				<p class="lead">
-					スプレッドシート、Gmail、カレンダー、LINE…。毎日の面倒な作業をGAS（Google Apps Script）で仕組み化するための実用レシピを発信しています。プログラミング初学者でもコピペで使えるサンプル付き。
-				</p>
-				<div class="hero-cta">
-					<a href="/blog/" class="btn-primary">記事一覧を見る</a>
-					<a href="/about/" class="btn-secondary">運営者について</a>
+				<div class="hero-inner">
+					<p class="hero-eyebrow">👩‍💻 看護師×副業プログラマーが書く</p>
+					<h1>Google Apps Scriptで<br/>毎日の「面倒」を自動化する</h1>
+					<p class="hero-lead">
+						レシートの集計、毎朝のLINE通知、予約メールのカレンダー登録…。<br/>
+						日常の小さな面倒を、GASで仕組み化するための実用レシピ集です。プログラミング未経験でもコピペで動かせる形で紹介します。
+					</p>
+					<div class="hero-cta">
+						<a href="/blog/" class="btn-primary">🍳 レシピ一覧を見る</a>
+						<a href="/about/" class="btn-secondary">👤 運営者について</a>
+					</div>
 				</div>
 			</section>
 
+			<!-- SEARCH -->
+			<section class="search-row">
+				<form class="search-form" action="https://www.google.com/search" method="get" target="_blank">
+					<input type="hidden" name="q" id="q-input" value="site:gas-recipe.com " />
+					<input type="text" placeholder="🔍 サイト内検索（例：Gmail 自動返信）" class="search-input" aria-label="サイト内検索" oninput="document.getElementById('q-input').value='site:gas-recipe.com '+this.value" />
+					<button type="submit" class="search-btn">検索</button>
+				</form>
+			</section>
+
+			<!-- CATEGORIES -->
 			<section class="categories">
 				<h2>カテゴリで探す</h2>
 				<div class="cat-grid">
-					<div class="cat-card"><strong>📊 スプレッドシート</strong><p>集計・自動更新・PDF出力などの定番レシピ</p></div>
-					<div class="cat-card"><strong>✉️ Gmail</strong><p>自動返信・添付保存・差し込みメール</p></div>
-					<div class="cat-card"><strong>📅 カレンダー</strong><p>予定一括登録・空き時間抽出</p></div>
-					<div class="cat-card"><strong>💬 LINE連携</strong><p>Messaging APIでBot・毎朝通知</p></div>
-					<div class="cat-card"><strong>📁 Drive・OCR</strong><p>ファイル一括処理・レシート読取</p></div>
-					<div class="cat-card"><strong>💼 副業・確定申告</strong><p>Uber・物販・フリーランス実務の自動化</p></div>
+					{categories.map((c) => (
+						<a href={`/category/${c.slug}/`} class="cat-card">
+							<span class="cat-icon">{c.icon}</span>
+							<strong>{c.name}</strong>
+							<p>{c.desc}</p>
+						</a>
+					))}
 				</div>
 			</section>
 
+			<!-- LATEST POSTS -->
 			<section class="latest">
-				<h2>新着記事</h2>
+				<h2>新着レシピ</h2>
 				<ul class="post-list">
-					{posts.map((post) => (
+					{latest.map((post: any) => (
 						<li>
 							<a href={`/blog/${post.id}/`}>
-								<span class="post-date"><FormattedDate date={post.data.pubDate} /></span>
+								<span class="post-meta">
+									<span class="post-date"><FormattedDate date={post.data.pubDate} /></span>
+									{post.data.categoryName && (<span class="post-cat">{post.data.categoryName}</span>)}
+								</span>
 								<span class="post-title">{post.data.title}</span>
 								<span class="post-desc">{post.data.description}</span>
 							</a>
@@ -59,49 +90,112 @@ const posts = (await getCollection('blog'))
 				</ul>
 				<p class="view-all"><a href="/blog/">すべての記事を見る →</a></p>
 			</section>
+
+			<!-- SIDEFIRE SISTER SITE -->
+			<section class="sidefire-hero">
+				<div class="sf-content">
+					<p class="sf-label">🔥 姉妹サイト</p>
+					<h2>サイドFIREを目指す！</h2>
+					<p>副業で得た収入を投資に回し、経済的半自由を目指す記録ブログ。投資・節約・家計管理のリアルを更新中。</p>
+					<a href="https://sidefire150000000.com/" target="_blank" rel="noopener" class="sf-btn">姉妹サイトを見る →</a>
+				</div>
+			</section>
 		</main>
 		<Footer />
+		<MobileNav />
 		<style>
-			main { width: 900px; max-width: calc(100% - 2rem); padding: 2rem 1rem 4rem; }
-			.hero { text-align: center; padding: 2rem 0 2.5rem; }
-			.hero h1 {
-				font-size: 2.1em;
+			main { padding: 0 0 4em 0; }
+
+			.hero {
+				background: linear-gradient(135deg, #dbeafe 0%, #fce7f3 100%);
+				padding: 4rem 1rem 3.5rem;
+				text-align: center;
+			}
+			.hero-inner { max-width: 760px; margin: 0 auto; }
+			.hero-eyebrow {
+				font-size: 0.88em;
+				color: #9333ea;
+				font-weight: 600;
 				margin: 0 0 1rem;
+				letter-spacing: 0.05em;
+			}
+			.hero h1 {
+				font-size: 2.3em;
+				margin: 0 0 1.3rem;
 				padding: 0;
 				border: none;
 				background: none;
 				line-height: 1.4;
+				color: rgb(var(--black));
 			}
-			.lead {
-				font-size: 1.05em;
+			.hero-lead {
+				font-size: 1.02em;
 				color: rgb(var(--gray-dark));
-				max-width: 640px;
-				margin: 0 auto 2rem;
 				line-height: 1.9;
+				margin: 0 auto 2rem;
 			}
 			.hero-cta {
 				display: flex;
-				gap: 1rem;
+				gap: 0.8rem;
 				justify-content: center;
 				flex-wrap: wrap;
 			}
 			.btn-primary, .btn-secondary {
 				display: inline-block;
-				padding: 0.8em 2em;
-				border-radius: 8px;
+				padding: 0.8em 1.8em;
+				border-radius: 10px;
 				font-weight: 600;
 				text-decoration: none;
 				border: 2px solid var(--accent);
+				font-size: 0.95em;
 			}
 			.btn-primary { background: var(--accent); color: white; }
 			.btn-primary:hover { background: var(--accent-dark); border-color: var(--accent-dark); }
 			.btn-secondary { background: transparent; color: var(--accent); }
 			.btn-secondary:hover { background: var(--accent-light); }
 
-			.categories { margin: 3rem 0; }
+			.search-row {
+				max-width: 720px;
+				margin: 2rem auto 1rem;
+				padding: 0 1rem;
+			}
+			.search-form {
+				display: flex;
+				gap: 0.5rem;
+				background: var(--bg);
+				border: 1px solid rgb(var(--gray-light));
+				border-radius: 999px;
+				padding: 0.3rem 0.5rem 0.3rem 1.2rem;
+				box-shadow: var(--box-shadow);
+			}
+			.search-input {
+				flex: 1;
+				border: none;
+				outline: none;
+				background: transparent;
+				font-size: 0.95em;
+				padding: 0.7em 0.3em;
+				color: rgb(var(--black));
+			}
+			.search-btn {
+				background: var(--accent);
+				color: white;
+				border: none;
+				border-radius: 999px;
+				padding: 0.5em 1.3em;
+				font-weight: 600;
+				cursor: pointer;
+				font-size: 0.9em;
+			}
+
+			.categories, .latest, .sidefire-hero {
+				max-width: 960px;
+				margin: 3rem auto;
+				padding: 0 1rem;
+			}
 			.categories h2, .latest h2 {
 				font-size: 1.5em;
-				padding: 0.3rem 0 0.5rem 0.6rem;
+				padding: 0.4rem 0 0.5rem 0.7rem;
 				border-bottom: 3px solid var(--accent);
 				border-left: 6px solid var(--accent);
 				background: var(--bg-soft);
@@ -116,17 +210,23 @@ const posts = (await getCollection('blog'))
 				background: var(--bg);
 				border: 1px solid rgb(var(--gray-light));
 				border-radius: var(--radius);
-				padding: 1.2rem;
-				transition: transform 0.2s, box-shadow 0.2s;
+				padding: 1.3rem;
+				text-decoration: none;
+				color: inherit;
+				transition: all 0.2s;
+				display: block;
+				border-bottom: 1px solid rgb(var(--gray-light));
 			}
 			.cat-card:hover {
-				transform: translateY(-2px);
+				transform: translateY(-3px);
 				box-shadow: var(--box-shadow);
+				border-color: var(--accent);
+				color: inherit;
 			}
-			.cat-card strong { display: block; margin-bottom: 0.4rem; font-size: 1.05em; }
-			.cat-card p { margin: 0; font-size: 0.9em; color: rgb(var(--gray-dark)); line-height: 1.6; }
+			.cat-icon { font-size: 2em; display: block; margin-bottom: 0.3rem; }
+			.cat-card strong { display: block; margin-bottom: 0.4rem; font-size: 1.05em; color: rgb(var(--black)); }
+			.cat-card p { margin: 0; font-size: 0.88em; color: rgb(var(--gray-dark)); line-height: 1.6; }
 
-			.latest { margin: 3rem 0; }
 			.post-list {
 				list-style: none;
 				padding: 0;
@@ -138,14 +238,22 @@ const posts = (await getCollection('blog'))
 				background: var(--bg);
 				border: 1px solid rgb(var(--gray-light));
 				border-radius: var(--radius);
-				transition: transform 0.2s, box-shadow 0.2s;
+				transition: all 0.2s;
 			}
 			.post-list li:hover {
-				transform: translateY(-2px);
+				transform: translateY(-3px);
 				box-shadow: var(--box-shadow);
 			}
 			.post-list a { display: block; padding: 1.2rem; text-decoration: none; color: inherit; border: none; }
-			.post-date { display: block; font-size: 0.82em; color: rgb(var(--gray)); margin-bottom: 0.3rem; }
+			.post-meta { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; }
+			.post-date { font-size: 0.8em; color: rgb(var(--gray)); }
+			.post-cat {
+				font-size: 0.75em;
+				padding: 0.15em 0.6em;
+				background: var(--accent-light);
+				color: var(--accent-dark);
+				border-radius: 999px;
+			}
 			.post-title {
 				display: block;
 				font-weight: 700;
@@ -156,16 +264,57 @@ const posts = (await getCollection('blog'))
 			}
 			.post-desc {
 				display: block;
-				font-size: 0.88em;
+				font-size: 0.85em;
 				color: rgb(var(--gray-dark));
 				line-height: 1.6;
+				display: -webkit-box;
+				-webkit-line-clamp: 3;
+				-webkit-box-orient: vertical;
+				overflow: hidden;
 			}
 			.view-all { text-align: right; margin-top: 1rem; }
 			.view-all a { font-weight: 600; }
 
+			.sidefire-hero {
+				background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+				border-radius: var(--radius);
+				padding: 2.5rem 2rem;
+				border: 1px solid #f59e0b;
+			}
+			.sf-content { max-width: 640px; margin: 0 auto; text-align: center; }
+			.sf-label { margin: 0 0 0.5rem; color: #78350f; font-size: 0.9em; font-weight: 600; }
+			.sidefire-hero h2 {
+				margin: 0 0 0.8rem;
+				border: none;
+				padding: 0;
+				background: none;
+				font-size: 1.6em;
+				color: #78350f;
+			}
+			.sidefire-hero p { color: #78350f; line-height: 1.8; margin: 0 0 1.5rem; }
+			.sf-btn {
+				display: inline-block;
+				padding: 0.7em 2em;
+				background: #f59e0b;
+				color: white;
+				border-radius: 999px;
+				text-decoration: none;
+				font-weight: 700;
+				border: none;
+			}
+			.sf-btn:hover { background: #d97706; color: white; }
+
 			@media (max-width: 720px) {
-				.hero h1 { font-size: 1.5em; }
-				.lead { font-size: 0.95em; }
+				.hero { padding: 3rem 1rem 2.5rem; }
+				.hero h1 { font-size: 1.7em; }
+				.hero-lead { font-size: 0.95em; }
+				.categories h2, .latest h2, .sidefire-hero h2 { font-size: 1.25em; }
+			}
+			@media (prefers-color-scheme: dark) {
+				.hero { background: linear-gradient(135deg, #1e3a8a 0%, #831843 100%); }
+				.hero h1 { color: white; }
+				.hero-lead { color: #e5e7eb; }
+				.hero-eyebrow { color: #fbbf24; }
 			}
 		</style>
 	</body>
