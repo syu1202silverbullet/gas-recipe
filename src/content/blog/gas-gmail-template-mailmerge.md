@@ -33,7 +33,7 @@ function sendMailMerge() {
     const body = `${name} 様
 
 ${product}のご注文ありがとうございます。
-3営業日以内に発送いたします。
+順次発送いたします。
 
 GAS Recipe`;
 
