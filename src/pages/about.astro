@@ -8,7 +8,7 @@ import { SITE_TITLE } from '../consts';
 <!doctype html>
 <html lang="ja">
 	<head>
-		<BaseHead title={`運営者情報 | ${SITE_TITLE}`} description="GAS Recipe運営者プロフィール・サイトの方針・連絡先。Google Apps Scriptで日常を自動化する実用ノウハウを発信中。" />
+		<BaseHead title={`運営者情報 | ${SITE_TITLE}`} description="GAS Recipe運営者みっちゃんママのプロフィール・サイト方針・連絡先。看護師と副業ライター・プログラマーを兼業しながらGAS活用術を発信中。" />
 	</head>
 	<body>
 		<Header />
@@ -21,27 +21,27 @@ import { SITE_TITLE } from '../consts';
 
 			<div class="profile-card">
 				<div class="profile-header">
-					<div class="avatar">G</div>
+					<div class="avatar">🌸</div>
 					<div>
-						<h2 class="profile-name">ガスこ</h2>
-						<p class="profile-role">副業実践者 / Google Apps Script愛好家</p>
+						<h2 class="profile-name">みっちゃんママ</h2>
+						<p class="profile-role">本業：看護師 / 副業：プログラミング・ライター</p>
 					</div>
 				</div>
-				<p>都内在住の副業実践者。自分の業務を「手で動かさない」ための仕組みづくりを7年以上続けており、これまで20以上のGoogle Apps Scriptアプリを自作。スプレッドシートの集計自動化、OCRによるレシート記帳、Uber Eats配達記録のCSV化、買い物リスト共有アプリなど、日常のちょっとした面倒を「一度書いて永遠に解放される」仕組みに変える実験を続けています。</p>
-				<p>GAS Recipeは、その過程で得た実用的なノウハウを、プログラミング初心者にも再現しやすい形でシェアするために運営しています。</p>
+				<p>本業で看護師として働きながら、副業としてプログラミング・ライティングを実践中。日々の業務や家事のなかで「これ、毎回やるの大変だな」と感じた作業をGoogle Apps Script（GAS）で仕組み化するのが趣味。</p>
+				<p>作成した自作アプリには、レシート写真の自動集計ツール、買い物リスト共有アプリ、記念日通知アプリ、Uber Eats配達記録のOCR集計ツールなどがあり、すべて家族や自分用に日常的に稼働しています。</p>
+				<p>GAS Recipeでは「プログラミング未経験でも使える・真似できる」を軸に、実際に動いている自動化レシピを共有していきます。</p>
 			</div>
 
 			<h2>サイト基本情報</h2>
 			<table class="info-table">
 				<tr><th>サイト名</th><td>GAS Recipe｜Google Apps Scriptで日常を自動化</td></tr>
 				<tr><th>URL</th><td><a href="https://gas-recipe.com">https://gas-recipe.com</a></td></tr>
-				<tr><th>運営開始</th><td>2026年4月</td></tr>
-				<tr><th>運営者</th><td>ガスこ（匿名運営）</td></tr>
+				<tr><th>運営開始</th><td>2026年4月21日</td></tr>
+				<tr><th>運営者</th><td>みっちゃんママ</td></tr>
 				<tr><th>連絡先</th><td><a href="/contact/">お問い合わせフォーム</a></td></tr>
 			</table>
 
 			<h2>サイトの方針</h2>
-			<p>本サイトでは、以下のポリシーで記事を執筆しています。</p>
 			<ul>
 				<li><strong>実体験ベース</strong>：運営者が実際に使用しているツール・実装したコードをもとに解説</li>
 				<li><strong>再現性重視</strong>：初心者でもコピペで動作するサンプルを優先</li>
@@ -53,7 +53,7 @@ import { SITE_TITLE } from '../consts';
 			<ul>
 				<li>日常業務の効率化に興味のある個人事業主・フリーランス</li>
 				<li>GASを学び始めた初心者エンジニア</li>
-				<li>副業を効率化したい会社員の方</li>
+				<li>副業を効率化したい看護師・医療従事者・会社員の方</li>
 				<li>確定申告・経費精算を自動化したい方</li>
 			</ul>
 
@@ -67,7 +67,7 @@ import { SITE_TITLE } from '../consts';
 				<li>もしもアフィリエイト</li>
 				<li>アクセストレード</li>
 			</ul>
-			<p>記事内で紹介する商品・サービスには、運営者が実際に利用したもの、または客観的な情報に基づき紹介する価値があると判断したものを掲載しています。詳細は<a href="/privacy/">プライバシーポリシー</a>をご確認ください。</p>
+			<p>詳細は<a href="/privacy/">プライバシーポリシー</a>をご確認ください。</p>
 
 			<h2>お問い合わせ</h2>
 			<p>ご意見・ご質問・記事の誤りのご指摘などは、<a href="/contact/">お問い合わせフォーム</a>よりお送りください。お返事には数日いただく場合があります。</p>
@@ -100,13 +100,12 @@ import { SITE_TITLE } from '../consts';
 				width: 64px;
 				height: 64px;
 				border-radius: 50%;
-				background: linear-gradient(135deg, #2563eb, #7c3aed);
+				background: linear-gradient(135deg, #ec4899, #f472b6);
 				color: white;
 				display: flex;
 				align-items: center;
 				justify-content: center;
 				font-size: 1.8em;
-				font-weight: 700;
 				flex-shrink: 0;
 			}
 			.profile-name {
