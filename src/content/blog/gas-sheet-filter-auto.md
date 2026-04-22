@@ -1,7 +1,7 @@
 ---
 title: "スプシ自動フィルタをGASで3秒セット"
 description: "スプレッドシートのフィルタ設定をGASで一気に済ませる方法を、看護師が優しく解説。毎回のフィルタ作り直しから卒業しましょう。"
-pubDate: "TBD"
+pubDate: "2026-05-10T19:00:00+09:00"
 heroImage: "/blog-placeholder-3.jpg"
 categorySlug: "spreadsheet"
 categoryName: "スプレッドシート"
