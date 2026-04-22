@@ -1,163 +1,156 @@
 ---
-title: "GAS setValuesで1000行一括書き込み｜100倍速くなる書き方"
-description: "Google Apps Scriptのスプシ書き込みを高速化する「setValuesによる一括書き込み」の使い方を解説。ループで1セルずつ書くと100倍遅くなる理由と、その回避コード付き。"
+title: "GAS setValuesで1000行を一括書き込む高速化テクニック"
+description: "GASのsetValuesを使えばスプレッドシートへの書き込みが劇的に速くなります。看護師ママが夜勤明けでも続けられる業務効率化の実体験とコード例を紹介します。"
 pubDate: "2026-05-01T19:00:00+09:00"
 heroImage: "/blog-placeholder-5.jpg"
 categorySlug: "spreadsheet"
 categoryName: "スプレッドシート"
 tagSlugs: ["gas", "spreadsheet", "performance"]
 tagNames: ["GAS", "スプレッドシート", "高速化"]
-readingTime: 5
+readingTime: 9
 ---
-「スプレッドシートにデータを書き込むGASが、毎日タイムアウトする」。
+こんにちは、看護師ママのみっちゃんです。今日は私が副業で受けている「データ入力系のGAS案件」で一番最初にぶつかった壁、そして乗り越えた経験についてお話しします。
 
-多くの人がハマる原因は、**セルを1つずつ書き込んでいる**こと。実は`setValues()`で一括書き込みに変えるだけで、**50〜100倍高速化**します。
+## こんな悩みありませんか？
 
-本記事では、書き込み速度を劇的に改善するテクニックを具体コードで解説します。
+- スプレッドシートに大量データを書き込むスクリプトが毎回タイムアウトする
+- 1行ずつsetValueで書いているけど「実行時間の上限を超えました」と怒られる
+- 夜勤明けでぼんやりした頭でもメンテできるコードにしたい
 
-## なぜ遅い？2つの書き方の違い
+私も最初は1000行の転記処理を1行ずつ`setValue`で書いていて、実行に7分以上かかっていました。「これは病棟の引き継ぎより時間かかる…」と泣きそうになった記憶があります。
 
-### 悪い例：ループで1セルずつ
+でも`setValues`（複数形）を使った一括書き込みに書き直したら、同じ処理が**15秒以下**で終わるようになりました。今回はその全体像を共有します。
+
+## なぜsetValuesが速いのか？全体像
+
+GASとスプレッドシートは、実は「別サーバー」で動いています。そのため`getValue`や`setValue`を呼ぶたびに、ネットワーク越しの通信が発生します。
+
+1行ずつ処理すると、1000行なら1000回の通信。これが遅さの正体です。
+
+一方で`setValues`は、二次元配列をまとめて1回の通信で送ります。だから圧倒的に速い。
 
 ```javascript
-// 1000行の処理に約3〜5分かかる
-for (let i = 0; i < 1000; i++) {
-  sheet.getRange(i + 1, 1).setValue(data[i]);
+// 遅い書き方(NG例)
+function slowWrite() {
+  const sheet = SpreadsheetApp.getActiveSheet();
+  for (let i = 1; i <= 1000; i++) {
+    sheet.getRange(i, 1).setValue('行' + i);
+    sheet.getRange(i, 2).setValue(new Date());
+  }
 }
 ```
 
-### 良い例：配列で一括
+これを下のように書き換えるだけで劇的に速くなります。
 
 ```javascript
-// 1000行の処理が1秒以内
-const values = data.map(d => [d]);  // 2次元配列化
-sheet.getRange(1, 1, values.length, 1).setValues(values);
+// 速い書き方(推奨)
+function fastWrite() {
+  const sheet = SpreadsheetApp.getActiveSheet();
+  const data = [];
+  for (let i = 1; i <= 1000; i++) {
+    data.push(['行' + i, new Date()]);
+  }
+  sheet.getRange(1, 1, data.length, data[0].length).setValues(data);
+}
 ```
 
-**原因**: `setValue()` はスプシに毎回APIコールが飛びます。1000回ループすると1000回通信。これが遅さの正体。
+ポイントは「配列をメモリ上で組み立てて、最後に1回だけ書き込む」という考え方です。
 
-## 正しいsetValuesの書き方
+## 高速化のための3つのポイント
 
-### パターン1: 1列に書き込む
+### ポイント1: getValuesで一括読み込み→配列で処理
+
+書き込みだけでなく、読み込みも一括にすることで相乗効果が出ます。
 
 ```javascript
-const data = ['A', 'B', 'C', 'D'];
-const values = data.map(v => [v]);  // [[A],[B],[C],[D]]
-sheet.getRange(1, 1, values.length, 1).setValues(values);
+function processData() {
+  const sheet = SpreadsheetApp.getActiveSheet();
+  const lastRow = sheet.getLastRow();
+  const values = sheet.getRange(1, 1, lastRow, 3).getValues();
+
+  const result = values.map(row => {
+    const [name, price, qty] = row;
+    return [name, price, qty, price * qty];
+  });
+
+  sheet.getRange(1, 1, result.length, result[0].length).setValues(result);
+}
 ```
 
-### パターン2: 複数列に書き込む
+私は病棟勤務でナースコール対応の合間にスマホでコードを確認することもあるんですが、この形式なら処理の流れが直感的でわかりやすいんですよね。
+
+### ポイント2: 配列の「形」を絶対に揃える
+
+`setValues`に渡す配列は、**全ての行で列数が同じ**でないとエラーになります。
+
+```javascript
+// NG:列数がバラバラ
+const ng = [
+  ['A', 1],
+  ['B', 2, 3],  // ここで死ぬ
+  ['C']
+];
+
+// OK:列数を揃える
+const ok = [
+  ['A', 1, ''],
+  ['B', 2, 3],
+  ['C', '', '']
+];
+```
+
+夜勤明けで頭が回らない時、ここでハマって1時間溶かしたことがあります。空文字`''`やnullで埋めてでも、必ず揃えましょう。
+
+### ポイント3: 書き込み範囲のサイズを配列と一致させる
+
+`getRange(row, col, numRows, numCols)`の`numRows`と`numCols`は、渡す配列のサイズと完全に一致させます。
 
 ```javascript
 const data = [
-  ['田中', '東京', 30],
-  ['佐藤', '大阪', 25],
-  ['鈴木', '福岡', 28]
+  ['A', 1],
+  ['B', 2],
+  ['C', 3]
 ];
+// 3行2列の配列なので、レンジも3行2列
+sheet.getRange(1, 1, 3, 2).setValues(data);
+// または data.length, data[0].length で自動化
 sheet.getRange(1, 1, data.length, data[0].length).setValues(data);
 ```
 
-## 抑えておきたい3つのポイント
+ハードコードよりも`data.length`で動的に指定するほうが、データが増減しても壊れません。
 
-### ポイント1: 配列は必ず2次元
+## 応用:大量データの分割書き込み
 
-`setValues()` は2次元配列しか受け付けません。
-
-```javascript
-// NG
-sheet.getRange('A1:A5').setValues([1,2,3,4,5]);  // エラー
-
-// OK
-sheet.getRange('A1:A5').setValues([[1],[2],[3],[4],[5]]);
-```
-
-### ポイント2: 範囲と配列サイズを一致
-
-`getRange(行,列,高さ,幅)` の `高さ×幅` が配列のサイズと一致している必要があります。
+10万行レベルになると、さすがにメモリ使用量が気になります。そんな時はチャンク分割が有効です。
 
 ```javascript
-// 3行2列の範囲に3行2列の配列
-sheet.getRange(1, 1, 3, 2).setValues([['A','B'],['C','D'],['E','F']]);
-```
-
-### ポイント3: getValuesも同じく一括取得
-
-読み込みも `getValue` ループより `getValues` 一発が速い。
-
-```javascript
-// 遅い
-for (let i = 1; i <= 1000; i++) {
-  const v = sheet.getRange(i, 1).getValue();
-}
-
-// 速い
-const data = sheet.getRange(1, 1, 1000, 1).getValues();
-data.forEach(row => { ... });
-```
-
-## 応用：既存データを加工して一括更新
-
-例: 「A列の値を2倍にしてB列に書き込む」
-
-```javascript
-function doubleValues() {
-  const sheet = SpreadsheetApp.getActiveSheet();
-  const lastRow = sheet.getLastRow();
-  const src = sheet.getRange(1, 1, lastRow, 1).getValues();
-  const result = src.map(([v]) => [v * 2]);
-  sheet.getRange(1, 2, result.length, 1).setValues(result);
+function writeInChunks(sheet, data, chunkSize = 5000) {
+  let startRow = 1;
+  for (let i = 0; i < data.length; i += chunkSize) {
+    const chunk = data.slice(i, i + chunkSize);
+    sheet.getRange(startRow, 1, chunk.length, chunk[0].length)
+         .setValues(chunk);
+    startRow += chunk.length;
+    SpreadsheetApp.flush();
+  }
 }
 ```
 
-## 応用：大量データをバッチ分割
-
-10万行以上のデータは、GASの6分制限に引っかかる可能性があるので分割実行が推奨。
-
-```javascript
-function processBatch() {
-  const props = PropertiesService.getScriptProperties();
-  const start = Number(props.getProperty('startIndex') || 0);
-  const batchSize = 5000;
-
-  const sheet = SpreadsheetApp.getActiveSheet();
-  const data = sheet.getRange(start + 1, 1, batchSize, 3).getValues();
-  // データ加工
-  const result = data.map(row => [row[0], row[1], row[0] + row[1]]);
-  sheet.getRange(start + 1, 1, result.length, 3).setValues(result);
-
-  props.setProperty('startIndex', String(start + batchSize));
-}
-```
-
-これを**5分おきトリガー**に紐付ければ、10万行でも数十分で完了します。
-
-## 速度比較の実測
-
-| 方法 | 1000行 | 10000行 |
-|---|---|---|
-| ループ setValue | 約180秒 | タイムアウト |
-| 配列 setValues | 約1秒 | 約6秒 |
-
-**100倍以上の差**。これを知っているだけで実装のクオリティが別次元になります。
-
-## トラブル：「setValues でエラーが出る」
-
-よくある原因:
-- **配列の長さが不均一**（ある行だけ列数が違う）
-- **範囲と配列サイズの不一致**
-- **undefined や null を含む行**
-
-```javascript
-// 必ず正規化
-const cleaned = data.map(row => row.map(v => v ?? ''));
-```
-
-## 看護師の私の使い方
-
-病院のデータを扱うわけではないですが、副業でメルカリの売上データ（月数百件）をスプシで管理する時、`setValues` に切り替えて処理が15分→20秒に。毎月の締め日の夜が楽になりました。
+`SpreadsheetApp.flush()`を入れておくと、途中でタイムアウトした時も書き込み済みのデータが残るので、家族の夕食時間までに終わらせたい夜勤明けの私にはとてもありがたい保険になっています。
 
 ## まとめ
 
-スプシを扱うGASで、**`setValue`（単数）ループを見かけたら赤信号**。`setValues`（複数）に置き換えるだけで劇的に速くなります。
+看護師をしながらGAS副業をしていると、「限られた時間で確実に動くコード」が命です。`setValues`による一括処理は、学習コストが低いわりに効果が絶大なので、最初に身につけるべきテクニックだと断言できます。
 
-関連記事: [スプレッドシート毎朝自動整え](/blog/gas-spreadsheet-daily-auto/) / [スプシ重複行を自動削除](/blog/gas-sheet-dedupe/)
+- `setValue`を`setValues`に変えるだけで数十倍速くなる
+- 配列の形（列数）を必ず揃える
+- レンジサイズは`data.length`で動的指定
+- 大量データはチャンク分割+flushで安全に
+
+私自身、このテクニックを覚えてから、副業の納期に追われることがほぼなくなりました。夜勤明けの2時間でサクッと案件を終わらせて、子どもとの時間を確保できるようになったのが一番の収穫です。
+
+## 関連記事
+
+- [スプシ重複行を自動削除するGAS完全版コード](/blog/gas-sheet-dedupe/)
+- [LINE Messaging APIとGAS連携する最短3ステップ](/blog/gas-line-messaging-api-setup/)
+- [フリーランス請求書をGASで毎月自動発行する仕組み](/blog/gas-freelance-invoice/)
