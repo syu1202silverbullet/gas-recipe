@@ -8,6 +8,7 @@ const today = new Date();
 				<p class="footer-head">サイトナビ</p>
 				<ul>
 					<li><a href="/">ホーム</a></li>
+					<li><a href="/guide/">GAS完全ガイド</a></li>
 					<li><a href="/blog/">記事一覧</a></li>
 					<li><a href="/about/">運営者情報</a></li>
 					<li><a href="/contact/">お問い合わせ</a></li>
@@ -19,6 +20,7 @@ const today = new Date();
 				<ul>
 					<li><a href="/category/gas-basics/">GAS入門</a></li>
 					<li><a href="/category/gmail/">Gmail自動化</a></li>
+					<li><a href="/category/calendar/">Googleカレンダー</a></li>
 					<li><a href="/category/spreadsheet/">スプレッドシート</a></li>
 					<li><a href="/category/line/">LINE連携</a></li>
 					<li><a href="/category/side-business/">副業・確定申告</a></li>
@@ -28,6 +30,10 @@ const today = new Date();
 				<p class="footer-head">姉妹サイト</p>
 				<ul>
 					<li><a href="https://sidefire150000000.com/" target="_blank" rel="noopener">🔥 サイドFIREを目指す！</a></li>
+				</ul>
+				<p class="footer-head" style="margin-top: 1.5rem;">購読</p>
+				<ul>
+					<li><a href="/rss.xml">📡 RSSフィード</a></li>
 				</ul>
 			</div>
 		</div>
@@ -45,19 +51,8 @@ const today = new Date();
 		margin-top: 4em;
 	}
 	.footer-inner { max-width: 960px; margin: 0 auto; }
-	.footer-grid {
-		display: grid;
-		grid-template-columns: repeat(3, 1fr);
-		gap: 2rem;
-		margin-bottom: 2rem;
-		text-align: left;
-	}
-	.footer-head {
-		font-weight: 700;
-		color: rgb(var(--black));
-		margin: 0 0 0.7rem;
-		font-size: 0.95em;
-	}
+	.footer-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; margin-bottom: 2rem; text-align: left; }
+	.footer-head { font-weight: 700; color: rgb(var(--black)); margin: 0 0 0.7rem; font-size: 0.95em; }
 	footer ul { list-style: none; padding: 0; margin: 0; }
 	footer li { margin-bottom: 0.4em; }
 	footer a { color: rgb(var(--gray-dark)); text-decoration: none; font-size: 0.88em; border: none; }
