@@ -1,177 +1,201 @@
 ---
 title: "フリーランス請求書をGASで毎月自動発行する仕組み"
-description: "フリーランス・副業実践者向けに、毎月の請求書を自動発行するGoogle Apps Script実装を解説。テンプレ流し込み・PDF生成・メール送信までを全自動化するコード付き。"
+description: "GASで請求書PDFを毎月自動生成・メール送信する仕組みを丸ごと解説。看護師副業ママが確定申告まで楽にしている実例コード付きです。"
 pubDate: "2026-05-02T19:00:00+09:00"
 heroImage: "/blog-placeholder-1.jpg"
 categorySlug: "side-business"
 categoryName: "副業・確定申告"
 tagSlugs: ["gas", "invoice", "freelance"]
 tagNames: ["GAS", "請求書", "フリーランス"]
-readingTime: 6
+readingTime: 9
 ---
-「毎月末、請求書をWordで作って、取引先ごとにメール添付して送る」。フリーランスなら誰もが経験するこの作業、**GASで全自動化**できます。
+こんにちは、看護師ママのみっちゃんです。今日は私がGAS副業を始めてから一番やってよかったと感じている「請求書の自動発行」について、仕組みを丸ごとお見せします。
 
-本記事では、Googleスプレッドシートをテンプレートに、取引先ごとの請求書を**自動生成 → PDF化 → メール送信**までを一気通貫で行う仕組みを解説します。
+## こんな悩みありませんか？
 
-## この仕組みでできること
+- 毎月末の請求書作成が地味に面倒
+- 送り忘れて入金が翌々月にずれ込んだ
+- 確定申告時に請求書データを探すのが辛い
+- 夜勤続きだと月末処理なんてやる気にならない
 
-- 毎月末に請求書を自動発行
-- 取引先別に金額・品目を自動流し込み
-- PDF化してメール添付
-- 発行履歴をスプシに自動記録
+私もフリーランスを始めた頃、手作業で請求書を作って添付して送って…を繰り返していました。3社以上になった月は本当にキツく、「これ自動化できないの？」と思ってGASで組んだのが今回の仕組みです。
 
-所要時間: **月10分の作業が、月0分**になります。
+## 全体像
 
-## 全体構成
+仕組みはシンプルに3つのパーツでできています。
 
-1. **テンプレートスプシ**: 請求書のフォーマット（宛名・金額・日付が差し替えられる）
-2. **顧客マスタスプシ**: 取引先名・メアド・月額・品目
-3. **GAS**: マスタを読み、テンプレを複製、PDF化、メール送信
+1. **請求元データ**をスプシの1シートに集約
+2. **請求書テンプレート**をGoogleドキュメントで用意
+3. **GAS**がシートを読み、テンプレをコピー→値を差し込み→PDF化→メール送信→記録更新
 
-## ステップ1: テンプレート準備
+月1回、毎月25日に自動実行にすれば、あとは届いたPDFを確認してクライアントへ送るだけ（自分自身の最終確認のステップは残します）。
 
-Googleスプレッドシートで請求書テンプレを作成。以下のような感じ:
+## スプレッドシートの設計
 
-```
-請求書
-発行日: {{date}}
-宛先: {{company}} 様
-件名: {{item}}
-金額: {{amount}}円
-```
+請求管理シートに以下の列を用意します。
 
-`{{...}}` の部分を後からGASで置換します。
+| 列 | 内容 |
+| --- | --- |
+| A | クライアント名 |
+| B | 宛先メール |
+| C | 単価 |
+| D | 稼働時間 |
+| E | 件名 |
+| F | 振込先 |
+| G | 今月送付済み(TRUE/FALSE) |
+| H | 最終送付日 |
 
-## ステップ2: 顧客マスタシート
+これだけで十分運用できます。
 
-| 会社名 | メール | 品目 | 月額 |
-|---|---|---|---|
-| A社 | a@example.com | Web保守 | 30000 |
-| B社 | b@example.com | ライティング | 50000 |
+## テンプレートドキュメントの用意
 
-## ステップ3: 自動化コード
+Googleドキュメントで請求書テンプレを作り、差し込みたい場所に`{{クライアント名}}`や`{{金額}}`といったプレースホルダーを入れておきます。私は「稼働報告書つき請求書」として、病棟の勤務記録感覚で項目を並べています。
+
+## 請求書を自動生成するコード
 
 ```javascript
-const TEMPLATE_ID = 'テンプレスプシのID';
-const MASTER_ID = 'マスタスプシのID';
-const OUTPUT_FOLDER_ID = '保存先フォルダのID';
+const CONFIG = {
+  SHEET_ID: 'スプシID',
+  TEMPLATE_DOC_ID: 'テンプレドキュメントID',
+  OUTPUT_FOLDER_ID: '出力用フォルダID',
+  FROM_NAME: 'みっちゃん',
+  MY_EMAIL: 'you@example.com'
+};
 
-function issueInvoices() {
-  const master = SpreadsheetApp.openById(MASTER_ID).getActiveSheet();
-  const customers = master.getDataRange().getValues();
-  customers.shift();  // ヘッダー除外
+function issueMonthlyInvoices() {
+  const sheet = SpreadsheetApp.openById(CONFIG.SHEET_ID).getSheets()[0];
+  const data = sheet.getDataRange().getValues();
+  const header = data.shift();
+  const today = new Date();
+  const ym = Utilities.formatDate(today, 'JST', 'yyyyMM');
 
-  const today = Utilities.formatDate(new Date(), 'Asia/Tokyo', 'yyyy/MM/dd');
-  const yearMonth = Utilities.formatDate(new Date(), 'Asia/Tokyo', 'yyyyMM');
+  data.forEach((row, i) => {
+    const [client, email, price, hours, subject, bank, sent] = row;
+    if (sent || !client) return;
 
-  customers.forEach(([company, email, item, amount]) => {
-    // テンプレを複製
-    const copy = DriveApp.getFileById(TEMPLATE_ID).makeCopy(
-      `請求書_${yearMonth}_${company}`,
-      DriveApp.getFolderById(OUTPUT_FOLDER_ID)
-    );
+    const amount = price * hours;
+    const tax = Math.floor(amount * 0.1);
+    const total = amount + tax;
 
-    // 値を差し込み
-    const ss = SpreadsheetApp.openById(copy.getId());
-    const sheet = ss.getSheets()[0];
-    const replacements = {
-      '{{date}}': today,
-      '{{company}}': company,
-      '{{item}}': item,
-      '{{amount}}': amount.toLocaleString()
-    };
-    Object.entries(replacements).forEach(([k, v]) => {
-      sheet.createTextFinder(k).replaceAllWith(v);
+    const pdf = buildInvoicePdf({
+      client, amount, tax, total, hours, price, bank, ym
     });
 
-    // PDF化
-    const pdf = copy.getAs('application/pdf').setName(`請求書_${yearMonth}_${company}.pdf`);
-    DriveApp.getFolderById(OUTPUT_FOLDER_ID).createFile(pdf);
+    sendInvoiceMail(email, client, subject, pdf);
 
-    // メール送信
-    GmailApp.sendEmail(
-      email,
-      `【請求書】${yearMonth} ${item}のご請求`,
-      `${company} ご担当者様\n\n今月分の請求書を添付いたします。\nご確認のほど、よろしくお願いいたします。`,
-      { attachments: [pdf] }
-    );
+    sheet.getRange(i + 2, 7).setValue(true);
+    sheet.getRange(i + 2, 8).setValue(today);
   });
 }
 ```
 
-## ステップ4: トリガー設定
-
-毎月末に自動実行:
-
-- 実行関数: `issueInvoices`
-- 時間主導型: 月次
-- 日付: 月末（28-31のどこか）
-- 時刻: 午前10時
-
-## 抑えておきたい3つのポイント
-
-### ポイント1: テンプレ複製で元を汚さない
-
-直接テンプレを編集してPDF化すると、翌月以降の差し替えが面倒。**必ず複製してから差し替え**。
-
-### ポイント2: 送信履歴をスプシに記録
-
-あとで「いつ誰に送った？」を追跡できるように、マスタに「送信日」列を追加：
+## PDF生成と差し込み処理
 
 ```javascript
-master.getRange(i + 2, 5).setValue(today);  // 5列目に送信日
+function buildInvoicePdf(params) {
+  const folder = DriveApp.getFolderById(CONFIG.OUTPUT_FOLDER_ID);
+  const copy = DriveApp.getFileById(CONFIG.TEMPLATE_DOC_ID)
+    .makeCopy(`請求書_${params.client}_${params.ym}`, folder);
+  const doc = DocumentApp.openById(copy.getId());
+  const body = doc.getBody();
+
+  body.replaceText('{{クライアント名}}', params.client);
+  body.replaceText('{{年月}}', params.ym);
+  body.replaceText('{{単価}}', params.price.toLocaleString());
+  body.replaceText('{{時間}}', params.hours);
+  body.replaceText('{{小計}}', params.amount.toLocaleString());
+  body.replaceText('{{消費税}}', params.tax.toLocaleString());
+  body.replaceText('{{合計}}', params.total.toLocaleString());
+  body.replaceText('{{振込先}}', params.bank);
+
+  doc.saveAndClose();
+  const pdfBlob = copy.getAs('application/pdf')
+    .setName(`請求書_${params.client}_${params.ym}.pdf`);
+  folder.createFile(pdfBlob);
+  return pdfBlob;
+}
 ```
 
-### ポイント3: ドラフト保存にして最終確認
-
-初回はいきなり送信せず、まず**ドラフト保存**で確認。
+## メール送信
 
 ```javascript
-GmailApp.createDraft(email, subject, body, { attachments: [pdf] });
+function sendInvoiceMail(to, client, subject, pdf) {
+  GmailApp.createDraft(to, `【請求書】${subject}`,
+    `${client} 様\n\nお世話になっております。${CONFIG.FROM_NAME}です。\n`
+    + '今月分の請求書をお送りいたします。ご確認のほど、よろしくお願いいたします。',
+    {
+      attachments: [pdf],
+      name: CONFIG.FROM_NAME,
+      cc: CONFIG.MY_EMAIL
+    }
+  );
+}
 ```
 
-問題なければ `sendEmail` に書き換え。
+いきなり`sendEmail`にせず、まずは`createDraft`で下書きに保存するのがポイント。夜勤明けでも最終チェックだけはして、自分で送信ボタンを押す運用にしています。看護の世界でも最終確認は人間がやる、それと同じ感覚です。
 
-## 応用：源泉徴収・消費税計算
+## 押さえておきたい3つのポイント
+
+### ポイント1: 下書き保存で最終確認を残す
+
+自動送信は事故のもと。私は「生成は自動、送信だけ手動」のハイブリッド運用にしています。
+
+### ポイント2: 送付済みフラグで二重送信防止
+
+シートのG列に`TRUE`を立てることで、同月内にスクリプトを誤って再実行しても請求書が二重で作られません。
+
+### ポイント3: 出力フォルダを年月で分ける
 
 ```javascript
-const subtotal = amount;
-const tax = Math.floor(subtotal * 0.1);
-const total = subtotal + tax;
-const withholding = Math.floor(subtotal * 0.1021);  // 源泉徴収10.21%
-const payable = total - withholding;
+function getMonthFolder(parent, ym) {
+  const folders = parent.getFoldersByName(ym);
+  return folders.hasNext() ? folders.next() : parent.createFolder(ym);
+}
 ```
 
-## 応用：請求書番号の自動連番
+年月ごとにサブフォルダに整理しておくと、確定申告時の証憑探しが圧倒的に楽になります。
+
+## 応用:確定申告用CSVまで自動化
+
+マネーフォワード確定申告に取り込めるCSVも、同じデータから自動出力できます。
 
 ```javascript
-const props = PropertiesService.getScriptProperties();
-const lastNo = Number(props.getProperty('lastInvoiceNo') || 0);
-const nextNo = lastNo + 1;
-const invoiceNo = `INV-${yearMonth}-${String(nextNo).padStart(3, '0')}`;
-props.setProperty('lastInvoiceNo', String(nextNo));
+function exportTaxCsv(year) {
+  const sheet = SpreadsheetApp.openById(CONFIG.SHEET_ID).getSheets()[0];
+  const data = sheet.getDataRange().getValues();
+  data.shift();
+  const rows = [['日付','借方勘定科目','金額','取引先','摘要']];
+  data.forEach(r => {
+    const [client, , price, hours, , , , sentDate] = r;
+    if (!sentDate) return;
+    const d = new Date(sentDate);
+    if (d.getFullYear() !== year) return;
+    rows.push([
+      Utilities.formatDate(d,'JST','yyyy/MM/dd'),
+      '売掛金',
+      price * hours,
+      client,
+      'GAS開発業務'
+    ]);
+  });
+  const csv = rows.map(r => r.join(',')).join('\n');
+  DriveApp.createFile(`tax_${year}.csv`, csv, 'text/csv');
+}
 ```
 
-## トラブル：「PDFが崩れる」
-
-- **テンプレのフォント**がロケール依存フォントだと崩れる → 標準フォントに
-- **グラフや画像**は印刷範囲を明示的に設定
-- **PDF化時のシート選択**を明示
-
-## 看護師×副業ライターの私の使い方
-
-ライター業で月数社の取引先がいるので、**月末にワンクリックで全社分の請求書が送られる**仕組みを構築しました。夜勤続きの月でも請求書漏れがなくなり、入金もスムーズに。
-
-さらに**freee連携**も追加し、発行した請求書を自動で会計ソフトに記帳しています。確定申告の時期に「あの案件、請求書送ったっけ？」と記憶を辿る時間がゼロに。
+私は毎年1月にこれを実行して、そのまま取り込み。2月の確定申告がほぼ「確認するだけ」になりました。
 
 ## まとめ
 
-請求書自動発行は、**フリーランス・副業勢の時間を最も確実に取り戻す**GAS活用の代表例です。月末のルーティン作業から解放されるのは、本当に精神衛生上も良い変化でした。
+- スプシ+Docsテンプレ+GASで請求書フローは完全自動化できる
+- `createDraft`で最終チェックの余地を残すのが安心運用
+- 送付済みフラグで二重送信防止
+- 年月フォルダで証憑を整理、確定申告用CSVも自動化
 
-おすすめクラウド会計ソフト:
-- [freee会計]（請求書連携に強い）
-- [マネーフォワードクラウド]（家計とも一元管理したい方向け）
+看護師として病棟に立ちながら副業を続けるには、「考えなくても回る仕組み」が不可欠です。毎月の請求書発行は、まさに自動化の恩恵を一番感じやすい領域。ぜひあなたの副業にも取り入れてみてください。
 
-※リンクは順次更新予定。
+## 関連記事
 
-関連記事: [レシートOCR自動集計](/blog/gas-receipt-ocr-tax/) / [スプシ毎朝自動整え](/blog/gas-spreadsheet-daily-auto/)
+- [GAS setValuesで1000行を一括書き込む高速化テクニック](/blog/gas-sheet-setvalues-bulk/)
+- [スプシ重複行を自動削除するGAS完全版コード](/blog/gas-sheet-dedupe/)
+- [LINE Messaging APIとGAS連携する最短3ステップ](/blog/gas-line-messaging-api-setup/)
