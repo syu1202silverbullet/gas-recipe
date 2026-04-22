@@ -3,6 +3,7 @@ import BaseHead from '../components/BaseHead.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import MobileNav from '../components/MobileNav.astro';
+import NewsletterSignup from '../components/NewsletterSignup.astro';
 import { SITE_TITLE } from '../consts';
 import { getCollection } from 'astro:content';
 
@@ -17,19 +18,32 @@ posts.forEach((p: any) => {
 });
 
 const orderedCats = [
-	{ slug: 'gas-basics', name: 'GAS入門', icon: '🌱' },
-	{ slug: 'gmail', name: 'Gmail自動化', icon: '✉️' },
-	{ slug: 'calendar', name: 'Googleカレンダー', icon: '📅' },
-	{ slug: 'spreadsheet', name: 'スプレッドシート', icon: '📊' },
-	{ slug: 'line', name: 'LINE連携', icon: '💬' },
-	{ slug: 'side-business', name: '副業・確定申告', icon: '💼' },
+	{ slug: 'gas-basics', name: 'GAS入門', icon: '🌱', desc: '変数・関数・ループ・配列の基礎。まずここから。' },
+	{ slug: 'gmail', name: 'Gmail自動化', icon: '✉️', desc: '自動返信・添付保存・差し込みメール・ラベル付与' },
+	{ slug: 'calendar', name: 'Googleカレンダー', icon: '📅', desc: '予定一括登録・空き時間抽出・繰り返しイベント' },
+	{ slug: 'spreadsheet', name: 'スプレッドシート', icon: '📊', desc: 'setValues最適化・PDF出力・条件付き書式・集計' },
+	{ slug: 'line', name: 'LINE連携', icon: '💬', desc: 'Messaging API・Bot作成・毎朝通知・ChatGPT連携' },
+	{ slug: 'side-business', name: '副業・確定申告', icon: '💼', desc: 'Uber Eats集計・請求書自動発行・OCR記帳' },
+];
+
+const totalPosts = posts.length;
+
+// 初心者ロードマップ用の推奨記事順
+const beginnerRoadmap = [
+	{ slug: 'gas-beginner-5min', title: 'まず最初の1行コードを書く', desc: '5分で動くGASのスタート地点', week: 'Day 1' },
+	{ slug: 'gas-variable-const-let', title: '変数 const/let を使い分ける', desc: 'JavaScript基礎の最重要ポイント', week: 'Day 2-3' },
+	{ slug: 'gas-function-basic', title: '関数を小さく分ける', desc: '引数・return・アロー関数の7パターン', week: 'Day 4-5' },
+	{ slug: 'gas-for-loop-5', title: 'ループで配列を処理する', desc: 'for/for...of/forEach の使い分け', week: 'Day 6-7' },
+	{ slug: 'gas-array-basic', title: '配列メソッドを使いこなす', desc: 'map/filter/reduce 等15個の早見表', week: 'Week 2' },
+	{ slug: 'gas-trigger-setup', title: 'トリガーで自動実行させる', desc: '時間指定・onEdit・onOpenの基本', week: 'Week 2' },
+	{ slug: 'gas-error-exception', title: 'よく出るエラーを読み解く', desc: '「Authorization required」等10選', week: 'Week 2' },
 ];
 ---
 
 <!doctype html>
 <html lang="ja">
 	<head>
-		<BaseHead title={`GAS完全ガイド｜初心者から実践までの目次 | ${SITE_TITLE}`} description="Google Apps Script初心者から実践まで、GAS Recipeの全記事を体系的にまとめた完全ガイド。何から始めればいいか、どんな順番で学ぶべきかが1ページでわかります。" />
+		<BaseHead title={`GAS完全ガイド｜0から実務自動化まで | ${SITE_TITLE}`} description="Google Apps Script初心者から実務自動化まで、GAS Recipeの全記事を体系的にまとめた完全ガイド。学習ロードマップ・用途別目次・FAQを1ページに凝縮。現役ナース×副業Webエンジニアの凛が運営中。" />
 	</head>
 	<body>
 		<Header />
@@ -37,29 +51,100 @@ const orderedCats = [
 			<nav class="breadcrumbs" aria-label="パンくずリスト">
 				<a href="/">ホーム</a> <span>›</span> GAS完全ガイド
 			</nav>
-			<h1>GAS完全ガイド｜0から副業収入まで</h1>
-			<p class="lead">
-				Google Apps Scriptを初めて触る方から、副業で収益化したい方まで。GAS Recipeの全記事を目的別に整理しました。上から順に読めば、GASを使った自動化を着実に身につけられます。
-			</p>
 
+			<!-- HERO -->
+			<section class="guide-hero">
+				<p class="eyebrow">📚 Pillar Page</p>
+				<h1>GAS完全ガイド<br/>0から実務自動化まで</h1>
+				<p class="lead">
+					Google Apps Scriptを初めて触る方から、業務を自動化したい実務担当者まで。
+					GAS Recipeの全{totalPosts}記事を、学習順・用途別に体系化しました。
+					「何から読めばいいか分からない」迷子ゼロのガイドです。
+				</p>
+				<div class="stats">
+					<div class="stat"><strong>{totalPosts}+</strong><span>公開記事</span></div>
+					<div class="stat"><strong>9</strong><span>カテゴリ</span></div>
+					<div class="stat"><strong>100%</strong><span>実働コード</span></div>
+					<div class="stat"><strong>無料</strong><span>全記事</span></div>
+				</div>
+			</section>
+
+			<!-- JUMP LINKS -->
 			<nav class="quick-nav" aria-label="クイックナビ">
-				<p>🎯 目的から探す</p>
+				<p class="qn-head">🎯 今すぐジャンプ</p>
 				<ul>
-					<li><a href="#begin">✅ まず最初の1行を書きたい</a></li>
-					<li><a href="#gmail">✉️ Gmailを自動化したい</a></li>
-					<li><a href="#calendar">📅 予定管理を自動化したい</a></li>
-					<li><a href="#spreadsheet">📊 スプシの面倒な作業をゼロに</a></li>
-					<li><a href="#line">💬 LINE通知で情報収集を自動化</a></li>
-					<li><a href="#side">💼 副業・確定申告の効率化</a></li>
+					<li><a href="#roadmap">📍 初心者ロードマップ</a></li>
+					<li><a href="#begin">🌱 GAS入門</a></li>
+					<li><a href="#gmail">✉️ Gmail自動化</a></li>
+					<li><a href="#calendar">📅 カレンダー</a></li>
+					<li><a href="#spreadsheet">📊 スプレッドシート</a></li>
+					<li><a href="#line">💬 LINE連携</a></li>
+					<li><a href="#side">💼 副業・確定申告</a></li>
+					<li><a href="#faq">❓ よくある質問</a></li>
 				</ul>
 			</nav>
+
+			<!-- WHY GAS -->
+			<section class="why-gas">
+				<h2>なぜGAS（Google Apps Script）を学ぶのか</h2>
+				<div class="why-grid">
+					<div class="why-card">
+						<div class="why-icon">💸</div>
+						<h3>完全無料で始められる</h3>
+						<p>Googleアカウント1つあれば、サーバー代・ドメイン代ゼロで動く。学習コストもゼロ円。</p>
+					</div>
+					<div class="why-card">
+						<div class="why-icon">⚡</div>
+						<h3>5分で最初の成果が出る</h3>
+						<p>「Hello World」ではなく、1回目の実行でメールが飛ぶ・シートが書き換わる。成功体験が早い。</p>
+					</div>
+					<div class="why-card">
+						<div class="why-icon">🔧</div>
+						<h3>日常業務に直結</h3>
+						<p>Gmail・スプシ・カレンダーなど、すでに使っているサービスを自動化できるので投資対効果が高い。</p>
+					</div>
+					<div class="why-card">
+						<div class="why-icon">💼</div>
+						<h3>副業・受託案件に繋がる</h3>
+						<p>GAS案件はクラウドワークス等で常に需要あり。最初の副業としても定番。</p>
+					</div>
+				</div>
+			</section>
+
+			<!-- LEARNING ROADMAP -->
+			<section class="roadmap-section" id="roadmap">
+				<h2>📍 初心者ロードマップ（2週間で基礎固め）</h2>
+				<p class="section-lead">GAS Recipeをゼロから読むなら、この順番がおすすめ。1日1記事ペースで、2週間で実務レベルの基礎が固まります。</p>
+				<div class="roadmap">
+					{beginnerRoadmap.map((r, i) => (
+						<article class="roadmap-card">
+							<div class="roadmap-num">{i + 1}</div>
+							<div class="roadmap-body">
+								<span class="roadmap-week">{r.week}</span>
+								<h3><a href={`/blog/${r.slug}/`}>{r.title}</a></h3>
+								<p>{r.desc}</p>
+							</div>
+						</article>
+					))}
+				</div>
+			</section>
+
+			<!-- CATEGORY SECTIONS -->
+			<section class="cat-intro">
+				<h2>📂 カテゴリ別・用途から記事を探す</h2>
+				<p class="section-lead">やりたい自動化が決まっている方は、カテゴリから直接探すのが最短です。</p>
+			</section>
 
 			{orderedCats.map((cat) => {
 				const items = byCategory[cat.slug] || [];
 				if (items.length === 0) return null;
 				return (
 					<section class="guide-section" id={cat.slug === 'gas-basics' ? 'begin' : cat.slug === 'side-business' ? 'side' : cat.slug}>
-						<h2>{cat.icon} {cat.name}</h2>
+						<div class="cat-header">
+							<h2>{cat.icon} {cat.name}</h2>
+							<p class="cat-desc">{cat.desc}</p>
+							<span class="cat-count">{items.length}記事</span>
+						</div>
 						<ul class="guide-list">
 							{items.sort((a: any, b: any) => a.data.pubDate.valueOf() - b.data.pubDate.valueOf()).map((p: any) => (
 								<li>
@@ -74,23 +159,130 @@ const orderedCats = [
 				);
 			})}
 
-			<section class="guide-section">
-				<h2>📚 学びの次のステップ</h2>
-				<p>
-					独学でGASを身につけるのも良いですが、効率よく実務レベルまで到達したい方はプログラミングスクール＋Udemy組み合わせが時間対効果が高いです。
-					具体的な比較は順次記事化予定です。
-				</p>
+			<!-- MID-CTA: PRODUCTS -->
+			<section class="mid-cta">
+				<div class="cta-inner">
+					<p class="cta-eyebrow">🛍️ 手っ取り早く自動化したい方へ</p>
+					<h2>凛が毎日使ってるGASテンプレ、6本パッケージ化中</h2>
+					<p>予定管理・買い物リスト・確定申告など、学習の時間が取れない方向けに「コピペで動くテンプレート」を2026年6月にリリース予定。事前登録者には30%OFFクーポンをお送りします。</p>
+					<a href="/products/" class="cta-btn">テンプレート一覧を見る →</a>
+				</div>
+			</section>
+
+			<!-- FAQ -->
+			<section class="faq" id="faq">
+				<h2>❓ よくある質問</h2>
+				<div class="faq-list">
+					<details>
+						<summary>Q. プログラミング完全未経験でも読めますか？</summary>
+						<p>A. 全記事「非エンジニアでも読める」をモットーに書いています。GAS入門カテゴリから順番に読めば、1日30分×2週間で基礎が固まります。つまずいたら<a href="/contact/">お問い合わせ</a>から質問OKです。</p>
+					</details>
+					<details>
+						<summary>Q. Mac/Windowsどちらでも動きますか？</summary>
+						<p>A. GASはブラウザ（Chrome推奨）さえあれば動きます。OSは一切不問。スマホ（iPad/Android）のブラウザでも編集・実行できます。</p>
+					</details>
+					<details>
+						<summary>Q. コードが動かなかったらどうすれば？</summary>
+						<p>A. 各記事の「よくあるエラーと解決法」セクションで代表的なエラーを解説しています。それでも解決しない場合、<a href="/errors/">エラー逆引き辞典</a>も合わせてご確認ください。</p>
+					</details>
+					<details>
+						<summary>Q. GAS案件は本当に副業になりますか？</summary>
+						<p>A. クラウドワークス・ランサーズ等でGAS案件は継続的に募集されており、3〜5千円/時間のレートが相場です。ただし「絶対に稼げます」というお約束はできません。個人の学習ペース・営業努力次第です。</p>
+					</details>
+					<details>
+						<summary>Q. Google Workspaceの有料版は必要？</summary>
+						<p>A. 個人の自動化なら無料版で充分です。有料版のメリットは「実行時間制限が6分→30分」になる点くらい。まずは無料版で始めて、限界を感じたら検討で大丈夫です。</p>
+					</details>
+					<details>
+						<summary>Q. 記事のコードを自分のブログ・YouTubeで紹介してもいい？</summary>
+						<p>A. コード部分は自由に使って構いません。記事本文の転載は禁止ですが、引用（URL＋出典明記）は歓迎します。</p>
+					</details>
+					<details>
+						<summary>Q. 記事の更新頻度は？</summary>
+						<p>A. 現在は平日毎日19時に新着記事を公開中。2026年内に全120記事の公開を目指しています。</p>
+					</details>
+				</div>
+			</section>
+
+			<!-- NEWSLETTER -->
+			<NewsletterSignup />
+
+			<!-- NEXT STEP -->
+			<section class="next-step">
+				<h2>📚 次のステップ</h2>
+				<p>ガイドを一通り読んだら、実際に手を動かしてみるのが一番の近道です。</p>
+				<ul class="next-list">
+					<li><a href="/blog/">🍳 全記事一覧を見る（{totalPosts}本）</a></li>
+					<li><a href="/usecase/">🎯 ユースケース逆引き（やりたいことから探す）</a></li>
+					<li><a href="/errors/">🩹 エラー逆引き辞典（つまずいたとき用）</a></li>
+					<li><a href="/products/">🛍️ テンプレート販売（6月リリース予告）</a></li>
+					<li><a href="/about/">👤 運営者について（凛のプロフィール）</a></li>
+				</ul>
 			</section>
 		</main>
 		<Footer />
 		<MobileNav />
 		<style>
-			main { width: 860px; max-width: calc(100% - 2rem); margin: 0 auto; padding: 2rem 1rem 4rem; }
+			main { width: 880px; max-width: calc(100% - 2rem); margin: 0 auto; padding: 2rem 1rem 4rem; }
 			.breadcrumbs { font-size: 0.88em; color: rgb(var(--gray)); margin-bottom: 1rem; }
 			.breadcrumbs a { color: var(--accent); text-decoration: none; }
-			h1 { margin: 0 0 1rem; }
-			.lead { color: rgb(var(--gray-dark)); line-height: 1.9; margin: 0 0 2rem; }
 
+			/* HERO */
+			.guide-hero {
+				background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+				border-radius: 16px;
+				padding: 3rem 2rem;
+				text-align: center;
+				margin-bottom: 2rem;
+			}
+			.eyebrow {
+				display: inline-block;
+				padding: 0.3em 1em;
+				background: white;
+				color: var(--accent);
+				border-radius: 999px;
+				font-size: 0.82em;
+				font-weight: 700;
+				margin: 0 0 1rem;
+			}
+			.guide-hero h1 {
+				font-size: 2em;
+				margin: 0 0 1rem;
+				line-height: 1.4;
+				color: rgb(var(--black));
+				border: none;
+			}
+			.lead {
+				color: rgb(var(--gray-dark));
+				line-height: 1.9;
+				margin: 0 0 2rem;
+				max-width: 680px;
+				margin-left: auto;
+				margin-right: auto;
+			}
+			.stats {
+				display: flex;
+				justify-content: center;
+				gap: 2rem;
+				flex-wrap: wrap;
+			}
+			.stat {
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+			}
+			.stat strong {
+				font-size: 1.8em;
+				color: var(--accent);
+				line-height: 1;
+			}
+			.stat span {
+				font-size: 0.82em;
+				color: rgb(var(--gray));
+				margin-top: 0.3rem;
+			}
+
+			/* QUICK NAV */
 			.quick-nav {
 				background: var(--bg-soft);
 				border-left: 4px solid var(--accent);
@@ -98,16 +290,164 @@ const orderedCats = [
 				padding: 1.3rem 1.5rem;
 				margin-bottom: 2rem;
 			}
-			.quick-nav p { margin: 0 0 0.6rem; font-weight: 700; font-size: 1em; }
-			.quick-nav ul { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 0.4rem 1rem; }
+			.qn-head { margin: 0 0 0.8rem; font-weight: 700; font-size: 1em; }
+			.quick-nav ul {
+				list-style: none;
+				padding: 0;
+				margin: 0;
+				display: grid;
+				grid-template-columns: 1fr 1fr;
+				gap: 0.4rem 1rem;
+			}
 			.quick-nav a { color: rgb(var(--gray-dark)); text-decoration: none; font-size: 0.92em; }
 			.quick-nav a:hover { color: var(--accent); }
-			@media (max-width: 720px) {
-				.quick-nav ul { grid-template-columns: 1fr; }
+
+			/* WHY GAS */
+			.why-gas { margin: 3rem 0; }
+			.why-gas h2 {
+				text-align: center;
+				font-size: 1.4em;
+				margin: 0 0 1.5rem;
+			}
+			.why-grid {
+				display: grid;
+				grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+				gap: 1rem;
+			}
+			.why-card {
+				background: white;
+				border: 1px solid rgb(var(--gray-light));
+				border-radius: 12px;
+				padding: 1.3rem;
+				text-align: center;
+				transition: all 0.2s;
+			}
+			.why-card:hover {
+				transform: translateY(-2px);
+				box-shadow: var(--box-shadow);
+			}
+			.why-icon { font-size: 2em; margin-bottom: 0.5rem; }
+			.why-card h3 {
+				margin: 0 0 0.6rem;
+				font-size: 1em;
+				color: rgb(var(--black));
+			}
+			.why-card p {
+				margin: 0;
+				font-size: 0.85em;
+				line-height: 1.7;
+				color: rgb(var(--gray-dark));
 			}
 
-			.guide-section { margin-bottom: 3rem; }
-			.guide-list { list-style: none; padding: 0; display: grid; grid-template-columns: 1fr; gap: 0.8rem; }
+			/* ROADMAP */
+			.roadmap-section { margin: 3rem 0; }
+			.section-lead {
+				color: rgb(var(--gray-dark));
+				line-height: 1.8;
+				margin: 0 0 1.5rem;
+			}
+			.roadmap {
+				display: flex;
+				flex-direction: column;
+				gap: 1rem;
+			}
+			.roadmap-card {
+				display: flex;
+				gap: 1.2rem;
+				padding: 1.3rem 1.5rem;
+				background: var(--bg-soft);
+				border-radius: 12px;
+				border-left: 4px solid var(--accent);
+				transition: all 0.2s;
+			}
+			.roadmap-card:hover {
+				transform: translateX(4px);
+				box-shadow: var(--box-shadow);
+			}
+			.roadmap-num {
+				width: 44px;
+				height: 44px;
+				border-radius: 50%;
+				background: var(--accent);
+				color: white;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				font-weight: 700;
+				font-size: 1.2em;
+				flex-shrink: 0;
+			}
+			.roadmap-week {
+				display: inline-block;
+				padding: 0.2em 0.7em;
+				background: white;
+				border: 1px solid var(--accent);
+				color: var(--accent);
+				border-radius: 999px;
+				font-size: 0.72em;
+				font-weight: 600;
+				margin-bottom: 0.5rem;
+			}
+			.roadmap-card h3 {
+				margin: 0 0 0.3rem;
+				font-size: 1em;
+			}
+			.roadmap-card h3 a {
+				color: rgb(var(--black));
+				text-decoration: none;
+			}
+			.roadmap-card h3 a:hover { color: var(--accent); }
+			.roadmap-card p {
+				margin: 0;
+				font-size: 0.88em;
+				line-height: 1.6;
+				color: rgb(var(--gray-dark));
+			}
+
+			/* CATEGORY */
+			.cat-intro { margin: 3rem 0 1.5rem; }
+			.cat-intro h2 {
+				font-size: 1.4em;
+				margin: 0 0 0.8rem;
+			}
+			.guide-section { margin-bottom: 2.5rem; }
+			.cat-header {
+				display: flex;
+				align-items: center;
+				flex-wrap: wrap;
+				gap: 0.8rem;
+				margin-bottom: 1rem;
+				padding-bottom: 0.8rem;
+				border-bottom: 2px solid var(--accent);
+			}
+			.cat-header h2 {
+				margin: 0;
+				font-size: 1.2em;
+				border: none;
+				padding: 0;
+			}
+			.cat-desc {
+				flex: 1;
+				min-width: 200px;
+				margin: 0;
+				font-size: 0.88em;
+				color: rgb(var(--gray-dark));
+			}
+			.cat-count {
+				padding: 0.3em 0.8em;
+				background: var(--accent);
+				color: white;
+				border-radius: 999px;
+				font-size: 0.78em;
+				font-weight: 600;
+			}
+			.guide-list {
+				list-style: none;
+				padding: 0;
+				display: grid;
+				grid-template-columns: 1fr;
+				gap: 0.6rem;
+			}
 			.guide-list li { margin: 0; }
 			.guide-list a {
 				display: block;
@@ -126,6 +466,140 @@ const orderedCats = [
 			}
 			.guide-title { display: block; font-weight: 700; color: rgb(var(--black)); margin-bottom: 0.3rem; }
 			.guide-desc { display: block; font-size: 0.88em; color: rgb(var(--gray-dark)); line-height: 1.6; }
+
+			/* MID CTA */
+			.mid-cta {
+				margin: 3rem 0;
+				padding: 2.5rem 2rem;
+				background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+				border-radius: 16px;
+				text-align: center;
+			}
+			.cta-inner { max-width: 640px; margin: 0 auto; }
+			.cta-eyebrow {
+				display: inline-block;
+				padding: 0.3em 1em;
+				background: white;
+				color: #78350f;
+				border-radius: 999px;
+				font-size: 0.82em;
+				font-weight: 700;
+				margin: 0 0 1rem;
+			}
+			.mid-cta h2 {
+				margin: 0 0 1rem;
+				font-size: 1.3em;
+				color: #78350f;
+				border: none;
+				padding: 0;
+			}
+			.mid-cta p {
+				margin: 0 0 1.5rem;
+				color: #78350f;
+				line-height: 1.8;
+			}
+			.cta-btn {
+				display: inline-block;
+				padding: 0.9em 2rem;
+				background: var(--accent);
+				color: white;
+				border-radius: 999px;
+				text-decoration: none;
+				font-weight: 700;
+				box-shadow: 0 6px 14px rgba(59, 130, 246, 0.3);
+				transition: transform 0.15s;
+			}
+			.cta-btn:hover { transform: translateY(-2px); color: white; }
+
+			/* FAQ */
+			.faq { margin: 3rem 0; }
+			.faq h2 {
+				font-size: 1.4em;
+				margin: 0 0 1.5rem;
+			}
+			.faq-list { display: flex; flex-direction: column; gap: 0.8rem; }
+			details {
+				background: var(--bg-soft);
+				border-radius: 10px;
+				padding: 1rem 1.3rem;
+				border: 1px solid rgb(var(--gray-light));
+				transition: all 0.15s;
+			}
+			details[open] { border-color: var(--accent); }
+			summary {
+				font-weight: 600;
+				cursor: pointer;
+				list-style: none;
+				color: rgb(var(--black));
+				padding: 0.2rem 0;
+				position: relative;
+				padding-right: 1.5rem;
+			}
+			summary::-webkit-details-marker { display: none; }
+			summary::after {
+				content: '+';
+				position: absolute;
+				right: 0;
+				top: 0;
+				color: var(--accent);
+				font-weight: 700;
+				font-size: 1.3em;
+				transition: transform 0.15s;
+			}
+			details[open] summary::after { transform: rotate(45deg); }
+			details p {
+				margin: 0.8rem 0 0;
+				font-size: 0.92em;
+				line-height: 1.8;
+				color: rgb(var(--gray-dark));
+			}
+			details p a { color: var(--accent); text-decoration: none; }
+
+			/* NEXT STEP */
+			.next-step { margin: 2rem 0; }
+			.next-step h2 {
+				font-size: 1.3em;
+				margin: 0 0 1rem;
+			}
+			.next-list {
+				list-style: none;
+				padding: 0;
+				display: grid;
+				grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+				gap: 0.8rem;
+			}
+			.next-list li { margin: 0; }
+			.next-list a {
+				display: block;
+				padding: 1rem 1.2rem;
+				background: var(--bg-soft);
+				border-radius: 8px;
+				text-decoration: none;
+				color: rgb(var(--black));
+				font-weight: 600;
+				transition: all 0.15s;
+				border: 1px solid transparent;
+			}
+			.next-list a:hover {
+				border-color: var(--accent);
+				color: var(--accent);
+			}
+
+			@media (max-width: 720px) {
+				.guide-hero h1 { font-size: 1.5em; }
+				.quick-nav ul { grid-template-columns: 1fr; }
+				.stats { gap: 1rem; }
+				.stat strong { font-size: 1.4em; }
+			}
+			@media (prefers-color-scheme: dark) {
+				.guide-hero { background: linear-gradient(135deg, #1e293b 0%, #1e3a8a 100%); }
+				.guide-hero h1 { color: #f1f5f9; }
+				.eyebrow { background: var(--bg-soft); }
+				.why-card { background: var(--bg-soft); border-color: rgb(var(--gray-dark)); }
+				.mid-cta { background: linear-gradient(135deg, #451a03 0%, #78350f 100%); }
+				.mid-cta h2, .mid-cta p { color: #fef3c7; }
+				.cta-eyebrow { background: var(--bg-soft); color: #fef3c7; }
+			}
 		</style>
 	</body>
 </html>
