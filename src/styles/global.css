@@ -153,3 +153,27 @@ strong, b { font-weight: 700; color: var(--accent-dark); }
 		clip-path: inset(50%);
 		white-space: nowrap;
 }
+
+
+/* Copy button on code blocks */
+pre {
+	position: relative;
+}
+pre .copy-btn {
+	position: absolute;
+	top: 8px;
+	right: 8px;
+	background: rgba(255,255,255,0.1);
+	border: 1px solid rgba(255,255,255,0.2);
+	color: #e2e8f0;
+	border-radius: 6px;
+	padding: 0.2em 0.7em;
+	font-size: 0.78em;
+	cursor: pointer;
+	opacity: 0;
+	transition: opacity 0.15s, background 0.15s;
+	font-family: inherit;
+}
+pre:hover .copy-btn { opacity: 1; }
+pre .copy-btn:hover { background: rgba(255,255,255,0.2); }
+pre .copy-btn.copied { background: #10b981; border-color: #10b981; }
