@@ -28,7 +28,7 @@ const orderedCats = [
 
 const totalPosts = posts.length;
 
-// 初心者ロードマップ用の推奨記事順
+// 初心者ロードマップ（Week 1-2）
 const beginnerRoadmap = [
 	{ slug: 'gas-beginner-5min', title: 'まず最初の1行コードを書く', desc: '5分で動くGASのスタート地点', week: 'Day 1' },
 	{ slug: 'gas-variable-const-let', title: '変数 const/let を使い分ける', desc: 'JavaScript基礎の最重要ポイント', week: 'Day 2-3' },
@@ -37,6 +37,28 @@ const beginnerRoadmap = [
 	{ slug: 'gas-array-basic', title: '配列メソッドを使いこなす', desc: 'map/filter/reduce 等15個の早見表', week: 'Week 2' },
 	{ slug: 'gas-trigger-setup', title: 'トリガーで自動実行させる', desc: '時間指定・onEdit・onOpenの基本', week: 'Week 2' },
 	{ slug: 'gas-error-exception', title: 'よく出るエラーを読み解く', desc: '「Authorization required」等10選', week: 'Week 2' },
+];
+
+// 中級者ロードマップ（Week 3-4）：Googleサービス連携
+const intermediateRoadmap = [
+	{ slug: 'gas-gmail-auto-reply', title: 'Gmail自動返信の仕組みを組む', desc: '5分以内返信で信頼UP、ラベル管理', week: 'Week 3' },
+	{ slug: 'gas-calendar-event-create', title: 'カレンダー予定を自動作成', desc: 'スプシから一括登録、繰り返し予定', week: 'Week 3' },
+	{ slug: 'gas-sheet-setvalues-bulk', title: 'setValuesで大量データを速く書く', desc: 'ループで遅いコードを1発で解消', week: 'Week 3' },
+	{ slug: 'gas-sheet-export-pdf', title: 'スプシをPDF化して自動保存', desc: '月次レポートを自動化、Drive連携', week: 'Week 4' },
+	{ slug: 'gas-trigger-6min-limit', title: '6分制限を回避するテクニック', desc: 'バッチ分割+進捗保存+再起動', week: 'Week 4' },
+	{ slug: 'gas-gmail-attachment-drive', title: 'Gmail添付をDriveに自動保存', desc: '仕事の証跡を自動アーカイブ', week: 'Week 4' },
+	{ slug: 'gas-library-add', title: 'ライブラリ導入で開発加速', desc: '2026年人気10選と依存管理', week: 'Week 4' },
+];
+
+// 上級者ロードマップ（Week 5-8）：実務応用・副業化
+const advancedRoadmap = [
+	{ slug: 'gas-trigger-webhook', title: 'Webhook受信で即時処理', desc: 'フォーム・LINE・Slackとリアルタイム連携', week: 'Week 5' },
+	{ slug: 'gas-line-messaging-api-setup', title: 'LINE Bot を自作する', desc: 'Messaging API連携、ユーザー対応Bot', week: 'Week 5' },
+	{ slug: 'gas-kakutei-receipt-ocr', title: '確定申告レシートをOCR記帳', desc: 'Cloud Vision + スプシ自動記録', week: 'Week 6' },
+	{ slug: 'gas-ubereats-csv-mf', title: 'Uber Eats収益を会計CSV化', desc: '配達スクショから自動集計・MF形式出力', week: 'Week 6' },
+	{ slug: 'gas-freelance-invoice', title: 'フリーランス請求書を自動発行', desc: 'スプシ→PDF→Gmail送信まで自動化', week: 'Week 7' },
+	{ slug: 'gas-sidejob-roadmap', title: 'GAS副業月5万円ロードマップ', desc: '案件獲得から継続受注までの全手順', week: 'Week 8' },
+	{ slug: 'gas-freelance-first-client', title: '最初のGAS案件を取る完全ガイド', desc: 'クラウドワークス・営業・見積もり', week: 'Week 8' },
 ];
 ---
 
@@ -73,8 +95,11 @@ const beginnerRoadmap = [
 			<nav class="quick-nav" aria-label="クイックナビ">
 				<p class="qn-head">🎯 今すぐジャンプ</p>
 				<ul>
-					<li><a href="#roadmap">📍 初心者ロードマップ</a></li>
-					<li><a href="#begin">🌱 GAS入門</a></li>
+					<li><a href="#roadmap">📍 レベル別ロードマップ</a></li>
+					<li><a href="#roadmap-beginner">🌱 Lv.1 初級</a></li>
+					<li><a href="#roadmap-intermediate">⚙️ Lv.2 中級</a></li>
+					<li><a href="#roadmap-advanced">🚀 Lv.3 上級</a></li>
+					<li><a href="#begin">📂 GAS入門カテゴリ</a></li>
 					<li><a href="#gmail">✉️ Gmail自動化</a></li>
 					<li><a href="#calendar">📅 カレンダー</a></li>
 					<li><a href="#spreadsheet">📊 スプレッドシート</a></li>
@@ -111,9 +136,38 @@ const beginnerRoadmap = [
 				</div>
 			</section>
 
-			<!-- LEARNING ROADMAP -->
-			<section class="roadmap-section" id="roadmap">
-				<h2>📍 初心者ロードマップ（2週間で基礎固め）</h2>
+			<!-- LEVEL OVERVIEW -->
+			<section class="level-overview" id="roadmap">
+				<h2>📍 レベル別学習ロードマップ（8週間で副業化まで）</h2>
+				<p class="section-lead">GAS Recipeをゼロから読むなら、以下の3段階がおすすめ。1日1記事ペースで、2ヶ月で副業案件まで到達できる設計です。</p>
+				<div class="level-cards">
+					<a href="#roadmap-beginner" class="level-card level-1">
+						<div class="level-num">Lv.1</div>
+						<h3>🌱 初級</h3>
+						<p class="level-period">Week 1-2</p>
+						<p class="level-desc">基礎文法・トリガー・エラー対処。JavaScript入門を含む基礎固め。</p>
+						<span class="level-go">詳細 →</span>
+					</a>
+					<a href="#roadmap-intermediate" class="level-card level-2">
+						<div class="level-num">Lv.2</div>
+						<h3>⚙️ 中級</h3>
+						<p class="level-period">Week 3-4</p>
+						<p class="level-desc">Gmail・カレンダー・スプシ連携。業務で実働する自動化スクリプトを組める。</p>
+						<span class="level-go">詳細 →</span>
+					</a>
+					<a href="#roadmap-advanced" class="level-card level-3">
+						<div class="level-num">Lv.3</div>
+						<h3>🚀 上級</h3>
+						<p class="level-period">Week 5-8</p>
+						<p class="level-desc">LINE Bot・Webhook・OCR・副業化。実案件・フリーランス受託まで。</p>
+						<span class="level-go">詳細 →</span>
+					</a>
+				</div>
+			</section>
+
+			<!-- BEGINNER ROADMAP -->
+			<section class="roadmap-section" id="roadmap-beginner">
+				<h2>🌱 Level 1: 初級ロードマップ（Week 1-2）</h2>
 				<p class="section-lead">GAS Recipeをゼロから読むなら、この順番がおすすめ。1日1記事ペースで、2週間で実務レベルの基礎が固まります。</p>
 				<div class="roadmap">
 					{beginnerRoadmap.map((r, i) => (
@@ -126,6 +180,71 @@ const beginnerRoadmap = [
 							</div>
 						</article>
 					))}
+				</div>
+				<div class="level-milestone">
+					<strong>🎯 Lv.1 到達後にできること:</strong>
+					<ul>
+						<li>5分でGASを書いて実行できる</li>
+						<li>変数・関数・ループ・配列をコードで使い分けできる</li>
+						<li>トリガーで時間指定の自動実行ができる</li>
+						<li>エラーメッセージを読み解いて自己解決できる</li>
+					</ul>
+				</div>
+			</section>
+
+			<!-- INTERMEDIATE ROADMAP -->
+			<section class="roadmap-section level-int" id="roadmap-intermediate">
+				<h2>⚙️ Level 2: 中級ロードマップ（Week 3-4）</h2>
+				<p class="section-lead">基礎が固まったら、Googleサービス連携に踏み込みます。Gmail・カレンダー・スプシを繋げて、実務で動く自動化スクリプトが書けるレベルに。</p>
+				<div class="roadmap">
+					{intermediateRoadmap.map((r, i) => (
+						<article class="roadmap-card">
+							<div class="roadmap-num">{i + 1}</div>
+							<div class="roadmap-body">
+								<span class="roadmap-week">{r.week}</span>
+								<h3><a href={`/blog/${r.slug}/`}>{r.title}</a></h3>
+								<p>{r.desc}</p>
+							</div>
+						</article>
+					))}
+				</div>
+				<div class="level-milestone">
+					<strong>🎯 Lv.2 到達後にできること:</strong>
+					<ul>
+						<li>Gmail・カレンダー・スプシを横断する自動化を組める</li>
+						<li>setValuesで1000行データを高速処理できる</li>
+						<li>PDF化・Drive保存・添付管理が自動化できる</li>
+						<li>6分制限のあるGASでも長時間処理を走らせられる</li>
+						<li>外部ライブラリを導入して開発を加速できる</li>
+					</ul>
+				</div>
+			</section>
+
+			<!-- ADVANCED ROADMAP -->
+			<section class="roadmap-section level-adv" id="roadmap-advanced">
+				<h2>🚀 Level 3: 上級ロードマップ（Week 5-8）</h2>
+				<p class="section-lead">業務自動化を超えて、LINE Bot・Webhook・OCR・副業受注まで。ここまで到達すれば、クラウドワークス等でGAS案件を受けるスキルが揃います。</p>
+				<div class="roadmap">
+					{advancedRoadmap.map((r, i) => (
+						<article class="roadmap-card">
+							<div class="roadmap-num">{i + 1}</div>
+							<div class="roadmap-body">
+								<span class="roadmap-week">{r.week}</span>
+								<h3><a href={`/blog/${r.slug}/`}>{r.title}</a></h3>
+								<p>{r.desc}</p>
+							</div>
+						</article>
+					))}
+				</div>
+				<div class="level-milestone">
+					<strong>🎯 Lv.3 到達後にできること:</strong>
+					<ul>
+						<li>LINE Bot を自作・運用できる（OpenAI連携も）</li>
+						<li>Webhook受信でリアルタイム処理ができる</li>
+						<li>OCR・画像認識を使った高度な自動化</li>
+						<li>確定申告・請求書など副業インフラを自動化</li>
+						<li>クラウドワークス等でGAS案件を受注できる</li>
+					</ul>
 				</div>
 			</section>
 
@@ -339,8 +458,101 @@ const beginnerRoadmap = [
 				color: rgb(var(--gray-dark));
 			}
 
+			/* LEVEL OVERVIEW */
+			.level-overview { margin: 3rem 0; }
+			.level-overview h2 { font-size: 1.5em; margin: 0 0 1rem; }
+			.level-cards {
+				display: grid;
+				grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+				gap: 1rem;
+				margin-top: 1.5rem;
+			}
+			.level-card {
+				display: block;
+				padding: 1.5rem 1.3rem;
+				background: var(--bg);
+				border: 2px solid rgb(var(--gray-light));
+				border-radius: 12px;
+				text-decoration: none;
+				color: inherit;
+				transition: all 0.2s;
+				position: relative;
+			}
+			.level-card:hover {
+				transform: translateY(-4px);
+				box-shadow: var(--box-shadow);
+			}
+			.level-num {
+				display: inline-block;
+				padding: 0.3em 0.8em;
+				color: white;
+				border-radius: 999px;
+				font-size: 0.78em;
+				font-weight: 700;
+				margin-bottom: 0.5rem;
+			}
+			.level-1 .level-num { background: #10b981; }
+			.level-2 .level-num { background: #f59e0b; }
+			.level-3 .level-num { background: #dc2626; }
+			.level-1:hover { border-color: #10b981; }
+			.level-2:hover { border-color: #f59e0b; }
+			.level-3:hover { border-color: #dc2626; }
+			.level-card h3 {
+				margin: 0 0 0.3rem;
+				font-size: 1.1em;
+				color: rgb(var(--black));
+			}
+			.level-period {
+				margin: 0 0 0.6rem;
+				font-size: 0.82em;
+				color: rgb(var(--gray));
+				font-weight: 600;
+			}
+			.level-desc {
+				margin: 0 0 0.8rem;
+				font-size: 0.88em;
+				line-height: 1.7;
+				color: rgb(var(--gray-dark));
+			}
+			.level-go {
+				font-size: 0.85em;
+				color: var(--accent);
+				font-weight: 700;
+			}
+
+			/* LEVEL MILESTONE */
+			.level-milestone {
+				margin-top: 1.5rem;
+				padding: 1.3rem 1.5rem;
+				background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+				border-left: 4px solid #10b981;
+				border-radius: 0 8px 8px 0;
+			}
+			.level-int .level-milestone {
+				background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+				border-left-color: #f59e0b;
+			}
+			.level-adv .level-milestone {
+				background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+				border-left-color: #dc2626;
+			}
+			.level-milestone strong { display: block; margin-bottom: 0.6rem; color: rgb(var(--black)); }
+			.level-milestone ul {
+				margin: 0;
+				padding-left: 1.3rem;
+				font-size: 0.9em;
+				line-height: 1.9;
+				color: rgb(var(--gray-dark));
+			}
+
 			/* ROADMAP */
-			.roadmap-section { margin: 3rem 0; }
+			.roadmap-section { margin: 3rem 0; scroll-margin-top: 80px; }
+			.level-int .roadmap-card { border-left-color: #f59e0b; }
+			.level-adv .roadmap-card { border-left-color: #dc2626; }
+			.level-int .roadmap-num { background: #f59e0b; }
+			.level-adv .roadmap-num { background: #dc2626; }
+			.level-int .roadmap-week { border-color: #f59e0b; color: #b45309; }
+			.level-adv .roadmap-week { border-color: #dc2626; color: #991b1b; }
 			.section-lead {
 				color: rgb(var(--gray-dark));
 				line-height: 1.8;
