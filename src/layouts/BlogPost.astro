@@ -6,6 +6,7 @@ import Footer from '../components/Footer.astro';
 import FormattedDate from '../components/FormattedDate.astro';
 import AuthorCard from '../components/AuthorCard.astro';
 import SideFireLink from '../components/SideFireLink.astro';
+import AffiliateCTA from '../components/AffiliateCTA.astro';
 import MobileNav from '../components/MobileNav.astro';
 import { getCollection } from 'astro:content';
 
@@ -31,6 +32,13 @@ const related = allPosts
 	.sort((a, b) => b.score - a.score || Math.random() - 0.5)
 	.slice(0, 4)
 	.map((x: any) => x.post);
+
+// CTA タイプを自動判定
+let ctaType: 'school' | 'server' | 'book' | 'service' = 'school';
+if (categorySlug === 'side-business' || (tagSlugs || []).includes('freelance')) ctaType = 'school';
+else if ((tagSlugs || []).includes('server') || (tagSlugs || []).includes('webhook')) ctaType = 'server';
+else if (categorySlug === 'gas-basics') ctaType = 'school';
+else ctaType = 'service';
 ---
 
 <!doctype html>
@@ -162,7 +170,7 @@ const related = allPosts
 			<article>
 				{heroImage && (
 					<div class="hero-image">
-						<img width={1020} height={510} src={heroImage} alt="" />
+						<img width={1020} height={510} src={heroImage} alt={title} />
 					</div>
 				)}
 				<div class="prose">
@@ -182,6 +190,7 @@ const related = allPosts
 							<span class="meta-item">📅 <FormattedDate date={pubDate} /></span>
 							{updatedDate && (<span class="meta-item last-updated-on">🔄 <FormattedDate date={updatedDate} /></span>)}
 							{readingTime && (<span class="meta-item">⏱ 読了 約{readingTime}分</span>)}
+							<span class="meta-item">✍️ みっちゃんママ</span>
 						</div>
 					</div>
 
@@ -190,6 +199,8 @@ const related = allPosts
 					<div id="article-body">
 						<slot />
 					</div>
+
+					<AffiliateCTA type={ctaType} />
 
 					<div class="share-buttons">
 						<a href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent('https://gas-recipe.com/blog/' + currentSlug + '/')}`} target="_blank" rel="noopener">𝕏 Xでシェア</a>
@@ -227,7 +238,6 @@ const related = allPosts
 		<MobileNav />
 
 		<script is:inline>
-			// TOC + reading progress
 			(function() {
 				const body = document.getElementById('article-body');
 				if (body) {
@@ -257,7 +267,6 @@ const related = allPosts
 					}
 				}
 
-				// Scroll progress bar
 				const bar = document.getElementById('read-progress');
 				if (bar) {
 					window.addEventListener('scroll', () => {
@@ -269,29 +278,40 @@ const related = allPosts
 				}
 			})();
 		</script>
-	
-<script is:inline>
-document.addEventListener('DOMContentLoaded', () => {
-	document.querySelectorAll('pre').forEach(pre => {
-		if (pre.querySelector('.copy-btn')) return;
-		const btn = document.createElement('button');
-		btn.className = 'copy-btn';
-		btn.textContent = 'Copy';
-		btn.addEventListener('click', async () => {
-			const code = pre.querySelector('code')?.textContent || pre.textContent;
-			try {
-				await navigator.clipboard.writeText(code);
-				btn.textContent = 'Copied!';
-				btn.classList.add('copied');
-				setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 1500);
-			} catch (e) {
-				btn.textContent = 'Failed';
-			}
-		});
-		pre.appendChild(btn);
-	});
-});
-</script>
 
+		<script is:inline>
+		document.addEventListener('DOMContentLoaded', () => {
+			document.querySelectorAll('pre').forEach(pre => {
+				if (pre.querySelector('.copy-btn')) return;
+				const btn = document.createElement('button');
+				btn.className = 'copy-btn';
+				btn.textContent = 'Copy';
+				btn.addEventListener('click', async () => {
+					const code = pre.querySelector('code')?.textContent || pre.textContent;
+					try {
+						await navigator.clipboard.writeText(code);
+						btn.textContent = 'Copied!';
+						btn.classList.add('copied');
+						setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 1500);
+					} catch (e) {
+						btn.textContent = 'Failed';
+					}
+				});
+				pre.appendChild(btn);
+			});
+
+			// Track affiliate link clicks for GA4
+			document.querySelectorAll('[data-affiliate]').forEach(el => {
+				el.addEventListener('click', () => {
+					if (window.gtag) {
+						gtag('event', 'affiliate_click', {
+							affiliate_type: el.dataset.affiliate,
+							page_location: window.location.pathname
+						});
+					}
+				});
+			});
+		});
+		</script>
 	</body>
 </html>
