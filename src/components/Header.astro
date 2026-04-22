@@ -15,8 +15,9 @@ const isActive = (href: string) => {
 			<a href="/" class:list={[isActive('/') && 'active']}>ホーム</a>
 			<a href="/guide/" class:list={[isActive('/guide/') && 'active']}>GAS完全ガイド</a>
 			<a href="/blog/" class:list={[isActive('/blog/') && 'active']}>記事一覧</a>
+			<a href="/usecase/" class:list={[isActive('/usecase/') && 'active']}>ユースケース</a>
+			<a href="/errors/" class:list={[isActive('/errors/') && 'active']}>エラー逆引き</a>
 			<a href="/about/" class:list={[isActive('/about/') && 'active']}>運営者</a>
-			<a href="/contact/" class:list={[isActive('/contact/') && 'active']}>お問い合わせ</a>
 		</div>
 	</nav>
 </header>
@@ -41,7 +42,7 @@ const isActive = (href: string) => {
 		align-items: center;
 		justify-content: space-between;
 		padding: 0.6rem 1rem;
-		max-width: 960px;
+		max-width: 1040px;
 		margin: 0 auto;
 		flex-wrap: wrap;
 		gap: 0.5rem;
@@ -55,16 +56,16 @@ const isActive = (href: string) => {
 	}
 	.nav-links {
 		display: flex;
-		gap: 0.4rem;
+		gap: 0.3rem;
 		flex-wrap: wrap;
 	}
 	.nav-links a {
-		padding: 0.5em 0.7em;
+		padding: 0.5em 0.6em;
 		color: rgb(var(--gray-dark));
 		text-decoration: none;
 		border: none;
 		border-bottom: 2px solid transparent;
-		font-size: 0.9em;
+		font-size: 0.88em;
 		font-weight: 500;
 	}
 	.nav-links a.active {
@@ -75,8 +76,8 @@ const isActive = (href: string) => {
 
 	@media (max-width: 720px) {
 		.main-nav { flex-direction: column; align-items: flex-start; gap: 0.3rem; }
-		.nav-links { width: 100%; justify-content: space-around; font-size: 0.8em; }
-		.nav-links a { padding: 0.4em 0.3em; }
+		.nav-links { width: 100%; justify-content: space-around; font-size: 0.78em; gap: 0.1rem; }
+		.nav-links a { padding: 0.4em 0.25em; }
 	}
 	@media (prefers-color-scheme: dark) {
 		header { background: var(--bg-soft); }
