@@ -1,0 +1,131 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import MobileNav from '../components/MobileNav.astro';
+import { SITE_TITLE } from '../consts';
+import { getCollection } from 'astro:content';
+
+const now = new Date();
+const posts = (await getCollection('blog'))
+	.filter((p: any) => p.data.pubDate.valueOf() <= now.valueOf());
+
+const byCategory: Record<string, any[]> = {};
+posts.forEach((p: any) => {
+	const slug = p.data.categorySlug || 'other';
+	(byCategory[slug] ||= []).push(p);
+});
+
+const orderedCats = [
+	{ slug: 'gas-basics', name: 'GAS入門', icon: '🌱' },
+	{ slug: 'gmail', name: 'Gmail自動化', icon: '✉️' },
+	{ slug: 'calendar', name: 'Googleカレンダー', icon: '📅' },
+	{ slug: 'spreadsheet', name: 'スプレッドシート', icon: '📊' },
+	{ slug: 'line', name: 'LINE連携', icon: '💬' },
+	{ slug: 'side-business', name: '副業・確定申告', icon: '💼' },
+];
+---
+
+<!doctype html>
+<html lang="ja">
+	<head>
+		<BaseHead title={`GAS完全ガイド｜初心者から実践までの目次 | ${SITE_TITLE}`} description="Google Apps Script初心者から実践まで、GAS Recipeの全記事を体系的にまとめた完全ガイド。何から始めればいいか、どんな順番で学ぶべきかが1ページでわかります。" />
+	</head>
+	<body>
+		<Header />
+		<main>
+			<nav class="breadcrumbs" aria-label="パンくずリスト">
+				<a href="/">ホーム</a> <span>›</span> GAS完全ガイド
+			</nav>
+			<h1>GAS完全ガイド｜0から副業収入まで</h1>
+			<p class="lead">
+				Google Apps Scriptを初めて触る方から、副業で収益化したい方まで。GAS Recipeの全記事を目的別に整理しました。上から順に読めば、GASを使った自動化を着実に身につけられます。
+			</p>
+
+			<nav class="quick-nav" aria-label="クイックナビ">
+				<p>🎯 目的から探す</p>
+				<ul>
+					<li><a href="#begin">✅ まず最初の1行を書きたい</a></li>
+					<li><a href="#gmail">✉️ Gmailを自動化したい</a></li>
+					<li><a href="#calendar">📅 予定管理を自動化したい</a></li>
+					<li><a href="#spreadsheet">📊 スプシの面倒な作業をゼロに</a></li>
+					<li><a href="#line">💬 LINE通知で情報収集を自動化</a></li>
+					<li><a href="#side">💼 副業・確定申告の効率化</a></li>
+				</ul>
+			</nav>
+
+			{orderedCats.map((cat) => {
+				const items = byCategory[cat.slug] || [];
+				if (items.length === 0) return null;
+				return (
+					<section class="guide-section" id={cat.slug === 'gas-basics' ? 'begin' : cat.slug === 'side-business' ? 'side' : cat.slug}>
+						<h2>{cat.icon} {cat.name}</h2>
+						<ul class="guide-list">
+							{items.sort((a: any, b: any) => a.data.pubDate.valueOf() - b.data.pubDate.valueOf()).map((p: any) => (
+								<li>
+									<a href={`/blog/${p.id}/`}>
+										<span class="guide-title">{p.data.title}</span>
+										<span class="guide-desc">{p.data.description}</span>
+									</a>
+								</li>
+							))}
+						</ul>
+					</section>
+				);
+			})}
+
+			<section class="guide-section">
+				<h2>📚 学びの次のステップ</h2>
+				<p>
+					独学でGASを身につけるのも良いですが、効率よく実務レベルまで到達したい方はプログラミングスクール＋Udemy組み合わせが時間対効果が高いです。
+					具体的な比較は順次記事化予定です。
+				</p>
+			</section>
+		</main>
+		<Footer />
+		<MobileNav />
+		<style>
+			main { width: 860px; max-width: calc(100% - 2rem); margin: 0 auto; padding: 2rem 1rem 4rem; }
+			.breadcrumbs { font-size: 0.88em; color: rgb(var(--gray)); margin-bottom: 1rem; }
+			.breadcrumbs a { color: var(--accent); text-decoration: none; }
+			h1 { margin: 0 0 1rem; }
+			.lead { color: rgb(var(--gray-dark)); line-height: 1.9; margin: 0 0 2rem; }
+
+			.quick-nav {
+				background: var(--bg-soft);
+				border-left: 4px solid var(--accent);
+				border-radius: 0 var(--radius) var(--radius) 0;
+				padding: 1.3rem 1.5rem;
+				margin-bottom: 2rem;
+			}
+			.quick-nav p { margin: 0 0 0.6rem; font-weight: 700; font-size: 1em; }
+			.quick-nav ul { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 0.4rem 1rem; }
+			.quick-nav a { color: rgb(var(--gray-dark)); text-decoration: none; font-size: 0.92em; }
+			.quick-nav a:hover { color: var(--accent); }
+			@media (max-width: 720px) {
+				.quick-nav ul { grid-template-columns: 1fr; }
+			}
+
+			.guide-section { margin-bottom: 3rem; }
+			.guide-list { list-style: none; padding: 0; display: grid; grid-template-columns: 1fr; gap: 0.8rem; }
+			.guide-list li { margin: 0; }
+			.guide-list a {
+				display: block;
+				padding: 1rem 1.3rem;
+				background: var(--bg);
+				border: 1px solid rgb(var(--gray-light));
+				border-radius: 8px;
+				text-decoration: none;
+				color: inherit;
+				transition: all 0.15s;
+			}
+			.guide-list a:hover {
+				border-color: var(--accent);
+				box-shadow: var(--box-shadow);
+				transform: translateX(3px);
+			}
+			.guide-title { display: block; font-weight: 700; color: rgb(var(--black)); margin-bottom: 0.3rem; }
+			.guide-desc { display: block; font-size: 0.88em; color: rgb(var(--gray-dark)); line-height: 1.6; }
+		</style>
+	</body>
+</html>
