@@ -1,140 +1,161 @@
 ---
-title: "LINE Messaging APIとGAS連携する最短3ステップ｜無料Bot制作"
-description: "LINE Messaging APIとGoogle Apps Scriptを連携してLINE Botを作る最短手順。公式アカウント作成・チャネル発行・GASからプッシュメッセージ送信までを画像付きで解説。"
+title: "LINE Messaging APIとGAS連携する最短3ステップ"
+description: "GASとLINE Messaging APIを連携して通知Botを作る手順を3ステップで解説。看護師ママが家族のスケジュール共有に使っている実例付きです。"
 pubDate: "2026-04-28T19:00:00+09:00"
 heroImage: "/blog-placeholder-2.jpg"
 categorySlug: "line"
 categoryName: "LINE連携"
 tagSlugs: ["gas", "line", "messaging-api", "bot"]
 tagNames: ["GAS", "LINE", "Messaging API", "Bot"]
-readingTime: 6
+readingTime: 9
 ---
-「毎朝の予定をLINEで自動通知したい」「問い合わせがあったらLINEで教えてほしい」。こうした**LINE連携**は、LINE Messaging APIとGASを組み合わせれば5分で実装できます。
+こんにちは、看護師ママのみっちゃんです。今日は私が副業でも家庭でも愛用している「GAS×LINE Messaging API」について、最短でBotを動かすまでの手順を紹介します。
 
-かつて存在した「LINE Notify」は2025年3月でサービス終了。代替として現行で推奨される**Messaging API**の設定手順を、最短の3ステップで解説します。
+## こんな悩みありませんか？
 
-## この仕組みでできること
+- スプシの更新を自分や家族にLINEで知らせたい
+- メール通知だと見落として夫に怒られる
+- Webhookとか難しそうで一歩踏み出せない
+- 夜勤シフトが変わったら家族に自動でLINEしたい
 
-- 毎朝7時に「今日の予定」をLINEで受信
-- フォーム送信時にLINEで即通知
-- 在庫切れをLINEで即アラート
-- 家族の誕生日前日に自動LINE
+私も最初はWebhookの設定で挫折しかけました。でも実は「送信するだけ」なら驚くほど簡単です。今回はまず「GASからLINEにメッセージを送る」ところまでを最短で構築します。
 
-**すべて無料**（月200通まで）で実現できます。
+## 全体像
 
-## 準備するもの
+やることは大きく3つだけ。
 
-- Googleアカウント
-- LINEアカウント
-- LINE Developers アカウント（LINEアカウントから5分で作成可能）
+1. LINE Developersでチャネル作成→アクセストークン取得
+2. 自分のユーザーIDを取得（またはグループIDを準備）
+3. GASで`UrlFetchApp`を使ってPush APIを叩く
 
-## ステップ1: LINE公式アカウントを作る
+Webhook（受信）は後から追加で構築可能なので、まずは送信だけ動かして成功体験を積みましょう。
 
-1. [LINE Developers](https://developers.line.biz/ja/)にアクセス
-2. 右上「**ログイン**」→ LINEアカウントでログイン
-3. 「**新規プロバイダー作成**」で適当な名前（例: MyBot）
-4. 「**Messaging APIチャネル**」を選択
-5. チャネル名・説明などを入力して作成
+## ステップ1: チャネル作成とトークン取得
 
-## ステップ2: チャネルアクセストークンを取得
+LINE Developersコンソール（developers.line.biz）にログインし、以下を進めます。
 
-作成したチャネルの「**Messaging API設定**」タブを開き：
+1. プロバイダーを新規作成（会社名や個人名でOK）
+2. 「Messaging API」のチャネルを作成
+3. チャネル詳細画面の「Messaging API設定」タブを開く
+4. 下部の「チャネルアクセストークン（長期）」を発行してコピー
+5. 同じ画面に表示されるQRコードから、自分のLINEでBotを友だち追加
 
-1. 下部「**チャネルアクセストークン（長期）**」の「**発行**」ボタンをクリック
-2. 生成された文字列を**コピー**
-
-このトークンがAPIを叩く鍵になります。**他人に見せない**こと。
-
-## ステップ3: 自分のLINEに友だち登録
-
-同じ画面で **「QRコード」** が表示されているので、LINEアプリでスキャン→「追加」。これで公式アカウントと繋がり、Botがメッセージを送れる状態になります。
-
-## GASからLINEに送信するコード
+トークンは外部に漏らさないように注意。私はセキュリティのため、GASのスクリプトプロパティに保存しています。
 
 ```javascript
-const LINE_TOKEN = PropertiesService.getScriptProperties().getProperty('LINE_TOKEN');
+function saveToken() {
+  PropertiesService.getScriptProperties().setProperty(
+    'LINE_TOKEN',
+    'ここに長期トークンを貼る'
+  );
+}
+```
 
+一度実行したら、この関数は削除しておきましょう。
+
+## ステップ2: ユーザーIDを取得
+
+Push APIで個別にメッセージを送るには、送信先のユーザーIDが必要です。一番簡単なのは、Webhookを使ってBotに話しかけた相手のIDをログに出す方法です。
+
+```javascript
+function doPost(e) {
+  const events = JSON.parse(e.postData.contents).events;
+  for (const event of events) {
+    console.log('userId:', event.source.userId);
+  }
+  return ContentService.createTextOutput('ok');
+}
+```
+
+これをウェブアプリとしてデプロイ（アクセス:全員、実行:自分）し、URLをLINE DevelopersのWebhook URLに設定。自分でBotに「hello」と送ればログにIDが表示されます。
+
+## ステップ3: Push APIでメッセージ送信
+
+いよいよメインです。シンプルな送信関数がこちら。
+
+```javascript
 function sendLine(message) {
-  UrlFetchApp.fetch('https://api.line.me/v2/bot/message/broadcast', {
+  const token = PropertiesService.getScriptProperties().getProperty('LINE_TOKEN');
+  const userId = PropertiesService.getScriptProperties().getProperty('LINE_USER_ID');
+
+  const payload = {
+    to: userId,
+    messages: [{
+      type: 'text',
+      text: message
+    }]
+  };
+
+  UrlFetchApp.fetch('https://api.line.me/v2/bot/message/push', {
     method: 'post',
     contentType: 'application/json',
-    headers: {
-      Authorization: 'Bearer ' + LINE_TOKEN
-    },
-    payload: JSON.stringify({
-      messages: [{ type: 'text', text: message }]
-    })
+    headers: { Authorization: 'Bearer ' + token },
+    payload: JSON.stringify(payload),
+    muteHttpExceptions: true
   });
 }
 
 function test() {
-  sendLine('GASからのテスト送信です');
+  sendLine('GASからこんにちは！');
 }
 ```
 
-### トークンの安全な管理
+`test`を実行してLINEに通知が来たら成功です。私は初めて成功した時、夜勤前のロッカーで小さくガッツポーズしました。
 
-コードに直接トークンを書くのはNG。GASの「**プロジェクトの設定 → スクリプトプロパティ**」で `LINE_TOKEN` に登録するのが安全です。
+## 押さえておきたい3つのポイント
 
-## 抑えておくべき3つのポイント
+### ポイント1: トークンはスクリプトプロパティに保存
 
-### ポイント1: `broadcast` と `push` の使い分け
+GitHubに公開する可能性がある副業案件では、トークンをコードにベタ書きしないのは鉄則です。
 
-- `/broadcast`: **友だち全員に一斉送信**（個人Bot用）
-- `/push`: **特定ユーザーに送信**（ユーザーIDが必要）
+### ポイント2: muteHttpExceptionsでデバッグしやすく
 
-個人利用なら `broadcast` で十分です。
-
-### ポイント2: 月200通の無料枠を意識
-
-無料枠を超えると、**メッセージが配信停止されます**（翌月復活）。
-
-毎朝1通＋緊急時数通で運用する程度なら余裕ですが、通知が多いサービスで使う場合は有料プランを検討。
-
-### ポイント3: 画像・リンクも送れる
+`muteHttpExceptions: true`にしておくと、エラー時もレスポンスが取得できるので原因調査が楽です。
 
 ```javascript
-const payload = {
-  messages: [
-    { type: 'text', text: '本日の予定' },
-    { type: 'image', originalContentUrl: 'https://example.com/image.jpg', previewImageUrl: 'https://example.com/image.jpg' },
-    { type: 'template', altText: '確認', template: { type: 'buttons', text: '承認する？', actions: [{ type: 'postback', label: 'はい', data: 'yes' }] } }
-  ]
-};
+const res = UrlFetchApp.fetch(url, options);
+console.log(res.getResponseCode(), res.getContentText());
 ```
 
-## 応用：毎朝7時に予定を自動通知
+### ポイント3: Push APIは無料枠に注意
+
+LINE公式アカウントのフリープランでは、月の送信数に上限があります。大量通知するなら、自分だけに送る個人利用か、有料プランの検討が必要です。
+
+## 応用:シフト通知の自動化
+
+私が実際に使っているのが、Googleカレンダーに入れた夜勤シフトを前日21時に家族LINEグループへ送る仕組みです。
 
 ```javascript
-function morningNotify() {
-  const events = CalendarApp.getEventsForDay(new Date());
-  if (events.length === 0) {
-    sendLine('今日は予定がありません。ゆっくりしましょう☕');
-    return;
+function notifyShift() {
+  const cal = CalendarApp.getDefaultCalendar();
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  const events = cal.getEventsForDay(tomorrow);
+
+  const shifts = events
+    .filter(e => e.getTitle().includes('夜勤'))
+    .map(e => `${e.getTitle()} ${Utilities.formatDate(e.getStartTime(),'JST','HH:mm')}〜`);
+
+  if (shifts.length > 0) {
+    sendLine('【明日のシフト】\n' + shifts.join('\n'));
   }
-  const list = events.map(e => `・${Utilities.formatDate(e.getStartTime(), 'Asia/Tokyo', 'HH:mm')} ${e.getTitle()}`).join('\n');
-  sendLine(`🌅 今日の予定\n${list}`);
 }
 ```
 
-これを**毎朝7時のトリガー**に紐付ければ、起き抜けに自動通知される仕組みの完成です。
-
-## トラブル：送信されない
-
-よくある原因:
-
-- **トークンが間違っている** → 再発行して再登録
-- **QRコードで友だち追加していない** → 必ず追加
-- **権限エラー** → GASの1回目実行時に「許可」を
-
-## 看護師の私の使い方
-
-夜勤明けの次の日の朝は寝過ごしがち。そこで、**前日の勤務予定＋翌日の学校行事＋天気**を朝6時にLINE通知する仕組みを作りました。これで寝坊しても10秒で家族全員の予定が確認できます。
-
-副業ブログ運営始めたみっちゃんママでも、**毎朝のアクセス数・昨日の収益もLINE1通にまとまる**ように拡張中。
+これを時間トリガーで毎日21時に実行。夫が「明日迎えいる？」と聞いてくる回数が激減しました。
 
 ## まとめ
 
-LINE連携は、**生活の自動化ツールの中でも最も実用度が高い**仕組みです。一度設定すれば、以降ずっと使えるインフラになります。
+- LINE Developersでチャネル作成→長期トークン取得
+- ユーザーIDはWebhookログで取得
+- `UrlFetchApp`でPush APIを叩くだけ
+- トークンはスクリプトプロパティで安全管理
+- 応用でシフト通知や家族との情報共有が自動化できる
 
-関連記事: [GASでLINEに毎朝通知](/blog/gas-line-morning-notification/) / [トリガー完全ガイド](/blog/gas-trigger-setup/)
+看護師ママの私にとって、家族との時間を守るための第一歩がこの自動通知でした。まずは送信だけでも十分実用的なので、ぜひ試してみてください。
+
+## 関連記事
+
+- [GAS setValuesで1000行を一括書き込む高速化テクニック](/blog/gas-sheet-setvalues-bulk/)
+- [スプシ重複行を自動削除するGAS完全版コード](/blog/gas-sheet-dedupe/)
+- [フリーランス請求書をGASで毎月自動発行する仕組み](/blog/gas-freelance-invoice/)
