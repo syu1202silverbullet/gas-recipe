@@ -194,6 +194,24 @@ function exportTaxCsv(year) {
 
 看護師として病棟に立ちながら副業を続けるには、「考えなくても回る仕組み」が不可欠です。毎月の請求書発行は、まさに自動化の恩恵を一番感じやすい領域。ぜひあなたの副業にも取り入れてみてください。
 
+
+## 💼 確定申告・会計ソフト比較
+
+<div class="ad-block">
+<p class="ad-label">PR：本記事には広告（A8.net）が含まれます</p>
+
+GASで自動化した記帳データは最終的に会計ソフトで確定申告する流れが一般的です。副業レベルで使いやすい定番3サービス：
+
+- **<a href="https://px.a8.net/svt/ejp?a8mat=4B1R5U+EV8SPE+3SPO+9FDI8Y" rel="sponsored nofollow" target="_blank">freee会計</a>** – 確定申告書類の自動作成、銀行連携が強い
+- **<a href="https://px.a8.net/svt/ejp?a8mat=3T8I4R+2PN72Q+35XE+5YJRM" rel="sponsored nofollow" target="_blank">やよいの青色申告オンライン</a>** – 白色申告は永年無料、シェアNo.1の実績
+- **<a href="https://px.a8.net/svt/ejp?a8mat=3NERNS+AC40YA+4JGQ+BWVTE" rel="sponsored nofollow" target="_blank">マネーフォワード クラウド確定申告</a>** – MFクラウド連携でUber Eats等の副業収入集計に便利
+
+自分の業態に合うものを選んでください。
+<img border="0" width="1" height="1" src="https://www19.a8.net/0.gif?a8mat=4B1R5U+EV8SPE+3SPO+9FDI8Y" alt="">
+<img border="0" width="1" height="1" src="https://www17.a8.net/0.gif?a8mat=3T8I4R+2PN72Q+35XE+5YJRM" alt="">
+<img border="0" width="1" height="1" src="https://www14.a8.net/0.gif?a8mat=3NERNS+AC40YA+4JGQ+BWVTE" alt="">
+</div>
+
 ## 関連記事
 
 - [GAS setValuesで1000行を一括書き込む高速化テクニック](/blog/gas-sheet-setvalues-bulk/)
