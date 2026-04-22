@@ -1,7 +1,7 @@
 ---
 title: "GAS変数const/letの違いと使い分け3パターン｜初心者がハマる落とし穴も解説"
 description: "GASの変数宣言でつまずきやすいconstとletの違いを、現役ナース副業プログラマーの凛がやさしく解説。3つの使い分けパターンと、よくあるエラーの直し方までコピペ例付きで紹介します。"
-pubDate: "TBD"
+pubDate: "2026-06-06T19:00:00+09:00"
 heroImage: "/blog-placeholder-1.jpg"
 categorySlug: "gas-basics"
 categoryName: "GAS入門"
