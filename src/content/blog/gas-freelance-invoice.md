@@ -9,7 +9,7 @@ tagSlugs: ["gas", "invoice", "freelance"]
 tagNames: ["GAS", "請求書", "フリーランス"]
 readingTime: 9
 ---
-こんにちは、看護師ママのみっちゃんです。今日は私がGAS副業を始めてから一番やってよかったと感じている「請求書の自動発行」について、仕組みを丸ごとお見せします。
+こんにちは、看護師のみっちゃんです。今日は私がGAS副業を始めてから一番やってよかったと感じている「請求書の自動発行」について、仕組みを丸ごとお見せします。
 
 ## こんな悩みありませんか？
 
@@ -58,7 +58,7 @@ const CONFIG = {
   SHEET_ID: 'スプシID',
   TEMPLATE_DOC_ID: 'テンプレドキュメントID',
   OUTPUT_FOLDER_ID: '出力用フォルダID',
-  FROM_NAME: 'みっちゃん',
+  FROM_NAME: '佐藤',
   MY_EMAIL: 'you@example.com'
 };
 
