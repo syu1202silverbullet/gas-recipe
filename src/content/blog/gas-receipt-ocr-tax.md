@@ -3,8 +3,11 @@ title: "スマホ写真のレシートをGAS＋OCRで自動集計｜確定申告
 description: "レシートを撮るだけで日付・金額・店名をテキスト化し、スプレッドシートに自動転記するGoogle Apps Script活用術。確定申告・経費精算の手作業を大幅に削減できる実用自動化を解説します。"
 pubDate: "2026-04-17"
 heroImage: "/blog-placeholder-3.jpg"
-category: "副業・確定申告"
-tags: ["GAS", "OCR", "確定申告", "レシート", "副業"]
+categorySlug: "side-business"
+categoryName: "副業・確定申告"
+tagSlugs: ["gas", "ocr", "tax", "receipt", "side-business"]
+tagNames: ["GAS", "OCR", "確定申告", "レシート", "副業"]
+readingTime: 6
 ---
 
 レシートを撮りためて、確定申告前に半日かけて入力…あの苦行、終わらせませんか？
