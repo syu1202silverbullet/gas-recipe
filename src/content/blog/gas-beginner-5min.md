@@ -106,6 +106,19 @@ function sendHello() {
 
 もし独学がつらくなったら、短期集中型のプログラミングスクールで土台を作るのも手です。体系立てて学べる分、独学で10時間悩むところを1時間で突破できます。無料カウンセリングだけでも、自分の現在地を把握するのに役立ちました。
 
+
+## 📚 さらに学ぶための参考書籍
+
+<div class="ad-block">
+<p class="ad-label">PR：本記事には広告（楽天市場）が含まれます</p>
+
+GASやJavaScriptを体系的に学びたい方は、書籍も併用するのが効率的です。
+日本語の解説書が複数出ているので、自分のレベルに合うものを選んでみてください。
+
+👉 <a href="//af.moshimo.com/af/c/click?a_id=5501673&p_id=54&pc_id=54&pl_id=621" rel="nofollow sponsored" referrerpolicy="no-referrer-when-downgrade" target="_blank">楽天市場</a> で「Google Apps Script」または「JavaScript 入門」を検索
+<img src="//i.moshimo.com/af/i/impression?a_id=5501673&p_id=54&pc_id=54&pl_id=621" width="1" height="1" style="border:none;" loading="lazy" alt="" />
+</div>
+
 ## まとめ
 
 - GASはブラウザだけで始められる
