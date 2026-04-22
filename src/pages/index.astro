@@ -12,15 +12,16 @@ const allPosts = (await getCollection('blog'))
 	.filter((post: any) => post.data.pubDate.valueOf() <= now.valueOf())
 	.sort((a: any, b: any) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 
+const featured = allPosts[0];
 const latest = allPosts.slice(0, 6);
 
 const categories = [
-	{ slug: 'gas-basics', name: 'GAS入門', icon: '🌱', desc: '初めての1行コードからトリガー設定まで。' },
-	{ slug: 'gmail', name: 'Gmail自動化', icon: '✉️', desc: '自動返信・添付保存・差し込みメール。' },
-	{ slug: 'calendar', name: 'Googleカレンダー', icon: '📅', desc: '予定一括登録・空き時間抽出・通知連携。' },
-	{ slug: 'spreadsheet', name: 'スプレッドシート', icon: '📊', desc: '集計・自動更新・PDF出力のベストプラクティス。' },
-	{ slug: 'line', name: 'LINE連携', icon: '💬', desc: 'Messaging APIで作るBot・毎朝通知。' },
-	{ slug: 'side-business', name: '副業・確定申告', icon: '💼', desc: 'Uber・物販・フリーランス実務の自動化。' },
+	{ slug: 'gas-basics', name: 'GAS入門', icon: '🌱', desc: '初めての1行コードから完全ガイドまで' },
+	{ slug: 'gmail', name: 'Gmail自動化', icon: '✉️', desc: '自動返信・添付保存・差し込みメール' },
+	{ slug: 'calendar', name: 'Googleカレンダー', icon: '📅', desc: '予定一括登録・空き時間抽出' },
+	{ slug: 'spreadsheet', name: 'スプレッドシート', icon: '📊', desc: '集計・自動更新・PDF出力' },
+	{ slug: 'line', name: 'LINE連携', icon: '💬', desc: 'Messaging APIで毎朝通知' },
+	{ slug: 'side-business', name: '副業・確定申告', icon: '💼', desc: 'フリーランス実務の自動化' },
 ];
 ---
 
@@ -38,8 +39,9 @@ const categories = [
 					<p class="hero-eyebrow">👩‍💻 看護師×副業プログラマーが書く</p>
 					<h1>Google Apps Scriptで<br/>毎日の「面倒」を自動化する</h1>
 					<p class="hero-lead">
-						レシートの集計、毎朝のLINE通知、予約メールのカレンダー登録…。<br/>
-						日常の小さな面倒を、GASで仕組み化するための実用レシピ集です。プログラミング未経験でもコピペで動かせる形で紹介します。
+						レシート集計、毎朝のLINE通知、予約メールのカレンダー登録…。<br/>
+						日常の小さな面倒を、GASで仕組み化するための実用レシピ集です。<br/>
+						プログラミング未経験でもコピペで動かせる形で紹介します。
 					</p>
 					<div class="hero-cta">
 						<a href="/blog/" class="btn-primary">🍳 レシピ一覧を見る</a>
@@ -57,9 +59,27 @@ const categories = [
 				</form>
 			</section>
 
+			<!-- FEATURED -->
+			{featured && (
+				<section class="featured">
+					<p class="section-label">📌 PICKUP</p>
+					<a href={`/blog/${featured.id}/`} class="featured-card">
+						<div class="featured-img">
+							<img src={featured.data.heroImage} alt="" />
+						</div>
+						<div class="featured-body">
+							<p class="featured-category">{featured.data.categoryName}</p>
+							<h2>{featured.data.title}</h2>
+							<p class="featured-desc">{featured.data.description}</p>
+							<span class="featured-cta">続きを読む →</span>
+						</div>
+					</a>
+				</section>
+			)}
+
 			<!-- CATEGORIES -->
 			<section class="categories">
-				<h2>カテゴリで探す</h2>
+				<h2>カテゴリから探す</h2>
 				<div class="cat-grid">
 					{categories.map((c) => (
 						<a href={`/category/${c.slug}/`} class="cat-card">
@@ -100,6 +120,16 @@ const categories = [
 					<a href="https://sidefire150000000.com/" target="_blank" rel="noopener" class="sf-btn">姉妹サイトを見る →</a>
 				</div>
 			</section>
+
+			<!-- RSS / Subscribe CTA -->
+			<section class="subscribe">
+				<h2>更新通知を受け取る</h2>
+				<p>新しいレシピ公開を見逃したくない方は、RSSフィードをご利用ください。</p>
+				<div class="subs-buttons">
+					<a href="/rss.xml" class="subs-btn">📡 RSSフィード</a>
+					<a href="/contact/" class="subs-btn">✉️ お問い合わせ</a>
+				</div>
+			</section>
 		</main>
 		<Footer />
 		<MobileNav />
@@ -128,18 +158,8 @@ const categories = [
 				line-height: 1.4;
 				color: rgb(var(--black));
 			}
-			.hero-lead {
-				font-size: 1.02em;
-				color: rgb(var(--gray-dark));
-				line-height: 1.9;
-				margin: 0 auto 2rem;
-			}
-			.hero-cta {
-				display: flex;
-				gap: 0.8rem;
-				justify-content: center;
-				flex-wrap: wrap;
-			}
+			.hero-lead { font-size: 1.02em; color: rgb(var(--gray-dark)); line-height: 1.9; margin: 0 auto 2rem; }
+			.hero-cta { display: flex; gap: 0.8rem; justify-content: center; flex-wrap: wrap; }
 			.btn-primary, .btn-secondary {
 				display: inline-block;
 				padding: 0.8em 1.8em;
@@ -154,11 +174,7 @@ const categories = [
 			.btn-secondary { background: transparent; color: var(--accent); }
 			.btn-secondary:hover { background: var(--accent-light); }
 
-			.search-row {
-				max-width: 720px;
-				margin: 2rem auto 1rem;
-				padding: 0 1rem;
-			}
+			.search-row { max-width: 720px; margin: 2rem auto 1rem; padding: 0 1rem; }
 			.search-form {
 				display: flex;
 				gap: 0.5rem;
@@ -168,32 +184,37 @@ const categories = [
 				padding: 0.3rem 0.5rem 0.3rem 1.2rem;
 				box-shadow: var(--box-shadow);
 			}
-			.search-input {
-				flex: 1;
-				border: none;
-				outline: none;
-				background: transparent;
-				font-size: 0.95em;
-				padding: 0.7em 0.3em;
-				color: rgb(var(--black));
-			}
-			.search-btn {
-				background: var(--accent);
-				color: white;
-				border: none;
-				border-radius: 999px;
-				padding: 0.5em 1.3em;
-				font-weight: 600;
-				cursor: pointer;
-				font-size: 0.9em;
-			}
+			.search-input { flex: 1; border: none; outline: none; background: transparent; font-size: 0.95em; padding: 0.7em 0.3em; color: rgb(var(--black)); }
+			.search-btn { background: var(--accent); color: white; border: none; border-radius: 999px; padding: 0.5em 1.3em; font-weight: 600; cursor: pointer; font-size: 0.9em; }
 
-			.categories, .latest, .sidefire-hero {
+			.featured, .categories, .latest, .sidefire-hero, .subscribe {
 				max-width: 960px;
 				margin: 3rem auto;
 				padding: 0 1rem;
 			}
-			.categories h2, .latest h2 {
+			.section-label { font-size: 0.82em; font-weight: 700; color: var(--accent); letter-spacing: 0.1em; margin: 0 0 0.7rem; }
+
+			.featured-card {
+				display: grid;
+				grid-template-columns: 300px 1fr;
+				gap: 2rem;
+				background: var(--bg);
+				border: 1px solid rgb(var(--gray-light));
+				border-radius: var(--radius);
+				overflow: hidden;
+				text-decoration: none;
+				color: inherit;
+				transition: all 0.2s;
+			}
+			.featured-card:hover { box-shadow: var(--box-shadow); transform: translateY(-3px); }
+			.featured-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+			.featured-body { padding: 1.8rem 2rem 1.8rem 0; display: flex; flex-direction: column; justify-content: center; }
+			.featured-category { display: inline-block; padding: 0.2em 0.8em; background: var(--accent-light); color: var(--accent-dark); border-radius: 999px; font-size: 0.78em; font-weight: 600; margin: 0 0 0.6rem; width: fit-content; }
+			.featured-body h2 { margin: 0 0 0.7rem; font-size: 1.4em; border: none; padding: 0; background: none; color: rgb(var(--black)); line-height: 1.4; }
+			.featured-desc { color: rgb(var(--gray-dark)); font-size: 0.92em; line-height: 1.8; margin: 0 0 1rem; }
+			.featured-cta { color: var(--accent); font-weight: 600; font-size: 0.9em; }
+
+			.categories h2, .latest h2, .subscribe h2 {
 				font-size: 1.5em;
 				padding: 0.4rem 0 0.5rem 0.7rem;
 				border-bottom: 3px solid var(--accent);
@@ -201,11 +222,7 @@ const categories = [
 				background: var(--bg-soft);
 				margin: 0 0 1.5rem;
 			}
-			.cat-grid {
-				display: grid;
-				grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-				gap: 1rem;
-			}
+			.cat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; }
 			.cat-card {
 				background: var(--bg);
 				border: 1px solid rgb(var(--gray-light));
@@ -234,44 +251,14 @@ const categories = [
 				grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
 				gap: 1.2rem;
 			}
-			.post-list li {
-				background: var(--bg);
-				border: 1px solid rgb(var(--gray-light));
-				border-radius: var(--radius);
-				transition: all 0.2s;
-			}
-			.post-list li:hover {
-				transform: translateY(-3px);
-				box-shadow: var(--box-shadow);
-			}
+			.post-list li { background: var(--bg); border: 1px solid rgb(var(--gray-light)); border-radius: var(--radius); transition: all 0.2s; }
+			.post-list li:hover { transform: translateY(-3px); box-shadow: var(--box-shadow); }
 			.post-list a { display: block; padding: 1.2rem; text-decoration: none; color: inherit; border: none; }
 			.post-meta { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; }
 			.post-date { font-size: 0.8em; color: rgb(var(--gray)); }
-			.post-cat {
-				font-size: 0.75em;
-				padding: 0.15em 0.6em;
-				background: var(--accent-light);
-				color: var(--accent-dark);
-				border-radius: 999px;
-			}
-			.post-title {
-				display: block;
-				font-weight: 700;
-				font-size: 1.02em;
-				color: rgb(var(--black));
-				margin-bottom: 0.5rem;
-				line-height: 1.5;
-			}
-			.post-desc {
-				display: block;
-				font-size: 0.85em;
-				color: rgb(var(--gray-dark));
-				line-height: 1.6;
-				display: -webkit-box;
-				-webkit-line-clamp: 3;
-				-webkit-box-orient: vertical;
-				overflow: hidden;
-			}
+			.post-cat { font-size: 0.75em; padding: 0.15em 0.6em; background: var(--accent-light); color: var(--accent-dark); border-radius: 999px; }
+			.post-title { display: block; font-weight: 700; font-size: 1.02em; color: rgb(var(--black)); margin-bottom: 0.5rem; line-height: 1.5; }
+			.post-desc { display: block; font-size: 0.85em; color: rgb(var(--gray-dark)); line-height: 1.6; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
 			.view-all { text-align: right; margin-top: 1rem; }
 			.view-all a { font-weight: 600; }
 
@@ -283,32 +270,25 @@ const categories = [
 			}
 			.sf-content { max-width: 640px; margin: 0 auto; text-align: center; }
 			.sf-label { margin: 0 0 0.5rem; color: #78350f; font-size: 0.9em; font-weight: 600; }
-			.sidefire-hero h2 {
-				margin: 0 0 0.8rem;
-				border: none;
-				padding: 0;
-				background: none;
-				font-size: 1.6em;
-				color: #78350f;
-			}
+			.sidefire-hero h2 { margin: 0 0 0.8rem; border: none; padding: 0; background: none; font-size: 1.6em; color: #78350f; }
 			.sidefire-hero p { color: #78350f; line-height: 1.8; margin: 0 0 1.5rem; }
-			.sf-btn {
-				display: inline-block;
-				padding: 0.7em 2em;
-				background: #f59e0b;
-				color: white;
-				border-radius: 999px;
-				text-decoration: none;
-				font-weight: 700;
-				border: none;
-			}
+			.sf-btn { display: inline-block; padding: 0.7em 2em; background: #f59e0b; color: white; border-radius: 999px; text-decoration: none; font-weight: 700; border: none; }
 			.sf-btn:hover { background: #d97706; color: white; }
+
+			.subscribe { text-align: center; padding: 2rem 1rem; }
+			.subscribe p { color: rgb(var(--gray-dark)); margin: 0 auto 1.5rem; max-width: 480px; }
+			.subs-buttons { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+			.subs-btn { display: inline-block; padding: 0.7em 1.5em; border: 1px solid var(--accent); color: var(--accent); border-radius: 999px; text-decoration: none; font-weight: 600; font-size: 0.9em; }
+			.subs-btn:hover { background: var(--accent); color: white; border: 1px solid var(--accent); }
 
 			@media (max-width: 720px) {
 				.hero { padding: 3rem 1rem 2.5rem; }
 				.hero h1 { font-size: 1.7em; }
 				.hero-lead { font-size: 0.95em; }
-				.categories h2, .latest h2, .sidefire-hero h2 { font-size: 1.25em; }
+				.categories h2, .latest h2, .sidefire-hero h2, .subscribe h2 { font-size: 1.25em; }
+				.featured-card { grid-template-columns: 1fr; gap: 0; }
+				.featured-img img { height: 200px; }
+				.featured-body { padding: 1.5rem; }
 			}
 			@media (prefers-color-scheme: dark) {
 				.hero { background: linear-gradient(135deg, #1e3a8a 0%, #831843 100%); }
