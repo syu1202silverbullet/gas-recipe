@@ -163,6 +163,17 @@ doGet関数が定義されていないか、別のファイルにある。同じ
 
 GAS Webアプリは**サーバー不要・完全無料・15分で立ち上がる**最強のミニWebサーバーです。ちょっとしたツール公開、簡易API、Webhook受け口として大活躍します。
 
+
+## 🌐 サイト公開におすすめのレンタルサーバー
+
+<div class="ad-block">
+<p class="ad-label">PR：本記事には広告（A8.net / GMOインターネット）が含まれます</p>
+
+GASで作ったWebアプリや情報発信用のブログ公開を検討するなら、高速・初期費用無料の <a href="https://px.a8.net/svt/ejp?a8mat=3NLAJJ+8ZAHCI+50+5SDXG2" rel="sponsored nofollow" target="_blank">ConoHa WING</a> が候補になります。
+WordPressの同時インストールやSSL設定も自動化されており、副業サイト立ち上げの初期ハードルを下げられます。
+<img border="0" width="1" height="1" src="https://www11.a8.net/0.gif?a8mat=3NLAJJ+8ZAHCI+50+5SDXG2" alt="">
+</div>
+
 ## 関連記事
 
 - [GASトリガー設定完全ガイド](/blog/gas-trigger-setup/)
