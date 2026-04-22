@@ -1,52 +1,74 @@
 ---
-// Import the global.css file here so that it is included on
-// all pages through the use of the <BaseHead /> component.
 import '../styles/global.css';
 
 interface Props {
 	title: string;
 	description: string;
 	image?: string;
+	pubDate?: Date;
+	updatedDate?: Date;
+	type?: 'website' | 'article';
 }
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const { title, description, image = '/blog-placeholder-1.jpg', pubDate, updatedDate, type = 'website' } = Astro.props;
 
-const { title, description, image = '/blog-placeholder-1.jpg' } = Astro.props;
+// JSON-LD structured data
+const jsonLd: any = {
+	"@context": "https://schema.org",
+	"@type": type === 'article' ? "BlogPosting" : "WebSite",
+	"name": title,
+	"headline": title,
+	"description": description,
+	"url": canonicalURL.toString(),
+	"image": new URL(image, Astro.url).toString(),
+	"publisher": {
+		"@type": "Organization",
+		"name": "GAS Recipe",
+		"url": "https://gas-recipe.com",
+	},
+	"author": {
+		"@type": "Person",
+		"name": "みっちゃんママ",
+	},
+	"inLanguage": "ja",
+};
+if (pubDate) jsonLd.datePublished = pubDate.toISOString();
+if (updatedDate) jsonLd.dateModified = updatedDate.toISOString();
 ---
 
-<!-- Global Metadata -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 <meta name="generator" content={Astro.generator} />
 
-<!-- Canonical URL -->
 <link rel="canonical" href={canonicalURL} />
+<meta name="robots" content="index, follow" />
+<meta name="author" content="みっちゃんママ" />
 
-<!-- Primary Meta Tags -->
 <title>{title}</title>
 <meta name="title" content={title} />
 <meta name="description" content={description} />
 
-<!-- Open Graph / Facebook -->
-<meta property="og:type" content="website" />
+<meta property="og:type" content={type} />
+<meta property="og:locale" content="ja_JP" />
+<meta property="og:site_name" content="GAS Recipe" />
 <meta property="og:url" content={Astro.url} />
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
 <meta property="og:image" content={new URL(image, Astro.url)} />
 
-<!-- Twitter -->
 <meta property="twitter:card" content="summary_large_image" />
 <meta property="twitter:url" content={Astro.url} />
 <meta property="twitter:title" content={title} />
 <meta property="twitter:description" content={description} />
 <meta property="twitter:image" content={new URL(image, Astro.url)} />
 
-<!-- Sitemap / RSS -->
 <link rel="sitemap" href="/sitemap-index.xml" />
 <link rel="alternate" type="application/rss+xml" title={title} href={new URL('rss.xml', Astro.site)} />
 
-<!-- Google Analytics (GA4) -->
+<script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-RKS9S3709E"></script>
 <script is:inline>
 	window.dataLayer = window.dataLayer || [];
@@ -55,5 +77,4 @@ const { title, description, image = '/blog-placeholder-1.jpg' } = Astro.props;
 	gtag('config', 'G-RKS9S3709E');
 </script>
 
-<!-- Cloudflare Web Analytics -->
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "890f99aac9f14a0c9482a668daf36b04"}'></script>
