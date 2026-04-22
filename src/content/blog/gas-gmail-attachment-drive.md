@@ -1,140 +1,174 @@
 ---
-title: "Gmail添付ファイルをGoogleドライブに自動保存するGAS"
-description: "毎日届くPDF請求書・領収書をGASで自動的にGoogleドライブに整理保存する仕組みを解説。年月フォルダ自動生成・重複防止・処理済みラベル管理も含む完全版コード付き。"
+title: "Gmail添付ファイルをGoogleドライブ自動保存する10行スクリプト"
+description: "請求書や明細PDFをGmailから手作業でドライブに保存していませんか？GAS（Google Apps Script）で10行書くだけで、添付ファイルを自動的にDriveへ振り分け保存するレシピをご紹介します。"
 pubDate: "2026-04-30T19:00:00+09:00"
-heroImage: "/blog-placeholder-4.jpg"
+heroImage: "/blog-placeholder-2.jpg"
 categorySlug: "gmail"
 categoryName: "Gmail自動化"
-tagSlugs: ["gas", "gmail", "drive", "attachment"]
-tagNames: ["GAS", "Gmail", "Drive", "添付ファイル"]
-readingTime: 5
+tagSlugs: ["gas","gmail","drive","attachment"]
+tagNames: ["GAS","Gmail","Drive","添付ファイル"]
+readingTime: 10
 ---
-「毎月届くクレカ明細PDF」「取引先からの請求書」「子供の学校からのお便りPDF」。これらをGmailから1つずつダウンロードしてドライブに整理…もう手作業はやめましょう。
 
-本記事では、**Gmailの特定メールに添付されているファイルを、自動でGoogleドライブの指定フォルダに保存する**GASコードを紹介します。
+## こんな悩みありませんか？
 
-## この仕組みでできること
+「クレカの明細PDFが毎月3社分届くのに、手動で保存するのを忘れて確定申告前に泣く」
+「仕入れ先からの納品書PDFをGmailで受け取ったあと、毎回Driveの該当フォルダにドラッグするのが面倒」
+「子どもの習い事の月謝明細、気づいたら受信箱に埋もれて見つからない」
 
-- 毎月のクレカ明細PDFを「明細/2026年」フォルダに自動保存
-- 請求書メールの添付を「請求書/取引先別」で仕分け
-- 学校からのプリントを「学校/月別」に整理
-- 確定申告用の領収書を「経費/年月別」に自動分類
+こんにちは、現役ナース＆副業GASユーザーのみっちゃんママです。私はAmazonで物販もしているので、毎月十数件の請求書・納品書・明細PDFがGmailに届きます。以前は週末にまとめて手動でDriveに振り分けていたのですが、これが地味に1時間以上かかる苦行でした。
 
-## 基本コード
+そこで組んだのが **GASでGmail添付ファイルをGoogle Drive へ自動保存する10行スクリプト**です。結論から言うと、導入してから確定申告前の書類探しがゼロ分になりました。本記事では「GAS Gmail 添付 保存」で検索してたどり着いた方が、そのままコピペして使えるレシピを紹介します。
+
+## 自動保存の全体像
+
+まずはGAS初学者でも迷わないよう、仕組みを図解的に整理します。
+
+1. Gmailで「特定のラベル」や「添付ファイルあり」のメールを検索
+2. それぞれのメッセージから添付ファイルを取り出す
+3. 指定したDriveのフォルダに保存する
+4. 処理済みのメールには「Drive保存済み」ラベルをつけて重複防止
+5. GASのトリガーで1時間おきなどに自動実行
+
+ここでのキモは「二重保存を防ぐ仕組み」です。ラベルでの状態管理をしておかないと、実行するたびに同じPDFが何枚もDriveに重複して保存されます。この事故、一度やると整理に数時間かかるので要注意です。
+
+### 事前準備
+
+コードを書く前に、Google Drive 側で以下を用意してください。
+
+- 添付ファイルを保存したい親フォルダを作る（例：`Gmail添付自動保存`）
+- そのフォルダを開き、URLから **フォルダID** をメモしておく
+  （URLの `/folders/` の後ろの文字列がID）
+- Gmailで、自動保存したいメールに付くラベルを決める（例：`請求書`）
+
+この3つが揃えば、あとはGASにコピペするだけです。
+
+## 結論：10行で動く自動保存スクリプト
+
+こちらが本レシピの本命コードです。`FOLDER_ID` と `TARGET_LABEL` だけ書き換えれば、今日から動きます。
 
 ```javascript
-function saveAttachmentsToDrive() {
-  const query = 'has:attachment from:kaden@card.co.jp -label:保存済 newer_than:30d';
-  const threads = GmailApp.search(query, 0, 20);
-
-  const rootFolder = DriveApp.getFoldersByName('明細').next();
-
-  threads.forEach(thread => {
-    thread.getMessages().forEach(msg => {
-      const attachments = msg.getAttachments();
-      const yearMonth = Utilities.formatDate(msg.getDate(), 'Asia/Tokyo', 'yyyy-MM');
-
-      // 年月フォルダを作成 or 取得
-      let yearMonthFolder;
-      const folders = rootFolder.getFoldersByName(yearMonth);
-      if (folders.hasNext()) {
-        yearMonthFolder = folders.next();
-      } else {
-        yearMonthFolder = rootFolder.createFolder(yearMonth);
-      }
-
-      attachments.forEach(att => {
-        yearMonthFolder.createFile(att);
-      });
+function saveAttachments() {
+  const FOLDER_ID = 'ここにDriveフォルダIDを貼る';
+  const TARGET_LABEL = '請求書';
+  const DONE_LABEL = 'Drive保存済み';
+  const folder = DriveApp.getFolderById(FOLDER_ID);
+  const done = GmailApp.getUserLabelByName(DONE_LABEL) || GmailApp.createLabel(DONE_LABEL);
+  const threads = GmailApp.search('label:' + TARGET_LABEL + ' -label:' + DONE_LABEL + ' has:attachment', 0, 20);
+  threads.forEach(function(thread) {
+    thread.getMessages().forEach(function(msg) {
+      msg.getAttachments().forEach(function(att) { folder.createFile(att); });
     });
-
-    // 処理済みラベル付与
-    const label = GmailApp.getUserLabelByName('保存済') || GmailApp.createLabel('保存済');
-    thread.addLabel(label);
+    thread.addLabel(done);
   });
 }
 ```
 
-## コードの仕組み
+コンパクトですが、この10行で以下すべてをこなしてくれます。
 
-1. **Gmail検索** で「添付あり × 特定差出人 × 未処理」を絞り込む
-2. 各メッセージの**添付ファイル全て**を取得
-3. メールの日付から**年月フォルダを作成**（既存ならそれを使用）
-4. フォルダにファイルを保存
-5. スレッドに**「保存済」ラベル**を付与して重複防止
+- `DriveApp.getFolderById()` で保存先フォルダを取得
+- `GmailApp.search()` で対象メールを検索（最大20スレッド）
+- 各メッセージの全添付ファイルをフォルダに保存
+- 処理したスレッドには `Drive保存済み` ラベルを付与
 
-## 抑えておきたい3つのポイント
+初回実行時は、DriveとGmailへのアクセス許可を求められます。Googleアカウントのアクセス権をスクリプトに与えるイメージですので、自分の GAS プロジェクトで使う分には問題なく進めて大丈夫です。
 
-### ポイント1: 検索クエリを厳密に
+## 運用で外せない3つのポイント
 
-広すぎるクエリだと関係ないメールの添付まで保存してしまいます。
+このコード、そのままでも動きますが、実運用するなら以下3点は必ず押さえてください。私が実際に運用して「ここ大事だった」と痛感したポイントです。
+
+### ポイント1：年月別にサブフォルダを自動作成する
+
+添付ファイルを1つのフォルダに全部放り込むと、結局あとで探すのが大変になります。**年月別のサブフォルダに振り分けるだけで、資料の発見効率が段違い**になります。
 
 ```javascript
-// NG（広すぎ）
-const query = 'has:attachment';
-
-// OK（差出人＋ラベル除外＋期間で絞り込み）
-const query = 'has:attachment from:kaden@card.co.jp -label:保存済 newer_than:30d';
+function getMonthFolder(parent) {
+  const name = Utilities.formatDate(new Date(), 'Asia/Tokyo', 'yyyy-MM');
+  const it = parent.getFoldersByName(name);
+  return it.hasNext() ? it.next() : parent.createFolder(name);
+}
 ```
 
-### ポイント2: 年月フォルダで整理する
+この関数を呼び出して、`folder.createFile(att)` の `folder` を `getMonthFolder(folder)` に差し替えるだけ。`2026-04` みたいな命名で、月別に自動仕分けされるようになります。確定申告のとき、このフォルダ構成が本当に神になります。
 
-何ヶ月分もまとめて1フォルダに入れると後で探すのが大変。日付から `yyyy-MM` 形式のサブフォルダを自動生成するのが鉄板。
+### ポイント2：ファイル名に送信元・件名を含める
 
-### ポイント3: 処理済みラベルを必ず使う
-
-ラベルがないと、実行のたびに全てのメールを再処理してしまいます。
-
-## 応用：差出人ごとに別フォルダへ振り分け
+添付ファイルの元のファイル名が `invoice.pdf` のような味気ないものだと、後から何の請求書か分からなくなります。保存するときにファイル名を加工しておきましょう。
 
 ```javascript
-const rules = [
-  { from: 'amazon.co.jp', folder: '通販' },
-  { from: 'kaden.co.jp', folder: 'クレカ明細' },
-  { from: '@school.jp', folder: '学校' },
-];
-
-threads.forEach(thread => {
-  const from = thread.getMessages()[0].getFrom();
-  const rule = rules.find(r => from.includes(r.from));
-  if (!rule) return;
-  const rootFolder = DriveApp.getFoldersByName(rule.folder).next();
-  // ...保存処理
-});
-```
-
-## 応用：ファイル名を日付＋元ファイル名に変更
-
-```javascript
+const from = msg.getFrom().replace(/[<>]/g, '').split(' ')[0];
 const date = Utilities.formatDate(msg.getDate(), 'Asia/Tokyo', 'yyyyMMdd');
-const newName = `${date}_${att.getName()}`;
-yearMonthFolder.createFile(att.copyBlob().setName(newName));
+const newName = date + '_' + from + '_' + att.getName();
+folder.createFile(att.copyBlob().setName(newName));
 ```
 
-これで同じ「領収書.pdf」が複数あっても上書きされません。
+これで保存時のファイル名が `20260420_sender@example.com_invoice.pdf` のように情報密度の高い名前になります。後からDrive検索をかけたときの発見しやすさが別物になりますよ。
 
-## トリガー設定：毎日深夜2時に自動実行
+### ポイント3：拡張子でフィルタする
 
-1. GASエディタ → ⏰トリガー → ＋追加
-2. 関数: `saveAttachmentsToDrive`
-3. 時間主導型: 日付ベース、午前2〜3時
+メールに画像が紛れ込んでいると、不要なPNGやJPEGまでDriveにたまっていきます。欲しい拡張子だけに絞りましょう。
 
-これで毎日自動で、前日までの添付がドライブに整理されます。
+```javascript
+const okExt = ['pdf', 'csv', 'xlsx'];
+const ext = att.getName().split('.').pop().toLowerCase();
+if (okExt.indexOf(ext) === -1) return;
+```
 
-## トラブル：容量オーバー
+PDFだけ保存したい、CSVもほしい、という運用に応じて `okExt` の中身を変えるだけ。Gmail側の署名画像まで全部保存されて困っていた初期の私を、この3行が救ってくれました。
 
-Gmail+ドライブは合計15GB無料。添付が多いと意外と早く埋まります。
+## 応用：スプレッドシートに保存ログを残す
 
-**対策**:
-- 保存後、元メールの添付を削除する（自動）
-- 古いファイルを定期削除する仕組みを併用
+ただDriveに保存するだけでは「いつ、どのメールから、どのファイルを保存したか」が追跡できません。スプレッドシートに保存ログを残しておくと、確定申告や経理処理のときに非常に役立ちます。
 
-## 看護師の私の使い方
+```javascript
+const sheet = SpreadsheetApp.openById('ログ用シートID').getSheetByName('log');
+sheet.appendRow([new Date(), msg.getFrom(), msg.getSubject(), newName]);
+```
 
-介護用品・医療用品の領収書を大量に受け取るので、それらを**「経費_年月」フォルダに自動振り分け**しています。確定申告の時期に「あのレシートどこだっけ…」と探す時間がゼロになりました。副業ブログのサーバー代とかも同じ仕組みで自動整理。
+このログ行を先ほどのコードの `folder.createFile(...)` の直後に追加するだけ。1年分ためると、どの取引先から何月に何通の請求書が来たかが一目瞭然になります。
+
+さらに応用するなら、保存したDriveファイルのURLもログに残しましょう。
+
+```javascript
+const file = folder.createFile(att.copyBlob().setName(newName));
+sheet.appendRow([new Date(), msg.getFrom(), msg.getSubject(), file.getUrl()]);
+```
+
+シート上からワンクリックで該当ファイルに飛べるので、在宅ワークで書類を探す時間がゼロに近づきます。
+
+## トリガー設定とよくあるトラブル
+
+最後に、定時実行の設定とハマりどころをまとめます。
+
+### トリガー設定
+
+GASエディタ左の時計マークから新規トリガーを追加。
+
+- 関数：`saveAttachments`
+- イベントのソース：時間主導型
+- タイプ：時間ベースのタイマー
+- 間隔：1時間おき
+
+メールの件数が多い場合は30分おきでもOKですが、ほとんどのケースで1時間おきで十分です。
+
+### よくあるトラブル
+
+- **「Gmailのクォータを超えました」エラー** → 1回で処理するスレッド数を `0, 20` から `0, 10` に減らしましょう。
+- **「ファイル名が重複する」** → ファイル名加工（ポイント2）を入れてください。
+- **「保存されない」** → 検索クエリが合っているかを、まずGmail検索窓で試してから貼り付けるのがおすすめです。
 
 ## まとめ
 
-添付ファイルの自動整理は、**家計管理・確定申告・仕事の書類管理**すべてに効く超万能自動化です。一度作れば半永久的に動くので、早めに仕組み化することをおすすめします。
+GASでGmailの添付ファイルをGoogle Driveに自動保存するレシピを紹介しました。
 
-関連記事: [レシートOCR自動集計](/blog/gas-receipt-ocr-tax/) / [トリガー完全ガイド](/blog/gas-trigger-setup/)
+- 10行コードで最低限の動作はすぐ作れる
+- 年月フォルダ＋ファイル名加工＋拡張子フィルタで運用レベルに引き上げる
+- スプレッドシートにログを残せば確定申告でも大活躍
+- トリガーは1時間おきで十分
+
+私自身、これを組んでから毎月の経理書類整理時間が約1時間→ほぼ0分に短縮できました。副業や個人事業で書類管理に消耗している方こそ、真っ先に取り入れてほしいレシピです。「GAS Gmail 添付 保存」の検索結果から来てくれた方、ぜひ試してみてくださいね。
+
+---
+
+【この記事を書いた人：みっちゃんママ】
+三児の母＆現役ナース。夜勤と子育ての合間に副業としてGASを学び、Gmail・スプレッドシート・カレンダーの自動化レシピを公開中。プログラミング完全未経験から独学で実務に使えるレベルまで到達した経験をベースに、「コピペで動く」をモットーに情報発信しています。
