@@ -1,7 +1,7 @@
 ---
 title: "GASで一斉メール送信300件までの安全な書き方"
 description: "Google Apps Scriptで複数宛先に一斉メール送信する方法を、現役ナース目線で安全重視に解説。スプシの宛先リストを使い、送信上限やエラー回避のコツも看護師がやさしくまとめます。"
-pubDate: "TBD"
+pubDate: "2026-05-14T19:00:00+09:00"
 heroImage: "/blog-placeholder-2.jpg"
 categorySlug: "gmail"
 categoryName: "Gmail自動化"
