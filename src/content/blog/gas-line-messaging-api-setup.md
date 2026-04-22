@@ -1,6 +1,6 @@
 ---
 title: "LINE Messaging APIとGAS連携する最短3ステップ"
-description: "GASとLINE Messaging APIを連携して通知Botを作る手順を3ステップで解説。看護師ママが家族のスケジュール共有に使っている実例付きです。"
+description: "GASとLINE Messaging APIを連携して通知Botを作る手順を3ステップで解説。看護師が家族のスケジュール共有に使っている実例付きです。"
 pubDate: "2026-04-28T19:00:00+09:00"
 heroImage: "/blog-placeholder-2.jpg"
 categorySlug: "line"
@@ -9,7 +9,7 @@ tagSlugs: ["gas", "line", "messaging-api", "bot"]
 tagNames: ["GAS", "LINE", "Messaging API", "Bot"]
 readingTime: 9
 ---
-こんにちは、看護師ママのみっちゃんです。今日は私が副業でも家庭でも愛用している「GAS×LINE Messaging API」について、最短でBotを動かすまでの手順を紹介します。
+こんにちは、看護師のみっちゃんです。今日は私が副業でも家庭でも愛用している「GAS×LINE Messaging API」について、最短でBotを動かすまでの手順を紹介します。
 
 ## こんな悩みありませんか？
 
@@ -152,7 +152,7 @@ function notifyShift() {
 - トークンはスクリプトプロパティで安全管理
 - 応用でシフト通知や家族との情報共有が自動化できる
 
-看護師ママの私にとって、家族との時間を守るための第一歩がこの自動通知でした。まずは送信だけでも十分実用的なので、ぜひ試してみてください。
+看護師の私にとって、家族との時間を守るための第一歩がこの自動通知でした。まずは送信だけでも十分実用的なので、ぜひ試してみてください。
 
 ## 関連記事
 
