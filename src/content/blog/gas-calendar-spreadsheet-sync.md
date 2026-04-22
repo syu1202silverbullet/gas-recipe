@@ -1,7 +1,7 @@
 ---
 title: "スプシの予定リストをカレンダー一括同期GAS"
 description: "スプレッドシートに書いた予定をGoogleカレンダーへ一括登録するGAS。の習い事、夜勤シフト、副業納期を一枚のシートで管理する看護師の時短術を、コピペで動く形で紹介します。"
-pubDate: "TBD"
+pubDate: "2026-05-15T19:00:00+09:00"
 heroImage: "/blog-placeholder-3.jpg"
 categorySlug: "calendar"
 categoryName: "Googleカレンダー"
