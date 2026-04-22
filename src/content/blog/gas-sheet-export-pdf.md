@@ -1,7 +1,7 @@
 ---
 title: "スプシPDF化をGASで自動保存する完全版"
 description: "スプレッドシートをPDF化してDriveに自動保存する手順を、看護師がやさしく解説。毎月の請求書や勤務表づくりがボタン一つで終わります。"
-pubDate: "TBD"
+pubDate: "2026-05-09T19:00:00+09:00"
 heroImage: "/blog-placeholder-2.jpg"
 categorySlug: "spreadsheet"
 categoryName: "スプレッドシート"
