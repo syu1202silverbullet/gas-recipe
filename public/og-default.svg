@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#dbeafe"/>
+      <stop offset="1" stop-color="#fce7f3"/>
+    </linearGradient>
+    <linearGradient id="gear" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#2563eb"/>
+      <stop offset="1" stop-color="#7c3aed"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <text x="100" y="230" font-family="'Noto Sans JP', sans-serif" font-size="46" fill="#9333ea" font-weight="700">👩‍💻 GAS Recipe</text>
+  <text x="100" y="340" font-family="'Noto Sans JP', sans-serif" font-size="72" fill="#111827" font-weight="800">Google Apps Scriptで</text>
+  <text x="100" y="440" font-family="'Noto Sans JP', sans-serif" font-size="72" fill="#111827" font-weight="800">毎日を自動化する</text>
+  <text x="100" y="540" font-family="'Noto Sans JP', sans-serif" font-size="32" fill="#374151">看護師×副業プログラマーが書く実用レシピ集</text>
+  <g transform="translate(1000 200)">
+    <circle r="90" fill="url(#gear)"/>
+    <circle r="35" fill="white"/>
+  </g>
+</svg>
