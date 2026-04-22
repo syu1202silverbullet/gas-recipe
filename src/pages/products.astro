@@ -1,0 +1,375 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import MobileNav from '../components/MobileNav.astro';
+import { SITE_TITLE } from '../consts';
+
+const products = [
+	{
+		slug: 'calendar-photo',
+		emoji: '📸',
+		title: '写真→予定カレンダー自動化キット',
+		subtitle: '予定表を写真で撮るだけ、GoogleカレンダーにOCR自動登録',
+		price: '¥3,980',
+		badge: 'ベストセラー予定',
+		status: 'coming-soon',
+		features: [
+			'スマホで予定表を撮影 → 自動OCR解析',
+			'Googleカレンダーに一括登録',
+			'家族・チームで共有運用OK',
+			'設置マニュアル（動画15分）付き',
+		],
+	},
+	{
+		slug: 'ubereats-csv-mf',
+		emoji: '🛵',
+		title: 'Uber Eats確定申告CSV化キット',
+		subtitle: 'スクショから自動集計、MF確定申告にそのまま取り込み',
+		price: '¥5,980',
+		badge: '確定申告シーズン人気',
+		status: 'coming-soon',
+		features: [
+			'配達完了スクショをOCRで自動読み取り',
+			'日次・月次・年次集計を自動生成',
+			'マネーフォワード形式CSVエクスポート',
+			'副業の青色申告に対応',
+		],
+	},
+	{
+		slug: 'shopping-list',
+		emoji: '🛒',
+		title: '家族共有買い物リスト＋履歴集計',
+		subtitle: 'ワンタップ追加、自動で月次集計までする買い物アプリ',
+		price: '¥2,980',
+		badge: '家族向け',
+		status: 'coming-soon',
+		features: [
+			'よく買うモノのワンタップ追加',
+			'家族全員で共有・同期',
+			'月次購入履歴を自動集計',
+			'節約のためのデータ可視化',
+		],
+	},
+	{
+		slug: 'gift-tracker',
+		emoji: '🎁',
+		title: '記念日・誕プレ管理＋毎朝通知',
+		subtitle: '人物別プレゼント履歴＋祝日自動展開＋毎朝Gmail通知',
+		price: '¥3,980',
+		badge: '家族向け',
+		status: 'coming-soon',
+		features: [
+			'人物別に過去のプレゼントを記録',
+			'祝日・記念日を自動カレンダー化',
+			'1週間前にGmailで自動通知',
+			'プレゼント案のアイデアストック',
+		],
+	},
+	{
+		slug: 'idea-box',
+		emoji: '💡',
+		title: 'アイデアメモ箱＋自動分類',
+		subtitle: 'テキスト・音声・画像でメモ、キーワードで自動タグ付け',
+		price: '¥2,980',
+		badge: '個人向け',
+		status: 'coming-soon',
+		features: [
+			'テキスト・音声・画像を一元保存',
+			'キーワード自動分類・タグ付け',
+			'毎週日曜に今週のアイデアをGmail配信',
+			'Google Drive連携で永久保存',
+		],
+	},
+	{
+		slug: 'meetup-tracker',
+		emoji: '🤝',
+		title: 'オフ会記録＋再会リマインド',
+		subtitle: '勉強会の参加・主催記録、出会った人を自動カウント',
+		price: '¥3,980',
+		badge: 'コミュニティ向け',
+		status: 'coming-soon',
+		features: [
+			'オフ会の参加・主催を記録',
+			'出会った人を自動カウント',
+			'90日経過で再会リマインド',
+			'リベシティ等のコミュニティ運営者に最適',
+		],
+	},
+];
+---
+
+<!doctype html>
+<html lang="ja">
+	<head>
+		<BaseHead
+			title={`GASテンプレート販売 | ${SITE_TITLE}`}
+			description="業務・家事・副業の面倒をまるごと自動化するGoogle Apps Scriptテンプレート集。現役ナース副業プログラマーが実際に使っている仕組みをそのまま販売。"
+		/>
+	</head>
+	<body>
+		<Header />
+		<main>
+			<nav class="breadcrumbs" aria-label="パンくずリスト">
+				<a href="/">ホーム</a> <span>›</span> テンプレート
+			</nav>
+
+			<section class="hero">
+				<p class="eyebrow">🛍️ GAS Recipeオリジナル</p>
+				<h1>コピペだけで動く<br/>GASテンプレート集</h1>
+				<p class="lead">
+					「GASを学ぶ時間はないけど、自動化の恩恵は受けたい」そんな方のために、
+					看護師ママが実際に毎日使っている仕組みを、そのまま使えるテンプレートとして提供します。
+					設置は動画マニュアル付き、PCとGoogleアカウントがあれば誰でも動かせます。
+				</p>
+				<p class="notice">⚡ 2026年6月リリース予定。事前登録で<strong>30%OFF先行販売</strong>のご案内をお送りします。</p>
+				<a href="/lp/gas-starter/" class="cta-btn">📬 事前登録はこちら</a>
+			</section>
+
+			<section class="products">
+				<h2>ラインアップ（全6本）</h2>
+				<div class="product-grid">
+					{products.map((p) => (
+						<article class="product-card">
+							<div class="product-header">
+								<span class="product-emoji">{p.emoji}</span>
+								<span class="product-badge">{p.badge}</span>
+							</div>
+							<h3>{p.title}</h3>
+							<p class="product-subtitle">{p.subtitle}</p>
+							<ul class="product-features">
+								{p.features.map((f) => <li>{f}</li>)}
+							</ul>
+							<div class="product-footer">
+								<span class="product-price">{p.price}</span>
+								<span class="product-status">Coming Soon</span>
+							</div>
+						</article>
+					))}
+				</div>
+			</section>
+
+			<section class="why">
+				<h2>なぜGAS Recipeのテンプレートなのか</h2>
+				<div class="why-grid">
+					<div class="why-card">
+						<span class="why-icon">🏥</span>
+						<h3>実務で鍛えられた仕組み</h3>
+						<p>病院勤務のナースが家事・育児・副業の合間に作った、本当に日常で動き続けているコードだけを商品化しています。</p>
+					</div>
+					<div class="why-card">
+						<span class="why-icon">💰</span>
+						<h3>買い切り・追加料金なし</h3>
+						<p>サブスクではなく買い切り。Googleアカウント内で動くので、サーバー代・ランニングコストも発生しません。</p>
+					</div>
+					<div class="why-card">
+						<span class="why-icon">🎓</span>
+						<h3>動画マニュアル付き</h3>
+						<p>コピペ手順を動画で解説。プログラミング未経験でも、15分で設置完了する構成です。</p>
+					</div>
+					<div class="why-card">
+						<span class="why-icon">💬</span>
+						<h3>購入後のメールサポート</h3>
+						<p>設置でつまずいたら、購入から30日以内はメールで質問OK。夜勤の合間に返信します。</p>
+					</div>
+				</div>
+			</section>
+
+			<section class="bottom-cta">
+				<h2>リリース前の「事前登録」がお得です</h2>
+				<p>メールアドレスを登録いただいた方に、リリース時<strong>30%OFF</strong>のクーポンと、<br/>「GAS副業で月5万円」スタートガイドPDF（全23ページ）を無料でお届けします。</p>
+				<a href="/lp/gas-starter/" class="cta-btn">📬 事前登録して特典を受け取る</a>
+			</section>
+		</main>
+		<Footer />
+		<MobileNav />
+		<style>
+			main { width: 960px; max-width: calc(100% - 2rem); margin: 0 auto; padding: 2rem 1rem 4rem; }
+			.breadcrumbs { font-size: 0.88em; color: rgb(var(--gray)); margin-bottom: 1.5rem; }
+			.breadcrumbs a { color: var(--accent); text-decoration: none; }
+
+			.hero {
+				text-align: center;
+				padding: 3rem 1rem;
+				background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+				border-radius: var(--radius);
+				margin-bottom: 3rem;
+			}
+			.eyebrow {
+				display: inline-block;
+				padding: 0.3em 1em;
+				background: white;
+				border-radius: 999px;
+				font-size: 0.85em;
+				font-weight: 600;
+				color: var(--accent);
+				margin: 0 0 1rem;
+			}
+			.hero h1 {
+				font-size: 2em;
+				margin: 0 0 1rem;
+				color: rgb(var(--black));
+				line-height: 1.3;
+			}
+			.lead { font-size: 1em; line-height: 1.9; color: rgb(var(--gray-dark)); max-width: 680px; margin: 0 auto 1.5rem; }
+			.notice {
+				display: inline-block;
+				padding: 0.6em 1.2em;
+				background: #fef3c7;
+				border: 1px solid #fbbf24;
+				color: #78350f;
+				border-radius: var(--radius);
+				font-size: 0.88em;
+				margin: 0 0 1.5rem;
+			}
+			.cta-btn {
+				display: inline-block;
+				padding: 1em 2.2em;
+				background: var(--accent);
+				color: white;
+				border-radius: 999px;
+				text-decoration: none;
+				font-weight: 700;
+				font-size: 1em;
+				box-shadow: 0 6px 14px rgba(59, 130, 246, 0.3);
+				transition: transform 0.15s;
+			}
+			.cta-btn:hover { transform: translateY(-2px); color: white; }
+
+			.products { margin-bottom: 3rem; }
+			.products h2 {
+				text-align: center;
+				font-size: 1.5em;
+				margin: 0 0 2rem;
+				color: rgb(var(--black));
+			}
+			.product-grid {
+				display: grid;
+				grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+				gap: 1.5rem;
+			}
+			.product-card {
+				background: white;
+				border: 1px solid rgb(var(--gray-light));
+				border-radius: var(--radius);
+				padding: 1.5rem;
+				display: flex;
+				flex-direction: column;
+				gap: 0.8rem;
+				transition: all 0.2s;
+			}
+			.product-card:hover {
+				transform: translateY(-3px);
+				box-shadow: var(--box-shadow);
+			}
+			.product-header {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+			}
+			.product-emoji { font-size: 2em; }
+			.product-badge {
+				padding: 0.3em 0.8em;
+				background: #fef3c7;
+				color: #78350f;
+				border-radius: 999px;
+				font-size: 0.72em;
+				font-weight: 600;
+			}
+			.product-card h3 {
+				margin: 0;
+				font-size: 1.1em;
+				color: rgb(var(--black));
+				line-height: 1.4;
+			}
+			.product-subtitle {
+				margin: 0;
+				font-size: 0.88em;
+				color: rgb(var(--gray-dark));
+				line-height: 1.6;
+			}
+			.product-features {
+				list-style: none;
+				padding: 0;
+				margin: 0;
+				font-size: 0.85em;
+				line-height: 1.8;
+				color: rgb(var(--gray-dark));
+			}
+			.product-features li {
+				padding-left: 1.2em;
+				position: relative;
+			}
+			.product-features li::before {
+				content: '✓';
+				position: absolute;
+				left: 0;
+				color: var(--accent);
+				font-weight: bold;
+			}
+			.product-footer {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				margin-top: auto;
+				padding-top: 1rem;
+				border-top: 1px solid rgb(var(--gray-light));
+			}
+			.product-price {
+				font-size: 1.3em;
+				font-weight: 700;
+				color: rgb(var(--black));
+			}
+			.product-status {
+				font-size: 0.8em;
+				color: rgb(var(--gray));
+				background: rgb(var(--gray-light));
+				padding: 0.3em 0.8em;
+				border-radius: 999px;
+			}
+
+			.why { margin-bottom: 3rem; }
+			.why h2 {
+				text-align: center;
+				font-size: 1.5em;
+				margin: 0 0 2rem;
+				color: rgb(var(--black));
+			}
+			.why-grid {
+				display: grid;
+				grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+				gap: 1rem;
+			}
+			.why-card {
+				text-align: center;
+				padding: 1.5rem;
+				background: var(--bg-soft);
+				border-radius: var(--radius);
+			}
+			.why-icon { font-size: 2em; display: block; margin-bottom: 0.5rem; }
+			.why-card h3 { font-size: 1em; margin: 0 0 0.5rem; color: rgb(var(--black)); }
+			.why-card p { margin: 0; font-size: 0.88em; line-height: 1.7; color: rgb(var(--gray-dark)); }
+
+			.bottom-cta {
+				text-align: center;
+				padding: 2.5rem 1rem;
+				background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+				border-radius: var(--radius);
+			}
+			.bottom-cta h2 { margin: 0 0 1rem; color: #78350f; font-size: 1.4em; }
+			.bottom-cta p { margin: 0 0 1.5rem; color: #78350f; line-height: 1.8; }
+
+			@media (prefers-color-scheme: dark) {
+				.product-card { background: var(--bg-soft); border-color: rgb(var(--gray-dark)); }
+				.hero { background: linear-gradient(135deg, #1e293b 0%, #1e3a8a 100%); }
+				.hero h1 { color: #f1f5f9; }
+				.eyebrow { background: var(--bg-soft); }
+				.bottom-cta { background: linear-gradient(135deg, #451a03 0%, #78350f 100%); }
+				.bottom-cta h2, .bottom-cta p { color: #fef3c7; }
+			}
+			@media (max-width: 720px) {
+				.hero h1 { font-size: 1.5em; }
+			}
+		</style>
+	</body>
+</html>
