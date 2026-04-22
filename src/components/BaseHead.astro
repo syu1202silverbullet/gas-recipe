@@ -9,17 +9,29 @@ interface Props {
 	updatedDate?: Date;
 	type?: 'website' | 'article';
 	slug?: string;
+	keywords?: string[];
+	categoryName?: string;
+	articleBody?: string;
 }
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
-const { title, description, image = '/blog-placeholder-1.jpg', pubDate, updatedDate, type = 'website', slug } = Astro.props;
+const {
+	title,
+	description,
+	image = '/blog-placeholder-1.jpg',
+	pubDate,
+	updatedDate,
+	type = 'website',
+	slug,
+	keywords = [],
+	categoryName,
+} = Astro.props;
 
-// Determine OG image: use auto-generated per-article SVG if it's an article
+// Determine OG image
 let ogImageUrl: URL;
 if (type === 'article' && slug) {
 	ogImageUrl = new URL(`/og/${slug}.svg`, Astro.url);
 } else {
-	// Derive slug from URL for articles
 	const pathSlug = Astro.url.pathname.match(/\/blog\/([^/]+)\//)?.[1];
 	if (type === 'article' && pathSlug) {
 		ogImageUrl = new URL(`/og/${pathSlug}.svg`, Astro.url);
@@ -28,7 +40,94 @@ if (type === 'article' && slug) {
 	}
 }
 
-const jsonLd: any = {
+// Build BreadcrumbList schema from URL path
+const pathname = Astro.url.pathname;
+const segments = pathname.split('/').filter(Boolean);
+const breadcrumbItems: any[] = [{
+	"@type": "ListItem",
+	"position": 1,
+	"name": "ホーム",
+	"item": "https://gas-recipe.com/",
+}];
+
+if (segments[0] === 'blog' && segments[1]) {
+	breadcrumbItems.push({
+		"@type": "ListItem",
+		"position": 2,
+		"name": "記事一覧",
+		"item": "https://gas-recipe.com/blog/",
+	});
+	breadcrumbItems.push({
+		"@type": "ListItem",
+		"position": 3,
+		"name": categoryName || title,
+		"item": canonicalURL.toString(),
+	});
+} else if (segments[0] === 'category' && segments[1]) {
+	breadcrumbItems.push({
+		"@type": "ListItem",
+		"position": 2,
+		"name": "カテゴリ",
+		"item": "https://gas-recipe.com/category/",
+	});
+	breadcrumbItems.push({
+		"@type": "ListItem",
+		"position": 3,
+		"name": title,
+		"item": canonicalURL.toString(),
+	});
+} else if (segments.length > 0) {
+	const pageLabels: Record<string, string> = {
+		'guide': 'GAS完全ガイド',
+		'blog': '記事一覧',
+		'about': '運営者情報',
+		'contact': 'お問い合わせ',
+		'privacy': 'プライバシーポリシー',
+		'products': 'テンプレート',
+		'errors': 'エラー逆引き辞典',
+		'usecase': 'ユースケース逆引き',
+		'faq': 'FAQ',
+		'lp': 'キャンペーン',
+		'search': '検索',
+		'category': 'カテゴリ',
+		'tag': 'タグ',
+	};
+	breadcrumbItems.push({
+		"@type": "ListItem",
+		"position": 2,
+		"name": pageLabels[segments[0]] || segments[0],
+		"item": canonicalURL.toString(),
+	});
+}
+
+const breadcrumbSchema = {
+	"@context": "https://schema.org",
+	"@type": "BreadcrumbList",
+	"itemListElement": breadcrumbItems,
+};
+
+// Person schema (Author = 凛)
+const authorSchema = {
+	"@type": "Person",
+	"name": "凛",
+	"url": "https://gas-recipe.com/about/",
+	"jobTitle": "看護師×副業Webエンジニア",
+	"knowsAbout": ["Google Apps Script", "JavaScript", "スプレッドシート自動化", "Gmail自動化", "業務自動化"],
+};
+
+// Organization schema (Publisher)
+const publisherSchema = {
+	"@type": "Organization",
+	"name": "GAS Recipe",
+	"url": "https://gas-recipe.com",
+	"logo": {
+		"@type": "ImageObject",
+		"url": "https://gas-recipe.com/favicon.svg",
+	},
+};
+
+// Main content schema (WebSite or BlogPosting)
+const mainSchema: any = {
 	"@context": "https://schema.org",
 	"@type": type === 'article' ? "BlogPosting" : "WebSite",
 	"name": title,
@@ -36,19 +135,30 @@ const jsonLd: any = {
 	"description": description,
 	"url": canonicalURL.toString(),
 	"image": ogImageUrl.toString(),
-	"publisher": {
-		"@type": "Organization",
-		"name": "GAS Recipe",
-		"url": "https://gas-recipe.com",
-	},
-	"author": {
-		"@type": "Person",
-		"name": "みっちゃんママ",
-	},
+	"publisher": publisherSchema,
+	"author": authorSchema,
 	"inLanguage": "ja",
+	"mainEntityOfPage": {
+		"@type": "WebPage",
+		"@id": canonicalURL.toString(),
+	},
 };
-if (pubDate) jsonLd.datePublished = pubDate.toISOString();
-if (updatedDate) jsonLd.dateModified = updatedDate.toISOString();
+if (pubDate) mainSchema.datePublished = pubDate.toISOString();
+if (updatedDate) mainSchema.dateModified = updatedDate.toISOString();
+else if (pubDate) mainSchema.dateModified = pubDate.toISOString();
+if (keywords && keywords.length > 0) mainSchema.keywords = keywords.join(", ");
+if (categoryName) mainSchema.articleSection = categoryName;
+if (type === 'article' && slug) mainSchema.isPartOf = {
+	"@type": "Blog",
+	"@id": "https://gas-recipe.com/blog/",
+	"name": "GAS Recipe Blog",
+};
+
+// Combine in @graph
+const combinedSchema = {
+	"@context": "https://schema.org",
+	"@graph": [mainSchema, breadcrumbSchema],
+};
 ---
 
 <meta charset="utf-8" />
@@ -57,8 +167,9 @@ if (updatedDate) jsonLd.dateModified = updatedDate.toISOString();
 <meta name="generator" content={Astro.generator} />
 
 <link rel="canonical" href={canonicalURL} />
-<meta name="robots" content="index, follow" />
-<meta name="author" content="みっちゃんママ" />
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
+<meta name="author" content="凛" />
+{keywords && keywords.length > 0 && <meta name="keywords" content={keywords.join(", ")} />}
 
 <title>{title}</title>
 <meta name="title" content={title} />
@@ -71,17 +182,31 @@ if (updatedDate) jsonLd.dateModified = updatedDate.toISOString();
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
 <meta property="og:image" content={ogImageUrl} />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content={title} />
+
+{type === 'article' && pubDate && (
+	<>
+		<meta property="article:published_time" content={pubDate.toISOString()} />
+		{updatedDate && <meta property="article:modified_time" content={updatedDate.toISOString()} />}
+		<meta property="article:author" content="凛" />
+		{categoryName && <meta property="article:section" content={categoryName} />}
+		{keywords && keywords.map(k => <meta property="article:tag" content={k} />)}
+	</>
+)}
 
 <meta property="twitter:card" content="summary_large_image" />
 <meta property="twitter:url" content={Astro.url} />
 <meta property="twitter:title" content={title} />
 <meta property="twitter:description" content={description} />
 <meta property="twitter:image" content={ogImageUrl} />
+<meta property="twitter:image:alt" content={title} />
 
 <link rel="sitemap" href="/sitemap-index.xml" />
 <link rel="alternate" type="application/rss+xml" title={title} href={new URL('rss.xml', Astro.site)} />
 
-<script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+<script type="application/ld+json" set:html={JSON.stringify(combinedSchema)} />
 
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-RKS9S3709E"></script>
 <script is:inline>
