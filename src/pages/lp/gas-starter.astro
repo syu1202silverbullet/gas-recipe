@@ -3,335 +3,40 @@ import BaseHead from '../../components/BaseHead.astro';
 import Footer from '../../components/Footer.astro';
 import MobileNav from '../../components/MobileNav.astro';
 import { SITE_TITLE } from '../../consts';
-
-// PMがGoogleフォームを作成したらこのURLに差し替えてください
-// 作成手順: Googleフォーム新規→「メールアドレス」必須1項目→共有URLをコピー
-const GOOGLE_FORM_URL = 'https://forms.google.com/PLACEHOLDER_REPLACE_ME';
 ---
 
 <!doctype html>
 <html lang="ja">
 	<head>
 		<BaseHead
-			title={`【無料PDF】GAS自動化30日スタートガイド | ${SITE_TITLE}`}
-			description="看護師×副業Webエンジニアの凛が病棟の事務仕事をGASで自動化してきた30日間の学習ロードマップ。基礎文法から実務で最初に自動化したいタスク、エラー対処までを全23ページのPDFにまとめました。"
+			title={`準備中 | ${SITE_TITLE}`}
+			description="こちらのページは現在準備中です。"
 		/>
+		<meta name="robots" content="noindex, nofollow" />
 	</head>
 	<body>
 		<main>
-			<section class="hero">
-				<div class="hero-inner">
-					<p class="eyebrow">📬 限定無料プレゼント</p>
-					<h1>「GAS自動化30日」<br/>スタートガイド<span class="hl">PDF</span></h1>
-					<p class="hero-lead">
-						看護師×副業Webエンジニアの凛が<br/>
-						病棟の事務仕事を自動化した30日間の学習ログ。
-					</p>
-					<div class="pdf-preview">
-						<div class="pdf-pages">
-							<div class="pdf-page">📄</div>
-							<div class="pdf-page">📄</div>
-							<div class="pdf-page">📄</div>
-						</div>
-						<p class="pdf-caption">全23ページ・PDF形式</p>
-					</div>
-					<a href={GOOGLE_FORM_URL} class="cta-btn" target="_blank" rel="noopener">📨 無料で今すぐ受け取る</a>
-					<p class="note">※メールアドレスのみ登録。いつでも解除できます。</p>
-				</div>
+			<section class="coming-soon">
+				<h1>ページは準備中です</h1>
+				<p>現在準備を進めております。もうしばらくお待ちください。</p>
+				<a href="/" class="back-btn">← トップに戻る</a>
 			</section>
-
-			<section class="contents">
-				<h2>PDFの中身（目次）</h2>
-				<div class="toc">
-					<div class="toc-item">
-						<span class="toc-num">第1章</span>
-						<div>
-							<h3>なぜ看護師が業務自動化からGASを学び始めたのか</h3>
-							<p>現場の雑務がGASで劇的に楽になる3つのポイント</p>
-						</div>
-					</div>
-					<div class="toc-item">
-						<span class="toc-num">第2章</span>
-						<div>
-							<h3>最初の30日：基礎文法とGoogle APIの触り方</h3>
-							<p>変数・関数・ループ・配列の最小構成と、スプシ・Gmail・カレンダー連携</p>
-						</div>
-					</div>
-					<div class="toc-item">
-						<span class="toc-num">第3章</span>
-						<div>
-							<h3>最初の実用スクリプト3本を作るまでの60日間</h3>
-							<p>職場や個人プロジェクトで実際に動くGASを作るまでの具体ステップ</p>
-						</div>
-					</div>
-					<div class="toc-item">
-						<span class="toc-num">第4章</span>
-						<div>
-							<h3>自動化を継続するための3つの仕組み</h3>
-							<p>テンプレート化・再利用・保守しやすい構造の設計パターン</p>
-						</div>
-					</div>
-					<div class="toc-item">
-						<span class="toc-num">第5章</span>
-						<div>
-							<h3>確定申告と副業整理の基本</h3>
-							<p>青色/白色の選び方・経費計上のコツ・副業収入の整理方法</p>
-						</div>
-					</div>
-					<div class="toc-item">
-						<span class="toc-num">特典</span>
-						<div>
-							<h3>GAS実装ミニレシピ集3本</h3>
-							<p>すぐ動く短いスクリプト3本（Googleドキュメントでダウンロード可）</p>
-						</div>
-					</div>
-				</div>
-			</section>
-
-			<section class="bonus">
-				<h2>📦 事前登録の方だけに、もうひとつ</h2>
-				<p class="bonus-lead">
-					2026年6月にリリース予定の<strong>GASテンプレート販売（全6本）</strong>について、<br/>
-					事前登録いただいた方にリリース案内をお届けします。
-				</p>
-				<div class="bonus-products">
-					<span>📸 写真→カレンダー</span>
-					<span>🛵 Uber Eats確定申告</span>
-					<span>🛒 買い物リスト</span>
-					<span>🎁 記念日管理</span>
-					<span>💡 アイデアメモ</span>
-					<span>🤝 オフ会記録</span>
-				</div>
-				<p class="bonus-note">
-					メルマガ登録特典として、リリース通知＋クーポンコードをメールでお送りします。
-					<br/><a href="/products/">→ テンプレート一覧を先に見る</a>
-				</p>
-			</section>
-
-			<section class="author">
-				<h2>執筆者プロフィール</h2>
-				<div class="author-box">
-					<div class="author-avatar">👩‍💻</div>
-					<div>
-						<h3>凛（りん）</h3>
-						<p>現役ナース・副業Webエンジニア。</p>
-						<p>病院の事務仕事をGASで自動化したのがきっかけで副業Webエンジニアに発展。日常業務から確定申告まで、自動化の実録を発信中。</p>
-					</div>
-				</div>
-			</section>
-
-			<section class="final-cta">
-				<h2>今すぐ受け取ってください</h2>
-				<p>メールアドレス1行だけ。PDFは登録直後に届きます。</p>
-				<a href={GOOGLE_FORM_URL} class="cta-btn" target="_blank" rel="noopener">📨 無料で受け取る</a>
-				<p class="note">※いつでも配信解除できます。個人情報は厳重に管理します。</p>
-			</section>
-
-			<p class="backlink"><a href="/">← GAS Recipeトップに戻る</a></p>
 		</main>
 		<Footer />
 		<MobileNav />
 		<style>
-			main {
-				width: 760px;
-				max-width: calc(100% - 2rem);
-				margin: 0 auto;
-				padding: 2rem 1rem 4rem;
-			}
-			section { margin-bottom: 3rem; }
-
-			.hero {
-				text-align: center;
-				padding: 3rem 1.5rem;
-				background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
-				border-radius: 16px;
-				margin-bottom: 2.5rem;
-			}
-			.eyebrow {
+			main { width: 640px; max-width: calc(100% - 2rem); margin: 0 auto; padding: 4rem 1rem; }
+			.coming-soon { text-align: center; padding: 3rem 1rem; }
+			h1 { margin: 0 0 1.5rem; border: none; padding: 0; color: rgb(var(--black)); }
+			p { color: rgb(var(--gray-dark)); line-height: 1.9; margin: 0 0 2rem; }
+			.back-btn {
 				display: inline-block;
-				padding: 0.3em 1em;
-				background: #fbbf24;
-				color: #78350f;
-				border-radius: 999px;
-				font-size: 0.85em;
-				font-weight: 700;
-				margin: 0 0 1rem;
-			}
-			.hero h1 {
-				font-size: 1.8em;
-				margin: 0 0 1rem;
-				color: rgb(var(--black));
-				line-height: 1.4;
-			}
-			.hl { color: var(--accent); }
-			.hero-lead {
-				font-size: 1em;
-				line-height: 1.8;
-				margin: 0 0 2rem;
-				color: rgb(var(--gray-dark));
-			}
-			.pdf-preview {
-				margin: 0 0 2rem;
-			}
-			.pdf-pages {
-				display: flex;
-				justify-content: center;
-				gap: 0.3rem;
-			}
-			.pdf-page {
-				width: 60px;
-				height: 80px;
-				background: white;
-				border: 1px solid rgb(var(--gray-light));
-				border-radius: 6px;
-				display: flex;
-				align-items: center;
-				justify-content: center;
-				font-size: 2em;
-				box-shadow: 0 3px 8px rgba(0,0,0,0.1);
-			}
-			.pdf-caption {
-				margin: 0.8rem 0 0;
-				font-size: 0.82em;
-				color: rgb(var(--gray));
-			}
-
-			.cta-btn {
-				display: inline-block;
-				padding: 1.2em 2.5em;
+				padding: 0.7em 2em;
 				background: var(--accent);
 				color: white;
 				border-radius: 999px;
 				text-decoration: none;
-				font-weight: 700;
-				font-size: 1.05em;
-				box-shadow: 0 8px 20px rgba(59, 130, 246, 0.35);
-				transition: transform 0.15s;
-			}
-			.cta-btn:hover { transform: translateY(-2px); color: white; }
-			.note {
-				margin: 1rem 0 0;
-				font-size: 0.82em;
-				color: rgb(var(--gray));
-			}
-
-			.contents h2, .bonus h2, .author h2, .final-cta h2 {
-				text-align: center;
-				font-size: 1.3em;
-				margin: 0 0 1.5rem;
-				color: rgb(var(--black));
-			}
-			.toc {
-				display: flex;
-				flex-direction: column;
-				gap: 1rem;
-			}
-			.toc-item {
-				display: flex;
-				gap: 1rem;
-				padding: 1.2rem;
-				background: var(--bg-soft);
-				border-radius: 10px;
-				border-left: 4px solid var(--accent);
-			}
-			.toc-num {
-				padding: 0.4em 0.8em;
-				background: var(--accent);
-				color: white;
-				border-radius: 6px;
-				font-size: 0.82em;
-				font-weight: 700;
-				height: fit-content;
-				flex-shrink: 0;
-			}
-			.toc-item h3 {
-				margin: 0 0 0.3rem;
-				font-size: 1em;
-				color: rgb(var(--black));
-			}
-			.toc-item p {
-				margin: 0;
-				font-size: 0.88em;
-				line-height: 1.6;
-				color: rgb(var(--gray-dark));
-			}
-
-			.bonus {
-				padding: 2rem 1.5rem;
-				background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-				border-radius: 12px;
-				text-align: center;
-			}
-			.bonus h2 { color: #78350f; }
-			.bonus-lead {
-				margin: 0 0 1.5rem;
-				color: #78350f;
-				line-height: 1.8;
-			}
-			.bonus-products {
-				display: flex;
-				flex-wrap: wrap;
-				gap: 0.5rem;
-				justify-content: center;
-				margin: 0 0 1.5rem;
-			}
-			.bonus-products span {
-				padding: 0.5em 1em;
-				background: white;
-				border-radius: 999px;
-				font-size: 0.85em;
-				color: #78350f;
-			}
-			.bonus-note {
-				margin: 0;
-				font-size: 0.88em;
-				color: #78350f;
-			}
-			.bonus-note a { color: var(--accent); text-decoration: none; font-weight: 600; }
-
-			.author-box {
-				display: flex;
-				gap: 1.2rem;
-				align-items: center;
-				padding: 1.5rem;
-				background: var(--bg-soft);
-				border-radius: 12px;
-			}
-			.author-avatar {
-				width: 64px; height: 64px;
-				border-radius: 50%;
-				background: linear-gradient(135deg, #3b82f6, #60a5fa);
-				color: white;
-				display: flex;
-				align-items: center;
-				justify-content: center;
-				font-size: 1.8em;
-				flex-shrink: 0;
-			}
-			.author-box h3 { margin: 0 0 0.4rem; color: rgb(var(--black)); font-size: 1em; }
-			.author-box p { margin: 0 0 0.3rem; font-size: 0.88em; line-height: 1.7; color: rgb(var(--gray-dark)); }
-
-			.final-cta {
-				text-align: center;
-				padding: 2.5rem 1rem;
-				background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
-				border-radius: 12px;
-			}
-			.final-cta p { margin: 0 0 1.5rem; color: rgb(var(--gray-dark)); }
-
-			.backlink { text-align: center; font-size: 0.88em; }
-			.backlink a { color: var(--accent); text-decoration: none; }
-
-			@media (prefers-color-scheme: dark) {
-				.hero, .final-cta { background: linear-gradient(135deg, #1e293b 0%, #1e3a8a 100%); }
-				.hero h1, .contents h2, .author h2, .final-cta h2 { color: #f1f5f9; }
-				.bonus { background: linear-gradient(135deg, #451a03 0%, #78350f 100%); }
-				.bonus h2, .bonus-lead, .bonus-note { color: #fef3c7; }
-				.bonus-products span { background: var(--bg-soft); color: #fef3c7; }
-			}
-			@media (max-width: 720px) {
-				.hero h1 { font-size: 1.4em; }
-				.toc-item { flex-direction: column; }
+				font-weight: 600;
 			}
 		</style>
 	</body>
