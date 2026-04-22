@@ -1,7 +1,7 @@
 ---
 title: "GASログ出力console.logでデバッグ完全版｜Logger.logとの違い・応用テク10選"
 description: "GASのconsole.logを使ったデバッグ手法を、現役ナース副業プログラマーが実務目線で解説。Logger.logとの違い・時間計測・条件付きログ・本番ログ最適化まで完全ガイドします。"
-pubDate: "TBD"
+pubDate: "2026-06-03T19:00:00+09:00"
 heroImage: "/blog-placeholder-5.jpg"
 categorySlug: "gas-basics"
 categoryName: "GAS入門"
