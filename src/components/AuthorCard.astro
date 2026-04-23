@@ -1,7 +1,7 @@
 ---
 ---
 <aside class="author-card">
-	<div class="author-avatar">👩‍💻</div>
+	<img src="/avatar.png" alt="凛のプロフィール画像" class="author-avatar" width="56" height="56" />
 	<div class="author-body">
 		<p class="author-name">凛（りん）</p>
 		<p class="author-bio">本業：看護師 / 副業：Webエンジニア。病棟の事務仕事をGASで自動化するうちに副業へ発展。<a href="/about/">プロフィール詳細 →</a></p>
@@ -21,13 +21,10 @@
 	.author-avatar {
 		width: 56px; height: 56px;
 		border-radius: 50%;
-		background: linear-gradient(135deg, #3b82f6, #60a5fa);
-		color: white;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		font-size: 1.6em;
+		object-fit: cover;
 		flex-shrink: 0;
+		border: 2px solid white;
+		box-shadow: 0 2px 6px rgba(0,0,0,0.1);
 	}
 	.author-name { margin: 0 0 0.3rem; font-weight: 700; color: rgb(var(--black)); }
 	.author-bio { margin: 0; font-size: 0.88em; line-height: 1.6; color: rgb(var(--gray-dark)); }
