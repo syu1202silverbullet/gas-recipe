@@ -1,7 +1,7 @@
 ---
 title: "ChatGPT×GAS活用ベスト5｜業務自動化の新しいカタチ"
 description: "Gmail要約・スプシ分析・カレンダー予定作成・LINE Bot・アイデア整理の5つを、ChatGPT API×GASで実装するときの設計ポイントと料金感を、現役ナースママが整理します。"
-pubDate: "2026-05-26T19:00:00+09:00"
+pubDate: "2026-05-11T19:00:00+09:00"
 heroImage: "/blog-placeholder-4.jpg"
 categorySlug: "gas-basics"
 categoryName: "GAS入門"
@@ -60,7 +60,7 @@ function callOpenAI(prompt) {
 
 ### 何をするか
 
-毎朝、前日届いたメールをGASで検索し、件名と本文をまとめてChatGPTに要約させ、Slack webhookまたはLINE Notifyで自分に投げる。
+毎朝、前日届いたメールをGASで検索し、件名と本文をまとめてChatGPTに要約させ、Slack webhookまたはLINE Messaging APIで自分に投げる。
 
 ### なぜ効くか
 
@@ -196,18 +196,26 @@ const prompt = `次のメモに対して、次のタグから最大2つだけ選
 
 AI×GASは、**コードが少ない割に、効く場所に効く**のが最大の魅力。まずは1本、今週中に動かしてみましょう。
 
-## 関連記事
+## 関連記事（あわせて読みたい）
 
-- GASで副業月5万円を目指すロードマップ完全版
-- ConoHa WING vs エックスサーバー GAS運用向けサーバー徹底比較
-- GASフリーランスが最初の案件を獲得する完全ガイド
+- [GASで副業月5万円を目指すロードマップ完全版](/blog/gas-sidejob-roadmap/)
+- [ConoHa WING vs エックスサーバー GAS運用向けサーバー徹底比較](/blog/gas-server-conoha-xserver/)
+- [GASフリーランスが最初の案件を獲得する完全ガイド](/blog/gas-freelance-first-client/)
 
 ---
 
-この記事で紹介したサービスの無料資料請求・カウンセリングは ###PLACEHOLDER_AFFILIATE_LINK### から（準備中）
+この記事で紹介したサービスの無料資料請求・カウンセリングは準備中です。
+
+---
+
+## 自分でも作れるようになりたい方へ
+
+GASを体系的に学びたい方には、現役エンジニアから直接学べるプログラミングスクールがおすすめです。副業で稼ぐための実践的なカリキュラムが充実しています。
+
+<a href="https://h.accesstrade.net/sp/cc?rk=0100knoa00orcn" rel="nofollow" referrerpolicy="no-referrer-when-downgrade">Dive into Code（プログラミングスクール）</a><img src="https://h.accesstrade.net/sp/rr?rk=0100knoa00orcn" width="1" height="1" border="0" alt="">
 
 ---
 
 ### この記事を書いた人：凛
 
-のママで現役ナース。夜勤明けの細切れ時間を副業GASに投じ、月5〜8万円の副収入を継続中。「看護師でもコードは書ける」を合言葉に、家事育児とプログラミングを両立する等身大の情報を発信しています。本記事の内容は2026年4月時点の個人の感想とAPI公開情報ベースの整理であり、OpenAI APIの最新仕様・料金は公式ドキュメントをご確認ください。
+2児のママで現役ナース。夜勤明けの細切れ時間を副業GASに投じ、月5〜8万円の副収入を継続中。「看護師でもコードは書ける」を合言葉に、家事育児とプログラミングを両立する等身大の情報を発信しています。本記事の内容は2026年4月時点の個人の感想とAPI公開情報ベースの整理であり、OpenAI APIの最新仕様・料金は公式ドキュメントをご確認ください。
