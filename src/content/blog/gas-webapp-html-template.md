@@ -11,7 +11,7 @@ readingTime: 12
 keywords: ["GAS HTML テンプレート","GAS HtmlService","GAS Webアプリ HTML","GAS HTML 書き方"]
 ---
 
-こんにちは、凛です。2児のママで現役ナースをしながら、GASで副業をしています。GAS Webアプリで「動的なHTMLを返したい」時に必ず使うのが`HtmlService`です。今日はGAS HTMLテンプレートの書き方を10例、実装コード付きで徹底解説します。
+こんにちは、本業は看護師、副業でGASを書いている凛です。GAS Webアプリで「動的なHTMLを返したい」時に必ず使うのが`HtmlService`です。今日はGAS HTMLテンプレートの書き方を10例、実装コード付きで徹底解説します。
 
 「GAS HTML テンプレート」「GAS HtmlService 書き方」で検索してここに来た方が、読み終わった直後に自分のWebアプリのUI実装を進められるレベルで書いています。
 
