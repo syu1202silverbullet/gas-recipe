@@ -11,7 +11,7 @@ readingTime: 7
 keywords: ["GAS Slack 通知","GAS Slack Webhook","Google Apps Script Slack"]
 ---
 
-こんにちは、凛です。2児のママで現役ナースをしながら、GASで副業をしています。仕事でSlackを使っているなら、GASの処理結果をSlackに飛ばせると一気に便利になります。今日は**GASからSlackに通知を送る最短実装**を紹介します。
+こんにちは、病棟勤務の傍らGASで在宅副業を続けている凛です。仕事でSlackを使っているなら、GASの処理結果をSlackに飛ばせると一気に便利になります。今日は**GASからSlackに通知を送る最短実装**を紹介します。
 
 「GAS Slack 通知」で検索してここに来た方が、読み終わったらすぐ動かせるレベルで書いています。
 
