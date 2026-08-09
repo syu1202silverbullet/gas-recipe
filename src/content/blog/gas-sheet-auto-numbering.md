@@ -408,9 +408,9 @@ GASは、こういう「地味だけど毎回手作業でやると面倒くさ�
 <a href="https://h.accesstrade.net/sp/cc?rk=0100knoa00orcn" rel="nofollow" referrerpolicy="no-referrer-when-downgrade">Dive into Code（未経験からエンジニアを目指すプログラミングスクール）</a><img src="https://h.accesstrade.net/sp/rr?rk=0100knoa00orcn" width="1" height="1" border="0" alt="">
 
 ## 関連記事
-- [/blog/gas-sheet-timestamp-auto/](/blog/gas-sheet-timestamp-auto/) — 入力した時刻を自動で記録する方法。採番とセットで使うと「いつ・何番」の管理がぐっと楽になります。
-- [/blog/gas-array-basic/](/blog/gas-array-basic/) — この記事でも使った getValues の2次元配列を、基礎から丁寧に解説しています。
-- [/blog/gas-sheet-dedupe/](/blog/gas-sheet-dedupe/) — 重複した行を自動で削除する方法。採番前のデータ整理に役立ちます。
+- [編集日時を自動記録するタイムスタンプGAS](/blog/gas-sheet-timestamp-auto/) — 入力した時刻を自動で記録する方法。採番とセットで使うと「いつ・何番」の管理がぐっと楽になります。
+- [GAS配列操作push/map/filter早見表15個｜2次元配列もこれで攻略](/blog/gas-array-basic/) — この記事でも使った getValues の2次元配列を、基礎から丁寧に解説しています。
+- [スプシ重複行を自動削除するGAS完全版コード](/blog/gas-sheet-dedupe/) — 重複した行を自動で削除する方法。採番前のデータ整理に役立ちます。
 
 ### この記事を書いた人：凛
 

@@ -370,9 +370,9 @@ function setupMonthlyTrigger() {
 <a href="https://h.accesstrade.net/sp/cc?rk=0100knoa00orcn" rel="nofollow" referrerpolicy="no-referrer-when-downgrade">Dive into Code（未経験からエンジニアを目指すプログラミングスクール）</a><img src="https://h.accesstrade.net/sp/rr?rk=0100knoa00orcn" width="1" height="1" border="0" alt="">
 
 ## 関連記事
-- [/blog/gas-trigger-clock-every-day/](/blog/gas-trigger-clock-every-day/) … 毎日決まった時刻にGASを動かす時間主導トリガーの作り方を解説しています。
-- [/blog/gas-sheet-timestamp-auto/](/blog/gas-sheet-timestamp-auto/) … 入力した行に時刻を自動で記録する仕組みを紹介しています。
-- [/blog/gas-trigger-setup/](/blog/gas-trigger-setup/) … トリガー設定の基本を、画面つきでていねいにまとめています。
+- [毎朝8時にGASを実行する時刻指定トリガー｜時間主導型の設定と活用例10選](/blog/gas-trigger-clock-every-day/) … 毎日決まった時刻にGASを動かす時間主導トリガーの作り方を解説しています。
+- [編集日時を自動記録するタイムスタンプGAS](/blog/gas-sheet-timestamp-auto/) … 入力した行に時刻を自動で記録する仕組みを紹介しています。
+- [GASトリガー設定完全ガイド｜画像付き手順と失敗しないコツ2026](/blog/gas-trigger-setup/) … トリガー設定の基本を、画面つきでていねいにまとめています。
 
 ### この記事を書いた人：凛
 

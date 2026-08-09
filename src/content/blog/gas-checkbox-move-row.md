@@ -294,9 +294,9 @@ function onEdit(e) {
 <a href="https://h.accesstrade.net/sp/cc?rk=0100knoa00orcn" rel="nofollow" referrerpolicy="no-referrer-when-downgrade">Dive into Code（未経験からエンジニアを目指すプログラミングスクール）</a><img src="https://h.accesstrade.net/sp/rr?rk=0100knoa00orcn" width="1" height="1" border="0" alt="">
 
 ## 関連記事
-- [/blog/gas-sheet-timestamp-auto/](/blog/gas-sheet-timestamp-auto/) … 入力した瞬間に日時を自動で記録する方法。今回の「移動前に日時をメモしておく」運用と相性抜群です。
-- [/blog/gas-trigger-setup/](/blog/gas-trigger-setup/) … メール通知など一歩進んだ自動化に必要な「インストーラブルトリガー」の設定手順をやさしく解説。
-- [/blog/gas-sheet-filter-auto/](/blog/gas-sheet-filter-auto/) … 条件に合う行だけを自動で絞り込む方法。完了シートを見やすく整理するのに役立ちます。
+- [編集日時を自動記録するタイムスタンプGAS](/blog/gas-sheet-timestamp-auto/) … 入力した瞬間に日時を自動で記録する方法。今回の「移動前に日時をメモしておく」運用と相性抜群です。
+- [GASトリガー設定完全ガイド｜画像付き手順と失敗しないコツ2026](/blog/gas-trigger-setup/) … メール通知など一歩進んだ自動化に必要な「インストーラブルトリガー」の設定手順をやさしく解説。
+- [スプシ自動フィルタをGASで3秒セット](/blog/gas-sheet-filter-auto/) … 条件に合う行だけを自動で絞り込む方法。完了シートを見やすく整理するのに役立ちます。
 
 ### この記事を書いた人：凛
 

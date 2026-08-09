@@ -397,9 +397,9 @@ function countBusinessDaysFast(start, end) {
 <a href="https://h.accesstrade.net/sp/cc?rk=0100knoa00orcn" rel="nofollow" referrerpolicy="no-referrer-when-downgrade">Dive into Code（未経験からエンジニアを目指すプログラミングスクール）</a><img src="https://h.accesstrade.net/sp/rr?rk=0100knoa00orcn" width="1" height="1" border="0" alt="">
 
 ## 関連記事
-- [/blog/gas-calendar-event-create/](/blog/gas-calendar-event-create/) … GASでGoogleカレンダーに予定を自動作成する方法。営業日計算で求めた締め日を、そのまま予定として登録したいときに役立ちます。
-- [/blog/gas-trigger-clock-every-day/](/blog/gas-trigger-clock-every-day/) … 毎日決まった時刻にGASを自動実行するトリガーの設定方法。締め日リマインドを自動で回すなら必読です。
-- [/blog/gas-calendar-weekly-report/](/blog/gas-calendar-weekly-report/) … カレンダーの予定を集計して週次レポートを作る方法。営業日判定と組み合わせると集計の精度が上がります。
+- [GASでGoogleカレンダーに予定登録する最短10行コード](/blog/gas-calendar-event-create/) … GASでGoogleカレンダーに予定を自動作成する方法。営業日計算で求めた締め日を、そのまま予定として登録したいときに役立ちます。
+- [毎朝8時にGASを実行する時刻指定トリガー｜時間主導型の設定と活用例10選](/blog/gas-trigger-clock-every-day/) … 毎日決まった時刻にGASを自動実行するトリガーの設定方法。締め日リマインドを自動で回すなら必読です。
+- [カレンダー稼働時間を週次レポート出力GAS｜工数集計・客先報告に](/blog/gas-calendar-weekly-report/) … カレンダーの予定を集計して週次レポートを作る方法。営業日判定と組み合わせると集計の精度が上がります。
 
 ### この記事を書いた人：凛
 

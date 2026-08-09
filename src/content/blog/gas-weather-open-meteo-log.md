@@ -399,9 +399,9 @@ Open-Meteoは無料でAPIキーもいりませんが、だからといって連�
 <a href="https://h.accesstrade.net/sp/cc?rk=0100knoa00orcn" rel="nofollow" referrerpolicy="no-referrer-when-downgrade">Dive into Code（未経験からエンジニアを目指すプログラミングスクール）</a><img src="https://h.accesstrade.net/sp/rr?rk=0100knoa00orcn" width="1" height="1" border="0" alt="">
 
 ## 関連記事
-- [/blog/gas-trigger-clock-every-day/](/blog/gas-trigger-clock-every-day/) … 今回使った「毎日決まった時刻に実行するトリガー」の設定を、もっと詳しく解説しています。
-- [/blog/gas-spreadsheet-daily-auto/](/blog/gas-spreadsheet-daily-auto/) … 毎日自動でスプレッドシートを更新する仕組みの基本。天気以外の記録にも応用できます。
-- [/blog/gas-sheet-timestamp-auto/](/blog/gas-sheet-timestamp-auto/) … 記録した行に時刻を自動で残すテクニック。ログ管理と相性ばつぐんです。
+- [毎朝8時にGASを実行する時刻指定トリガー｜時間主導型の設定と活用例10選](/blog/gas-trigger-clock-every-day/) … 今回使った「毎日決まった時刻に実行するトリガー」の設定を、もっと詳しく解説しています。
+- [スプレッドシートを毎朝自動で整える｜GASトリガーを使い倒す基本テクニック](/blog/gas-spreadsheet-daily-auto/) … 毎日自動でスプレッドシートを更新する仕組みの基本。天気以外の記録にも応用できます。
+- [編集日時を自動記録するタイムスタンプGAS](/blog/gas-sheet-timestamp-auto/) … 記録した行に時刻を自動で残すテクニック。ログ管理と相性ばつぐんです。
 
 ### この記事を書いた人：凛
 
