@@ -327,8 +327,7 @@ GASのGmail操作には、1日あたりに使える回数の上限（クォー�
 
 <a href="https://h.accesstrade.net/sp/cc?rk=0100knoa00orcn" rel="nofollow" referrerpolicy="no-referrer-when-downgrade">Dive into Code（未経験からエンジニアを目指すプログラミングスクール）</a><img src="https://h.accesstrade.net/sp/rr?rk=0100knoa00orcn" width="1" height="1" border="0" alt="">
 
-## 関連記事（あわせて読みたい）
-
+## 関連記事
 - [/blog/gas-gmail-search-label/](/blog/gas-gmail-search-label/)：Gmailの検索クエリとラベルを使って、目的のメールだけを正確に絞り込む方法を解説しています。
 - [/blog/gas-gmail-bulk-send/](/blog/gas-gmail-bulk-send/)：スプレッドシートの宛先リストから、GASでメールを一斉送信する仕組みの作り方です。
 - [/blog/gas-trigger-clock-every-day/](/blog/gas-trigger-clock-every-day/)：時間主導トリガーで、毎日決まった時刻にスクリプトを自動実行する手順を詳しく紹介しています。

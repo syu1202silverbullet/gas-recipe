@@ -172,8 +172,7 @@ function autoCleanupMulti() {
 
 まずはドライランで対象を眺めるところから、気軽に試してみてください。
 
-## 関連記事（あわせて読みたい）
-
+## 関連記事
 - [Gmail添付ファイルを自動でDriveに保存するGAS](/blog/gas-gmail-attachment-drive/) — メール→Drive保存の連携
 - [GASでDriveフォルダを自動整理する](/blog/gas-drive-auto-organize/) — フォルダ整理の応用
 - [GASのトリガーで毎日・毎週・毎月の自動実行を設定する](/blog/gas-trigger-clock-every-day/) — トリガー設定の詳細解説

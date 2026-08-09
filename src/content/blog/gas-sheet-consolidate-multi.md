@@ -350,8 +350,7 @@ function createMonthlyTrigger() {
 
 <a href="https://h.accesstrade.net/sp/cc?rk=0100knoa00orcn" rel="nofollow" referrerpolicy="no-referrer-when-downgrade">Dive into Code（未経験からエンジニアを目指すプログラミングスクール）</a><img src="https://h.accesstrade.net/sp/rr?rk=0100knoa00orcn" width="1" height="1" border="0" alt="">
 
-## 関連記事（あわせて読みたい）
-
+## 関連記事
 - [GASでCSVファイルを取り込んでスプレッドシートに書き込む方法](/blog/gas-sheet-import-csv/)：外部のCSVデータをGASで読み込んでシートに反映する基本を解説しています。集約と組み合わせると外部データの一元管理ができます。
 - [GASの配列操作の基本（getValues後の2次元配列を自在に扱う）](/blog/gas-array-basic/)：この記事で何度も出てきた2次元配列の扱い方を、mapやsliceを中心にじっくり解説しています。
 - [GASでスプレッドシートの重複行を削除する方法](/blog/gas-sheet-dedupe/)：集約したあとに出てくる「同じ行がダブっている」問題を、GASで自動的に解消する方法をまとめました。

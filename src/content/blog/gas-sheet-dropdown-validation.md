@@ -301,8 +301,7 @@ function onOpen() {
 
 <a href="https://h.accesstrade.net/sp/cc?rk=0100knoa00orcn" rel="nofollow" referrerpolicy="no-referrer-when-downgrade">Dive into Code（未経験からエンジニアを目指すプログラミングスクール）</a><img src="https://h.accesstrade.net/sp/rr?rk=0100knoa00orcn" width="1" height="1" border="0" alt="">
 
-## 関連記事（あわせて読みたい）
-
+## 関連記事
 - [条件付き書式をGASで一括設定する](/blog/gas-sheet-conditional-format/) … プルダウンの値に応じてセルの色を自動で変える方法。ステータス管理と相性抜群です。
 - [自動フィルタをGASで操作する](/blog/gas-sheet-filter-auto/) … 「対応中」だけをサッと絞り込むなど、フィルタをコードから操る実務レシピ。
 - [入力時刻を自動で記録する](/blog/gas-sheet-timestamp-auto/) … プルダウンで状態を変えたら、その時刻を自動で残す。onEditと組み合わせる定番ワザです。

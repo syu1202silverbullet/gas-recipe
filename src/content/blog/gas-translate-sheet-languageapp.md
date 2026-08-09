@@ -297,8 +297,7 @@ function translateInBatches() {
 
 <a href="https://h.accesstrade.net/sp/cc?rk=0100knoa00orcn" rel="nofollow" referrerpolicy="no-referrer-when-downgrade">Dive into Code（未経験からエンジニアを目指すプログラミングスクール）</a><img src="https://h.accesstrade.net/sp/rr?rk=0100knoa00orcn" width="1" height="1" border="0" alt="">
 
-## 関連記事（あわせて読みたい）
-
+## 関連記事
 - [GASの配列操作の基本](/blog/gas-array-basic/)：今回使った `map()` や2次元配列の考え方を、基礎からじっくり解説しています。
 - [getValuesでシート処理を10倍速くする](/blog/gas-sheet-getvalues-10x/)：1セルずつ読み書きせず、まとめて処理して高速化するテクニックをまとめました。
 - [GASのクォータ超過エラーの対処法](/blog/gas-error-quota/)：翻訳の大量処理でぶつかりやすい「上限エラー」の原因と回避策を解説しています。

@@ -11,7 +11,7 @@ readingTime: 14
 keywords: ["GAS LINE ChatGPT","GAS ChatGPT Bot","LINE Bot GAS","ChatGPT LINE 連携","GAS OpenAI API"]
 ---
 
-こんにちは、凛です。都内で看護師をしながら、副業でWebエンジニアをしています。
+こんにちは、凛です。看護師の仕事のかたわら、家族が使うものをGASで作るのが趣味みたいになっています。
 
 この記事は、私が「家族みんなで使えるChatGPT」をGASとLINEで自作したときの記録です。きっかけは、ChatGPT Plusの月3,000円という請求をじっと眺めていたある日のこと。契約してもいいけれど、家族みんなが使えるわけではないし、スマホのブラウザでいちいちログインするのも面倒。「LINEからChatGPTに話しかけられたら最高なのに」と思ったのが始まりでした。
 

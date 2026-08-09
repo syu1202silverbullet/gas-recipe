@@ -1,6 +1,6 @@
 ---
 title: "GAS実行上限Quota超過の原因と対処法｜送信数・実行時間・API呼び出し制限を読み解く"
-description: "GAS実行上限Quota超過エラーの原因と対処法を、看護師×副業Webエンジニアの凛が完全解説。Gmail送信数・スクリプト実行時間・API呼び出し回数の上限と、回避するためのコードパターン10選を紹介します。"
+description: "GAS実行上限Quota超過エラーの原因と対処法を、現役ナースの凛が完全解説。Gmail送信数・スクリプト実行時間・API呼び出し回数の上限と、回避するためのコードパターン10選を紹介します。"
 pubDate: "2026-06-07T19:00:00+09:00"
 heroImage: "/blog-placeholder-1.jpg"
 categorySlug: "gas-basics"

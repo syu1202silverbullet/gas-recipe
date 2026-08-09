@@ -346,8 +346,7 @@ APIキーや設定値は、コードに直書きせず `PropertiesService` に�
 
 <a href="https://h.accesstrade.net/sp/cc?rk=0100knoa00orcn" rel="nofollow" referrerpolicy="no-referrer-when-downgrade">Dive into Code（未経験からエンジニアを目指すプログラミングスクール）</a><img src="https://h.accesstrade.net/sp/rr?rk=0100knoa00orcn" width="1" height="1" border="0" alt="">
 
-## 関連記事（あわせて読みたい）
-
+## 関連記事
 - [GASのトリガー設定を初心者向けに解説](/blog/gas-trigger-setup/)：作った処理を決まった時間に自動で動かす、時間主導型トリガーの設定方法をまとめています。
 - [GASの認証エラー（承認が必要です）の対処法](/blog/gas-error-authorization/)：初めての実行でつまずきがちな認証エラーの原因と、落ち着いて進めるための手順を解説しています。
 - [GAS入門・5分ではじめる最初の一歩](/blog/gas-beginner-5min/)：GASってそもそも何？というところから、最初のスクリプトを動かすまでを5分で体験できます。

@@ -347,8 +347,7 @@ function sendDailyMail() {
 
 <a href="https://h.accesstrade.net/sp/cc?rk=0100knoa00orcn" rel="nofollow" referrerpolicy="no-referrer-when-downgrade">Dive into Code（未経験からエンジニアを目指すプログラミングスクール）</a><img src="https://h.accesstrade.net/sp/rr?rk=0100knoa00orcn" width="1" height="1" border="0" alt="">
 
-## 関連記事（あわせて読みたい）
-
+## 関連記事
 - [/blog/gas-sheet-timestamp-auto/](/blog/gas-sheet-timestamp-auto/) — スプレッドシートに入力したその瞬間の時刻を、自動で記録する方法を解説しています。今回学んだ日付整形とセットで使うと便利です。
 - [/blog/gas-calendar-event-create/](/blog/gas-calendar-event-create/) — Googleカレンダーの予定をGASから自動で作成する方法です。日付の扱いに慣れたら挑戦してみてください。
 - [/blog/gas-trigger-clock-every-day/](/blog/gas-trigger-clock-every-day/) — 毎日決まった時刻にGASを自動実行するトリガーの設定方法です。日次レポートの自動送信に欠かせません。

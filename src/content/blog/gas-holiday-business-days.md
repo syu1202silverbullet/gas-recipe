@@ -396,8 +396,7 @@ function countBusinessDaysFast(start, end) {
 
 <a href="https://h.accesstrade.net/sp/cc?rk=0100knoa00orcn" rel="nofollow" referrerpolicy="no-referrer-when-downgrade">Dive into Code（未経験からエンジニアを目指すプログラミングスクール）</a><img src="https://h.accesstrade.net/sp/rr?rk=0100knoa00orcn" width="1" height="1" border="0" alt="">
 
-## 関連記事（あわせて読みたい）
-
+## 関連記事
 - [/blog/gas-calendar-event-create/](/blog/gas-calendar-event-create/) … GASでGoogleカレンダーに予定を自動作成する方法。営業日計算で求めた締め日を、そのまま予定として登録したいときに役立ちます。
 - [/blog/gas-trigger-clock-every-day/](/blog/gas-trigger-clock-every-day/) … 毎日決まった時刻にGASを自動実行するトリガーの設定方法。締め日リマインドを自動で回すなら必読です。
 - [/blog/gas-calendar-weekly-report/](/blog/gas-calendar-weekly-report/) … カレンダーの予定を集計して週次レポートを作る方法。営業日判定と組み合わせると集計の精度が上がります。

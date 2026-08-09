@@ -267,8 +267,7 @@ function testSpreadsheetAccess() {
 
 ---
 
-## 関連記事（あわせて読みたい）
-
+## 関連記事
 スプレッドシート自動化をもっと深めたい方は、以下の記事もおすすめです。
 
 - [GASで配列操作push/map/filter早見表15個](/blog/gas-array-basic/) — 2次元配列の扱いがわかると速度が劇的に変わります

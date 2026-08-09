@@ -264,8 +264,7 @@ JSONで受け取った内容を確認するだけなら、まずはブラウザ�
 
 <a href="https://h.accesstrade.net/sp/cc?rk=0100knoa00orcn" rel="nofollow" referrerpolicy="no-referrer-when-downgrade">Dive into Code（未経験からエンジニアを目指すプログラミングスクール）</a><img src="https://h.accesstrade.net/sp/rr?rk=0100knoa00orcn" width="1" height="1" border="0" alt="">
 
-## 関連記事（あわせて読みたい）
-
+## 関連記事
 - [GASのWebアプリを公開する手順](/blog/gas-webapp-deploy/)：今回使った「デプロイ」の全体像を、もう少しじっくり基礎から解説しています。
 - [GASでHTML画面を返す方法](/blog/gas-webapp-html-template/)：JSONではなく、見た目のあるWebページを返したいときはこちら。
 - [GASの配列操作の基本](/blog/gas-array-basic/)：`getValues()` で出てくる二次元配列に慣れると、今回の変換処理がぐっと楽になります。

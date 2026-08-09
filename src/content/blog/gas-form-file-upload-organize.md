@@ -291,8 +291,7 @@ function getMonthlyPersonFolder_(parentId, personName) {
 
 <a href="https://h.accesstrade.net/sp/cc?rk=0100knoa00orcn" rel="nofollow" referrerpolicy="no-referrer-when-downgrade">Dive into Code（未経験からエンジニアを目指すプログラミングスクール）</a><img src="https://h.accesstrade.net/sp/rr?rk=0100knoa00orcn" width="1" height="1" border="0" alt="">
 
-## 関連記事（あわせて読みたい）
-
+## 関連記事
 - [/blog/gas-form-sheet-auto/](/blog/gas-form-sheet-auto/)：フォームの回答をスプレッドシートに自動で整形・転記する方法。この記事とセットで使うと回答管理がぐっと楽になります。
 - [/blog/gas-drive-auto-organize/](/blog/gas-drive-auto-organize/)：Driveにたまったファイルを条件ごとに自動でフォルダ分けする基本テクニック。整理の考え方の土台になります。
 - [/blog/gas-form-auto-reply/](/blog/gas-form-auto-reply/)：フォーム送信をきっかけに自動返信メールを送る仕組みの詳しい解説。受付メールをもっと作り込みたい方向けです。

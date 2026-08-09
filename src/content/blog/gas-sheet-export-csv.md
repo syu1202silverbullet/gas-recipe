@@ -175,8 +175,7 @@ function exportAndEmailCsv() {
 
 まずは手動実行で1回動かして、狙ったフォルダにファイルができるのを確かめてから、トリガーを設定する流れで進めてみてください。
 
-## 関連記事（あわせて読みたい）
-
+## 関連記事
 - [GASで配列操作push/map/filter早見表15個](/blog/gas-array-basic/) — 2次元配列の扱いがわかると速度が劇的に変わります
 - [GASでCSVをスプシに取り込む3手順](/blog/gas-sheet-import-csv/) — CSV連携の基本
 - [スプシ自動フィルタをGASで3秒セット](/blog/gas-sheet-filter-auto/) — フィルタ操作の自動化

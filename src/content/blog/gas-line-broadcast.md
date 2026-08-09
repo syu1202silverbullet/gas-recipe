@@ -357,8 +357,7 @@ if (rowDateStr === todayStr) {
 
 ---
 
-## 関連記事（あわせて読みたい）
-
+## 関連記事
 LINE自動化をもっと深めたい方は、以下の記事もおすすめです。
 
 - [GASでLINE通知を送る最短レシピ](/blog/gas-line-notify-basic/) — LINE通知の基本

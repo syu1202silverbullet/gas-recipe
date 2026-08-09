@@ -251,8 +251,7 @@ const events = cal.getEvents(start, end);
 
 ---
 
-## 関連記事（あわせて読みたい）
-
+## 関連記事
 カレンダー自動化をもっと深めたい方は、以下の記事もおすすめです。
 
 - [GASでGoogleカレンダーに予定登録する最短10行コード](/blog/gas-calendar-event-create/) — カレンダー登録の基本構文

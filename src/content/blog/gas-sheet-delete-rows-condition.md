@@ -338,8 +338,7 @@ function deleteWithConfirm() {
 
 <a href="https://h.accesstrade.net/sp/cc?rk=0100knoa00orcn" rel="nofollow" referrerpolicy="no-referrer-when-downgrade">Dive into Code（未経験からエンジニアを目指すプログラミングスクール）</a><img src="https://h.accesstrade.net/sp/rr?rk=0100knoa00orcn" width="1" height="1" border="0" alt="">
 
-## 関連記事（あわせて読みたい）
-
+## 関連記事
 - [重複した行をGASで削除する](/blog/gas-sheet-dedupe/)：同じ値がダブっている行をまとめて1件に整理する方法をまとめています。
 - [GASの配列操作 基本まとめ](/blog/gas-array-basic/)：今回使った`filter`や2次元配列の扱いを、基礎からじっくり解説しています。
 - [スプレッドシートの自動フィルタをGASで操作する](/blog/gas-sheet-filter-auto/)：削除せずに「条件で絞って表示する」だけならフィルタが便利です。

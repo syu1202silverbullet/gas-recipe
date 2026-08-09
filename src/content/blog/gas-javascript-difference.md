@@ -1,6 +1,6 @@
 ---
 title: "GASとJavaScriptの違い7つ初心者向け図解｜V8ランタイムで何が変わった？"
-description: "Google Apps ScriptとブラウザJavaScriptの7つの違いを、看護師×副業Webエンジニアの凛が初心者にもわかる図解付きで解説。V8ランタイム移行で使えるようになった文法と、GAS特有の制約・グローバル関数もカバー。"
+description: "Google Apps ScriptとブラウザJavaScriptの7つの違いを、現役ナースの凛が初心者にもわかる図解付きで解説。V8ランタイム移行で使えるようになった文法と、GAS特有の制約・グローバル関数もカバー。"
 pubDate: "2026-05-29T19:00:00+09:00"
 heroImage: "/blog-placeholder-4.jpg"
 categorySlug: "gas-basics"

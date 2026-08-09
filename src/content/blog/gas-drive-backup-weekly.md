@@ -258,8 +258,7 @@ function testFolderAccess() {
 
 ---
 
-## 関連記事（あわせて読みたい）
-
+## 関連記事
 Google Drive自動化をもっと深めたい方は、以下の記事もおすすめです。
 
 - [Gmail添付ファイルを自動でDriveに保存するGAS](/blog/gas-gmail-attachment-drive/) — メール→Drive保存の連携

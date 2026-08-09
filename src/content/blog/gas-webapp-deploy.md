@@ -1,6 +1,6 @@
 ---
 title: "GAS Webアプリ公開最短5ステップ｜doGet/doPost・URL発行・更新時の罠まで"
-description: "Google Apps ScriptをWebアプリとして公開する最短手順を、看護師×副業Webエンジニアの凛が画像付きで5ステップ解説。doGet/doPostの基本、再デプロイ時にURLが変わる罠、認証設定の使い分けまでカバーします。"
+description: "Google Apps ScriptをWebアプリとして公開する最短手順を、現役ナースの凛が画像付きで5ステップ解説。doGet/doPostの基本、再デプロイ時にURLが変わる罠、認証設定の使い分けまでカバーします。"
 pubDate: "2026-05-03T19:00:00+09:00"
 heroImage: "/blog-placeholder-1.jpg"
 categorySlug: "spreadsheet"
