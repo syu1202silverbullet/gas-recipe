@@ -9,7 +9,7 @@ tagSlugs: ["gas", "line", "messaging-api", "bot"]
 tagNames: ["GAS", "LINE", "Messaging API", "Bot"]
 readingTime: 9
 ---
-こんにちは、看護師のみっちゃんです。今日は私が副業でも家庭でも愛用している「GAS×LINE Messaging API」について、最短でBotを動かすまでの手順を紹介します。
+こんにちは、凛です。看護師をしながらGASで副業をしています。今日は私が副業でも家庭でも愛用している「GAS×LINE Messaging API」について、最短でBotを動かすまでの手順を紹介します。
 
 ## こんな悩みありませんか？
 

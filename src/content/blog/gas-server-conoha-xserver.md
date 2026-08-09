@@ -126,7 +126,6 @@ LINE BotやStripeなどのWebhookをサーバーで受けて、GASに中継す�
 
 一番大事なのは**サーバー選びに1週間悩むより、今日1本GASを書くこと**。順番を間違えないようにしてくださいね。
 
-
 ## 🌐 サイト公開におすすめのレンタルサーバー
 
 <div class="ad-block">
@@ -137,7 +136,6 @@ WordPressの同時インストールやSSL設定も自動化されており、�
 <img border="0" width="1" height="1" src="https://www11.a8.net/0.gif?a8mat=3NLAJJ+8ZAHCI+50+5SDXG2" alt="">
 </div>
 
-
 ## 🌐 大容量・安定稼働重視ならエックスサーバー
 
 <div class="ad-block">
@@ -146,7 +144,6 @@ WordPressの同時インストールやSSL設定も自動化されており、�
 法人サイト・大規模ブログなど安定稼働を重視するなら国内シェアNo.1の <a href="https://px.a8.net/svt/ejp?a8mat=4B1LPL+5EORLE+CO4+61JSI" rel="sponsored nofollow" target="_blank">エックスサーバー</a> が候補になります。WordPress簡単インストール、無料SSL、自動バックアップを標準装備。
 <img border="0" width="1" height="1" src="https://www15.a8.net/0.gif?a8mat=4B1LPL+5EORLE+CO4+61JSI" alt="">
 </div>
-
 
 ## 🚀 WordPress特化の高速サーバーmixhost
 
@@ -164,8 +161,6 @@ LiteSpeed採用でWordPressの表示速度に強い <a href="https://px.a8.net/s
 - GASフリーランスが最初の案件を獲得する完全ガイド
 
 ---
-
-この記事で紹介したサービスの無料資料請求・カウンセリングは ###PLACEHOLDER_AFFILIATE_LINK### から（準備中）
 
 ---
 
