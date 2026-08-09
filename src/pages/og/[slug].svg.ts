@@ -6,26 +6,74 @@ export async function getStaticPaths() {
 	return posts.map((p: any) => ({ params: { slug: p.id }, props: { post: p } }));
 }
 
-export const GET: APIRoute = async ({ props }) => {
-	const post = (props as any).post;
-	const title = post.data.title;
-	const category = post.data.categoryName || 'GAS Recipe';
+/** 半角は0.5文字、全角は1文字として数えた表示幅 */
+function width(s: string): number {
+	let w = 0;
+	for (const ch of s) w += /[\x20-\x7E]/.test(ch) ? 0.58 : 1.02;
+	return w;
+}
 
-	// Split title into 2 lines if too long
-	const maxPerLine = 20;
-	let line1 = title, line2 = '';
-	if (title.length > maxPerLine) {
-		const mid = Math.floor(title.length / 2);
-		// Find nearest space/symbol before mid
-		let splitAt = mid;
-		for (let i = mid; i >= 0; i--) {
-			if (['｜', '・', '：', ' ', '|'].includes(title[i])) { splitAt = i; break; }
+/**
+ * タイトルを最大3行に折り返す。
+ * ・区切り記号（｜・：など）があればそこで優先的に改行
+ * ・区切りが無い場合も、英単語や数字の途中では切らない
+ */
+function wrapTitle(title: string, maxWidth = 17, maxLines = 3): string[] {
+	const breakers = ['｜', '|', '・', '：', ':', '、', '。', ' ', '　', '／', '/'];
+	const isWordChar = (ch: string) => /[A-Za-z0-9._-]/.test(ch);
+	const lines: string[] = [];
+	let rest = title.trim();
+
+	while (rest.length > 0 && lines.length < maxLines) {
+		if (width(rest) <= maxWidth) { lines.push(rest); rest = ''; break; }
+
+		// maxWidth を超えない範囲でいちばん長く取れる位置を求める
+		let limit = 0;
+		while (limit < rest.length && width(rest.slice(0, limit + 1)) <= maxWidth) limit++;
+
+		// ① 区切り記号を後ろから探す（行の半分より後ろにあるものだけ採用）
+		let cut = -1;
+		for (let i = limit; i >= Math.floor(limit * 0.5); i--) {
+			if (breakers.includes(rest[i])) { cut = i + 1; break; }
 		}
-		line1 = title.slice(0, splitAt + 1);
-		line2 = title.slice(splitAt + 1);
+		// ② 無ければ、英単語・数字の途中を避けて後退する
+		if (cut < 0) {
+			cut = limit;
+			while (cut > Math.floor(limit * 0.5) && isWordChar(rest[cut - 1]) && isWordChar(rest[cut])) cut--;
+		}
+		lines.push(rest.slice(0, cut).trim());
+		rest = rest.slice(cut).trim();
 	}
 
-	const escape = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+	// 入りきらなかった分がある場合だけ、最終行を省略記号で締める
+	if (rest.length > 0 && lines.length > 0) {
+		let last = lines[lines.length - 1];
+		while (last.length > 1 && width(last + '…') > maxWidth) last = last.slice(0, -1);
+		lines[lines.length - 1] = last + '…';
+	}
+	return lines;
+}
+
+export const GET: APIRoute = async ({ props }) => {
+	const post = (props as any).post;
+	const title: string = post.data.title;
+	const category: string = post.data.categoryName || 'GAS Recipe';
+
+	const escape = (s: string) =>
+		s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+
+	const lines = wrapTitle(title);
+	// 行数に応じてタイトルの開始位置を調整（縦位置のバランス取り）
+	const startY = lines.length === 1 ? 355 : lines.length === 2 ? 325 : 295;
+	// 行が長いときは、その行だけ文字を小さくして枠からはみ出さないようにする
+	// （フォントは環境によって幅が変わるため、使える幅は控えめに 880px で見積もる）
+	const USABLE_WIDTH = 880;
+	const titleSvg = lines
+		.map((l, i) => {
+			const fontSize = Math.min(50, Math.floor(USABLE_WIDTH / Math.max(width(l), 1)));
+			return `<text x="100" y="${startY + i * 70}" font-family="'Noto Sans JP','Hiragino Sans','Yu Gothic',sans-serif" font-size="${fontSize}" fill="#111827" font-weight="800">${escape(l)}</text>`;
+		})
+		.join('\n  ');
 
 	const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
   <defs>
@@ -39,12 +87,12 @@ export const GET: APIRoute = async ({ props }) => {
     </linearGradient>
   </defs>
   <rect width="1200" height="630" fill="url(#bg)"/>
-  <rect x="60" y="60" width="1080" height="510" rx="24" fill="white" fill-opacity="0.7"/>
-  <text x="100" y="170" font-family="'Noto Sans JP', sans-serif" font-size="34" fill="#9333ea" font-weight="700">🌸 みっちゃんママ｜GAS Recipe</text>
-  <text x="100" y="230" font-family="'Noto Sans JP', sans-serif" font-size="24" fill="#6366f1" font-weight="600">📂 ${escape(category)}</text>
-  <text x="100" y="340" font-family="'Noto Sans JP', sans-serif" font-size="56" fill="#111827" font-weight="800">${escape(line1)}</text>
-  ${line2 ? `<text x="100" y="420" font-family="'Noto Sans JP', sans-serif" font-size="56" fill="#111827" font-weight="800">${escape(line2)}</text>` : ''}
-  <text x="100" y="530" font-family="'Noto Sans JP', sans-serif" font-size="28" fill="#6b7280">https://gas-recipe.com</text>
+  <rect x="60" y="60" width="1080" height="510" rx="24" fill="white" fill-opacity="0.72"/>
+  <rect x="100" y="120" width="8" height="44" rx="4" fill="url(#gear)"/>
+  <text x="126" y="156" font-family="'Noto Sans JP','Hiragino Sans','Yu Gothic',sans-serif" font-size="32" fill="#4f46e5" font-weight="700">GAS Recipe</text>
+  <text x="100" y="216" font-family="'Noto Sans JP','Hiragino Sans','Yu Gothic',sans-serif" font-size="24" fill="#6366f1" font-weight="600">${escape(category)}</text>
+  ${titleSvg}
+  <text x="100" y="530" font-family="'Noto Sans JP','Hiragino Sans','Yu Gothic',sans-serif" font-size="26" fill="#6b7280">凛｜https://gas-recipe.com</text>
   <g transform="translate(1050 170)">
     <circle r="70" fill="url(#gear)"/>
     <circle r="28" fill="white"/>
