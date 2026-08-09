@@ -1,200 +1,320 @@
 ---
 title: "GASよく出るエラー10選と解決コード集｜辞書代わりに使える完全版"
-description: "GASエラーに悩む初心者向けに、undefined・権限・タイムアウトなど頻出10種を実体験ベースで解決。コピペで使える解決コードと、原因の見分け方を網羅します。"
+description: "GASでよく出るエラー10種類を、原因の見分け方と解決コードつきで解説。undefined・権限エラー・実行時間6分の壁・呼び出し回数の上限など、初心者がつまずく所を実体験ベースでまとめました。エラーメッセージの読み方とデバッグ手順つき。"
 pubDate: "2026-04-25T19:00:00+09:00"
 heroImage: "/blog-placeholder-3.jpg"
 categorySlug: "gas-basics"
 categoryName: "GAS入門"
 tagSlugs: ["gas", "error", "troubleshooting"]
 tagNames: ["GAS", "エラー", "トラブル解決"]
-readingTime: 7
+readingTime: 14
 ---
-## こんな悩みありませんか？
 
-「実行ボタンを押したら赤字のエラーが出た…英語で読めない」
-「昨日は動いたのに今日は動かない、なぜ？」
-「`undefined` ってなに？どこを直せばいい？」
+「実行ボタンを押したら赤い文字が出た。英語で読めない」
+「昨日は動いたのに、今日は動かない」
+「`undefined` ってなに？どこを直せばいいの？」
 
-GASを触り始めて最初の1週間、私はこのエラー地獄で何度も心が折れました。公式ドキュメントは丁寧ですが、初心者向けではなく「そもそも用語がわからない」問題にぶつかります。
+GASを触り始めた最初の1週間、私はこのエラー地獄で何度も手が止まりました。公式ドキュメントは正確ですが、「そもそも用語がわからない」という段階では読み進められません。
 
-この記事では、私が実際に踏み抜いた**エラー10選**と、その解決コードをまとめました。エラーメッセージをブックマーク代わりに使えるよう、検索しやすい形で並べています。
+この記事は、私が実際に踏み抜いたエラーを**辞書として引ける形**にまとめたものです。エラーメッセージで検索して飛んできた方は、目次から自分のメッセージを探してください。
 
-## エラー解決の基本フロー
+## その前に：エラーメッセージの読み方
 
+GASのエラーは、たいてい次の3つの情報を持っています。
+
+```text
+TypeError: Cannot read properties of undefined (reading 'age')
+    at getUser(コード:3:25)
 ```
-[エラー発生] → [メッセージ全文をコピー] → [該当行を確認] → [型と値をログ出力] → [修正] → [再実行]
+
+| 部分 | 意味 |
+|---|---|
+| `TypeError` | エラーの**種類**（型の問題） |
+| `Cannot read properties of undefined (reading 'age')` | **何が起きたか**（undefinedの`age`を読もうとした） |
+| `at getUser(コード:3:25)` | **どこで**（getUser関数の3行目25文字目） |
+
+読む順番は「どこで」→「何が」→「種類」です。まず行番号に飛んでください。**エラーの9割は、指された行の変数の中身を見れば分かります。**
+
+### 直す前に、まず中身を見る
+
+```text
+[エラーが出た] → [メッセージ全文をコピー] → [指された行へ飛ぶ]
+ → [その行で使っている変数を console.log で出す] → [直す] → [再実行]
 ```
 
-いきなりコードを直そうとせず、**まず状態を見える化**するのが近道です。`console.log` で変数の中身を出すだけで8割は解決します。
+いきなり書き換えると、たいてい別のエラーが増えます。`console.log` を挟んで**状態を目で見る**のが結局いちばん速い道です。
 
-## 頻出エラー10選と解決コード
+```javascript
+console.log(typeof data, JSON.stringify(data));  // 型と中身を同時に確認
+```
 
-### 1. `TypeError: Cannot read properties of undefined`
+自動実行（トリガー）で出たエラーは、エディタ左メニューの**「実行数」**から履歴とログを確認できます。手動実行のログは実行のたびに下に出ます。
 
-もっとも遭遇するエラー。存在しないプロパティを読もうとしています。
+---
+
+## 1. `TypeError: Cannot read properties of undefined`
+
+いちばん多いエラーです。「存在しないものの、中身を読もうとした」ときに出ます。
 
 ```javascript
 function getUser() {
-  const data = { name: "太郎" };
-  console.log(data.profile.age); // profileが無いので落ちる
+  const data = { name: '太郎' };
+  console.log(data.profile.age);   // profile が無いので落ちる
 }
 ```
 
-**解決**: オプショナルチェーンで回避。
+**なぜ起きるか**：`data.profile` は `undefined`。`undefined.age` は読めません。
+
+**解決**：オプショナルチェーン（`?.`）と、既定値（`??`）で守ります。
 
 ```javascript
-console.log(data.profile?.age ?? "未設定");
+console.log(data.profile?.age ?? '未設定');
 ```
 
-### 2. `ReferenceError: XXX is not defined`
+スプレッドシートの値やAPIの応答は「あるはず」と思っていても空のことがあります。**外から来た値は必ず疑う**のが基本姿勢です。
 
-変数名や関数名のタイプミス、または `const` 宣言忘れです。
+## 2. `ReferenceError: XXX is not defined`
 
-**解決**: スペルチェックと宣言の有無を確認。GASエディタの自動補完を活用すると減ります。
-
-### 3. `Exception: Service Spreadsheets failed`
-
-スプレッドシート側の同時編集や、シート名の変更で起きます。
+変数名のタイプミスか、宣言忘れです。
 
 ```javascript
-const sheet = SpreadsheetApp.getActive().getSheetByName("売上");
-if (!sheet) throw new Error("シートが見つかりません");
+function run() {
+  const sheetName = '売上';
+  console.log(sheetname);   // 小文字のnで別物になっている
+}
 ```
 
-**解決**: シート取得直後にnullチェックを入れる。
+**解決**：スペルを確認します。GASエディタは打ち間違いを赤い波線で教えてくれるので、保存前に一度エディタ上の警告を見る癖をつけると激減します。
 
-### 4. `Exception: Authorization is required`
+なお、関数名を間違えると「`XXX is not a function`」になります。似ていますが原因は同じ「その名前のものが無い」です。
 
-権限が未承認です。初回実行で必ず出ます。
+## 3. `Exception: Service Spreadsheets failed` / シートがnull
 
-**解決**: 手動実行で一度承認を通します。自動実行だけでは承認ダイアログが出ないので注意。
+シート名を変更した、シートを消した、他の人が同時に編集している、などで起きます。
 
-### 5. `Exception: Service invoked too many times`
+```javascript
+const sheet = SpreadsheetApp.getActive().getSheetByName('売上');
+sheet.getRange('A1').setValue(1);   // シートが無いと sheet は null
+```
 
-1日あたりのAPI呼び出し上限超過。メール送信なら100通/日など。
+**解決**：取得直後に必ずチェックを入れます。
 
-**解決**: `Utilities.sleep(1000)` で間隔を空けるか、処理を分割。
+```javascript
+const sheet = SpreadsheetApp.getActive().getSheetByName('売上');
+if (!sheet) throw new Error('「売上」シートが見つかりません。シート名を確認してください');
+```
 
-### 6. `Exception: Script took too long`
+エラーメッセージを自分の言葉にしておくと、半年後の自分が助かります。
 
-実行時間の上限（無料枠6分）を超えた場合に発生します。
+## 4. `Exception: Authorization is required`（承認が必要です）
+
+権限をまだ許可していないときに出ます。初回実行では必ず出るので、故障ではありません。
+
+**解決**：**手動で1回実行して承認します。**
+
+1. エディタで関数を選んで実行
+2. アカウントを選ぶ
+3. 「このアプリはGoogleで確認されていません」→「詳細」→「（プロジェクト名）に移動」
+4. 内容を確認して「許可」
+
+自分で書いた未公開のスクリプトなので、この警告表示は正常です。**トリガーの自動実行では承認ダイアログが出せない**ため、必ず手動実行を先に済ませてください。
+
+また、スクリプトに新しいサービス（例：Gmail送信）を追加すると、権限の範囲が変わるので**もう一度承認**が必要になります。「昨日まで動いていたのに」の正体はこれのことがあります。
+
+## 5. `Exception: Service invoked too many times for one day`
+
+1日あたりの上限に達しました。無料アカウントの主な上限は次のとおりです。
+
+| 機能 | 1日の上限（目安） |
+|---|---|
+| メール送信 | 100通 |
+| URL取得（UrlFetchApp） | 20,000回 |
+| トリガーの合計実行時間 | 90分 |
+
+**解決**：まず「本当にその回数が必要か」を疑います。ループの中でメールを1通ずつ送っているなら、**1通にまとめる**だけで解決することがほとんどです。
+
+どうしても回数が必要なら、処理を日をまたいで分割します。上限は変更されることがあるので、最新は[公式のQuotasページ](https://developers.google.com/apps-script/guides/services/quotas)で確認してください。
+
+## 6. `Exception: Script took too long`（実行時間6分の壁）
+
+1回の実行が6分を超えると強制終了されます。GASでいちばん有名な制限です。
 
 ```javascript
 function heavyTask() {
-  const data = fetchHugeData();
-  data.forEach(row => processRow(row)); // 10万件あると死ぬ
+  const sheet = SpreadsheetApp.getActiveSheet();
+  for (let i = 1; i <= 10000; i++) {
+    sheet.getRange(i, 1).setValue(i);   // 1万回の書き込み＝間違いなく落ちる
+  }
 }
 ```
 
-**解決**: バッチ分割＋トリガー再起動。
+**解決A：まとめて読み書きする（まずこれ）**
+
+```javascript
+const values = [];
+for (let i = 1; i <= 10000; i++) values.push([i]);
+sheet.getRange(1, 1, values.length, 1).setValues(values);   // 書き込みは1回だけ
+```
+
+シートとのやり取り（`getValue`／`setValue`）は1回ごとに時間がかかります。**配列にためて最後に1回**が鉄則で、これだけで数十倍速くなることも珍しくありません。
+
+**解決B：続きから再開できるようにする**
+
+どうしても量が多いときは、どこまで終わったかを記録して分割します。
 
 ```javascript
 function chunkedRun() {
-  const props = PropertiesService.getScriptProperties();
-  const startRow = Number(props.getProperty('startRow') || '0');
-  const sheet = SpreadsheetApp.getActiveSheet();
-  const data = sheet.getDataRange().getValues();
-  const batch = data.slice(startRow, startRow + 1000);
-  batch.forEach(row => processRow(row));
-  props.setProperty('startRow', String(startRow + 1000));
+  const props    = PropertiesService.getScriptProperties();
+  const startRow = Number(props.getProperty('startRow') || '1');
+  const sheet    = SpreadsheetApp.getActiveSheet();
+  const data     = sheet.getDataRange().getValues();
+  const batch    = data.slice(startRow, startRow + 1000);
+
+  batch.forEach(function (row) { processRow(row); });
+
+  const next = startRow + 1000;
+  if (next >= data.length) {
+    props.deleteProperty('startRow');    // 最後まで終わったらリセット
+    console.log('全件完了');
+  } else {
+    props.setProperty('startRow', String(next));
+    console.log(next + '行目まで完了');
+  }
 }
 ```
 
-### 7. `SyntaxError: Unexpected token`
+## 7. `SyntaxError: Unexpected token`
 
-カンマ忘れ、括弧の閉じ忘れなど構文ミス。
+括弧やカンマの閉じ忘れなど、文法の間違いです。**この場合はコードが1行も実行されません。**
 
-**解決**: エディタの赤波線をたどって該当行を修正。私は初期、`;` の抜けで2時間溶かしました。
+**解決**：エディタが指す行の**少し上**を疑ってください。閉じ括弧の不足は、実際のミス位置より後ろの行でエラーになることが多いためです。
 
-### 8. `Exception: Range not found`
+私は初期に `}` をひとつ余分に書いていて、2時間溶かしたことがあります。インデント（字下げ）を揃えておくと、こういうミスが目で見つかるようになります。
 
-`getRange("A1:Z")` のような無効な範囲指定で発生。
+## 8. `Exception: Range not found`
 
-**解決**: 明示的に数値指定。
+範囲の指定が不正です。`getRange('A1:Z')` のように行番号を省いた書き方や、行数・列数に0を渡したときに出ます。
 
 ```javascript
+// 空のシートだと getLastRow() が 0 になって落ちる
 sheet.getRange(1, 1, sheet.getLastRow(), sheet.getLastColumn());
 ```
 
-### 9. `TypeError: XXX.map is not a function`
+**解決**：0にならないよう保険をかけます。
 
-配列だと思った変数が配列じゃない典型パターン。
+```javascript
+const lastRow = Math.max(sheet.getLastRow(), 1);
+const lastCol = Math.max(sheet.getLastColumn(), 1);
+sheet.getRange(1, 1, lastRow, lastCol);
+```
 
-**解決**: 配列化を挟む。
+「テスト時は動いたのに、まっさらなシートで落ちる」の典型パターンです。
+
+## 9. `TypeError: XXX.map is not a function`
+
+配列だと思っていた変数が、配列ではありませんでした。APIの応答が1件のときにオブジェクトで返る、というのがよくある原因です。
+
+**解決**：配列に揃えてから使います。
 
 ```javascript
 const arr = Array.isArray(result) ? result : [result];
-arr.map(item => item.name);
+arr.map(function (item) { return item.name; });
 ```
 
-### 10. `Exception: Rate Limit Exceeded`
+同じ理由で `forEach is not a function` も出ます。迷ったら `console.log(Array.isArray(result))` で確かめてください。
 
-外部APIコール（UrlFetchAppなど）での連打エラー。
+## 10. `Exception: Rate Limit Exceeded` / 一時的な通信エラー
 
-**解決**: 指数バックオフ（失敗時に待機時間を倍々にする）で再試行。
+外部APIを短時間に叩きすぎたときや、相手側が一時的に不安定なときに出ます。
+
+**解決**：待ち時間を倍にしながら再挑戦します（指数バックオフ）。
 
 ```javascript
-function fetchWithRetry(url, retries = 3) {
+function fetchWithRetry(url, retries) {
+  retries = retries || 3;
   for (let i = 0; i < retries; i++) {
-    try { return UrlFetchApp.fetch(url); }
-    catch (e) { Utilities.sleep(1000 * Math.pow(2, i)); }
+    const res = UrlFetchApp.fetch(url, { muteHttpExceptions: true });
+    if (res.getResponseCode() === 200) return res;
+    Utilities.sleep(1000 * Math.pow(2, i));   // 1秒 → 2秒 → 4秒
   }
+  throw new Error('取得に失敗しました：' + url);
 }
 ```
 
-## GASエラー対処のメリット
+`muteHttpExceptions: true` を付けておくと、エラー応答でも例外にならず、ステータスコードと本文を自分で確認できます。原因の切り分けが一気に楽になるので、外部APIを叩くときは常に付けておくのがおすすめです。
 
-エラーと仲良くなると、次のような実感が得られます。
+---
 
-- **再利用可能なコード**が手元に溜まる（次の案件で即使える）
-- **バグの原因推定が速く**なる（勘所がつく）
-- **他人のコードもデバッグできる**ようになる（地味に評価される）
+## よくある「そもそも」の失敗3つ
 
-私の場合、エラー対処ノートを自分用Notionに貯めておいたら、3か月後には誰かに教えられるレベルになっていました。
+### 失敗1：エラーメッセージを読まずに検索する
 
-## よくある失敗パターン
+「GAS エラー」で検索するより、**メッセージ全文をそのまま検索**するほうが圧倒的に速く答えに着きます。英語のままで大丈夫です。
 
-### 失敗1: エラーメッセージを読まずにググる
+### 失敗2：保存せずに実行する
 
-「エラーが出た」で検索するより、メッセージ全文をコピペする方が100倍速く解決します。
+編集しただけで実行すると、古いコードが動きます。GASエディタは自動保存されますが、反映が一拍遅れることがあります。実行前に `Ctrl+S`（Macは `⌘+S`）を癖にしてください。
 
-### 失敗2: 修正後にキャッシュで古いコードが動く
+### 失敗3：トリガーで動かす関数に`getActiveSpreadsheet`を使う
 
-GASではたまに、保存したつもりのコードが反映されないことがあります。`Ctrl+S` で明示保存してから実行してください。
-
-### 失敗3: ログを仕込まずに勘で直す
-
-`console.log` を5か所に仕込めば、原因は必ず見つかります。感覚に頼ると無限に時間が溶けます。
-
-## 発展例：自作エラーハンドラ
-
-頻発する処理はtry-catchで囲み、失敗時にメール通知すると運用が楽になります。
+手動では動くのに、トリガーだと落ちる——その原因の大半がこれです。トリガー実行時は「開いているシート」が存在しないため `null` になります。
 
 ```javascript
-function safeRun(fn) {
-  try { fn(); }
-  catch (e) {
-    GmailApp.sendEmail("me@example.com", "GASエラー", e.message);
+// ❌ トリガーでは動かないことがある
+const ss = SpreadsheetApp.getActiveSpreadsheet();
+
+// ✅ IDで明示的に開く
+const ss = SpreadsheetApp.openById('スプレッドシートのID');
+```
+
+## 運用するなら：失敗をメールで知らせる
+
+自動実行は静かに失敗します。気づいたら1週間動いていなかった、というのは本当によくあります。
+
+```javascript
+function safeRun(fn, name) {
+  try {
+    fn();
+  } catch (e) {
+    GmailApp.sendEmail(
+      Session.getActiveUser().getEmail(),
+      '【GAS】' + name + ' でエラー',
+      e.message + '\n\n' + (e.stack || '')
+    );
+    throw e;   // 実行履歴にも失敗として残す
   }
+}
+
+function main() {
+  safeRun(dailySummary, '日次集計');
 }
 ```
 
-## 独学で限界を感じたら
+あわせて、トリガーの設定画面で**エラー通知を「今すぐ通知を受け取る」**にしておいてください。この2つで「静かに死んでいた」がなくなります。
 
-エラー対処はパターン認識の世界です。独学で粘るのも尊いですが、**体系的な学習**で基礎が固まると、未知のエラーにも勘が働くようになります。
+## エラーと付き合えるようになると起きること
 
-オンラインのプログラミングスクールでは、現役エンジニアにエラーを直接相談できるサポートが付いていることも多く、無料カウンセリングで自分の学習戦略を見直すだけでも得るものがあります。
+エラーに慣れてくると、こんな変化がありました。
+
+- 使い回せる**自分用のコード断片**が手元に溜まる
+- エラーを見た瞬間に「ああ、あれだな」と当たりが付くようになる
+- 人が書いたコードの不具合も直せるようになる
+
+私はエラーと解決策を1行メモに残していきました。3か月後には、同じところで困っている人に説明できるようになっていました。**エラーは覚えるものではなく、記録するもの**だと思います。
 
 ## まとめ
 
-- エラーメッセージは全文読む
-- `console.log` でまず状態を見える化
-- 10選のうち6つは型チェックで防げる
-- 自作エラーハンドラで運用品質が上がる
+- エラーは「どこで → 何が → 種類」の順に読む
+- 直す前に `console.log` で**変数の中身と型**を見る
+- `undefined` 系は `?.` と `??` で守る
+- 6分の壁は「まとめて読み書き」でほぼ解決する
+- トリガーで動かす関数では `getActiveSpreadsheet()` を使わない
+- 自動実行には**失敗通知**を必ず付ける
 
-エラーは敵ではなく、コードが教えてくれるヒントです。次のエラーに出会ったら、ぜひこの記事に戻ってきてください。
+エラーは、コードが「ここが違うよ」と教えてくれている状態です。次のエラーに出会ったら、またこの記事に戻ってきてください。
 
-関連記事:
-- [GAS入門｜5分で書ける最初の1行コード徹底解説](/blog/gas-beginner-5min/)
-- [GASトリガー設定完全ガイド](/blog/gas-trigger-setup/)
-- [GASでできること10選](/blog/gas-can-do-10-things/)
+## 関連記事
+
+- [GAS入門｜5分で書ける最初の1行コード完全解説](/blog/gas-beginner-5min/)
+- [Google Apps Scriptでできること10選｜無料で毎日使える自動化アイデア集](/blog/gas-can-do-10-things/)
+- [スプレッドシートを毎朝自動で整える｜GASトリガーを使い倒す基本テクニック](/blog/gas-spreadsheet-daily-auto/)

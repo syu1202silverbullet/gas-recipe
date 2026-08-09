@@ -196,7 +196,7 @@ Quotaは「嫌がらせの制限」ではなく「設計のヒント」だと思
 
 - [GAS6分制限を回避する3パターン完全解説](/blog/gas-trigger-6min-limit/)
 - [GASよく出るエラー10選と解決コード集](/blog/gas-error-exception/)
-- [GAS失敗時のリトライ処理を実装する完全版](/blog/gas-retry-exponential/)
+- [GAS失敗時のリトライ処理を実装する完全版](/blog/gas-error-exception/)
 
 ---
 

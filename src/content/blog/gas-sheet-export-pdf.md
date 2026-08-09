@@ -248,9 +248,9 @@ function exportMultiplePdfs() {
 
 ## 関連記事
 
-- [GASでスプレッドシートのデータをCSVで自動エクスポートする](/blog/gas-sheet-csv-export/)
+- [GASでスプレッドシートのデータをCSVで自動エクスポートする](/blog/gas-sheet-export-csv/)
 - [GASの時間主導トリガーを設定する完全ガイド](/blog/gas-trigger-setup/)
-- [GASでGmailに自動でメールを送る基本と応用](/blog/gas-gmail-auto-send/)
+- [GASでGmailに自動でメールを送る基本と応用](/blog/gas-gmail-bulk-send/)
 
 ---
 

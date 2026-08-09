@@ -259,7 +259,7 @@ Gmail標準の転送機能では物足りない、でも毎回手で転送する
 
 - [Gmail未読メールを条件検索してラベル付与するGAS](/blog/gas-gmail-search-label/)
 - [GASでGmailの一斉送信を安全に実装する](/blog/gas-gmail-bulk-send/)
-- [GASでGmailのメールをスプレッドシートに自動転記する](/blog/gas-gmail-to-sheet/)
+- [GASでGmailのメールをスプレッドシートに自動転記する](/blog/gas-gmail-search-label/)
 
 ---
 

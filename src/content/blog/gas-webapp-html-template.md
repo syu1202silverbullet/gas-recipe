@@ -577,7 +577,7 @@ function doGet() {
 ## 関連記事
 
 - [GAS Webアプリ公開最短5ステップ](/blog/gas-webapp-deploy/) — デプロイ手順・doGet/doPostの基本
-- [GASでスプレッドシートをデータベースにするWebアプリ](/blog/gas-webapp-form-db/) — フォーム→スプシの実践例
+- [GASでスプレッドシートをデータベースにするWebアプリ](/blog/gas-webapp-deploy/) — フォーム→スプシの実践例
 - [GASでGmail添付ファイルをドライブに自動保存](/blog/gas-gmail-attachment-drive/) — GASの実務活用例
 
 ---

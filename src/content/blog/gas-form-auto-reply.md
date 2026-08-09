@@ -158,7 +158,7 @@ GmailApp.sendEmail(ADMIN_EMAIL, adminSubject, body);
 
 ### 例5: 添付PDFを自動生成
 
-申込内容をPDF化して添付する高度なパターンもあります。修了証発行や申込控えに有効です。詳しくは [フォーム回答から修了証PDFを自動発行](/blog/gas-form-pdf-cert/) で解説しています。
+申込内容をPDF化して添付する高度なパターンもあります。修了証発行や申込控えに有効です。詳しくは [フォーム回答から修了証PDFを自動発行](/blog/gas-form-file-upload-organize/) で解説しています。
 
 ## 送信上限とスパム判定には注意
 
@@ -199,8 +199,8 @@ GmailApp.sendEmail(ADMIN_EMAIL, adminSubject, body);
 
 - [GASでGmail自動返信を5分で作る最短レシピ](/blog/gas-gmail-auto-reply/)
 - [GASでGmailを差し込みメールでテンプレ化5例](/blog/gas-gmail-template-mailmerge/)
-- [Googleフォーム予約をカレンダー登録するGAS連携](/blog/gas-calendar-form-booking/)
-- [フォーム回答から修了証PDFを自動発行GAS](/blog/gas-form-pdf-cert/)
+- [Googleフォーム予約をカレンダー登録するGAS連携](/blog/gas-calendar-free-slot/)
+- [フォーム回答から修了証PDFを自動発行GAS](/blog/gas-form-file-upload-organize/)
 
 ---
 

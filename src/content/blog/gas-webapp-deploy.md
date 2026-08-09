@@ -184,7 +184,7 @@ GAS Webアプリは、サーバー不要・完全無料で15分あれば立ち�
 
 - [GASトリガー設定完全ガイド](/blog/gas-trigger-setup/)
 - [Webhook受信でGAS即時実行する設定方法](/blog/gas-trigger-webhook/)
-- [GASでWebアプリにログイン機能を付ける方法](/blog/gas-webapp-login/)
+- [GASでWebアプリにログイン機能を付ける方法](/blog/gas-webapp-html-template/)
 - [GAS6分制限を回避する3パターン完全解説](/blog/gas-trigger-6min-limit/)
 
 ---
