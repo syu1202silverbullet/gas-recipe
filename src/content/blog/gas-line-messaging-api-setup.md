@@ -1,161 +1,238 @@
 ---
-title: "LINE Messaging APIとGAS連携する最短3ステップ"
-description: "GASとLINE Messaging APIを連携して通知Botを作る手順を3ステップで解説。看護師が家族のスケジュール共有に使っている実例付きです。"
-pubDate: "2026-04-28T19:00:00+09:00"
+title: "GAS×LINE Messaging API設定ガイド｜最短でBotを動かす手順"
+description: "GASからLINEにメッセージを送るための設定を最初から解説。チャネル作成、アクセストークンとユーザーIDの取得、応答設定の落とし穴、push・reply・broadcastの使い分け、無料枠200通の数え方、画像やボタン付きメッセージの送り方までまとめました。"
+pubDate: "2026-05-14T19:00:00+09:00"
 heroImage: "/blog-placeholder-2.jpg"
 categorySlug: "line"
 categoryName: "LINE連携"
-tagSlugs: ["gas", "line", "messaging-api", "bot"]
-tagNames: ["GAS", "LINE", "Messaging API", "Bot"]
-readingTime: 9
+tagSlugs: ["gas","line","setup"]
+tagNames: ["GAS","LINE","初期設定"]
+readingTime: 13
 ---
-こんにちは、凛です。2児の母で、現役のナースです。今日は私が副業でも家庭でも愛用している「GAS×LINE Messaging API」について、最短でBotを動かすまでの手順を紹介します。
 
-## こんな悩みありませんか？
+2児の母で、現役のナースです。今日は、GASからLINEに通知を送るための**土台の設定**をまとめます。
 
-- スプシの更新を自分や家族にLINEで知らせたい
-- メール通知だと見落として夫に怒られる
-- Webhookとか難しそうで一歩踏み出せない
-- 夜勤シフトが変わったら家族に自動でLINEしたい
+「毎朝の予定をLINEに送る」「在庫が減ったら知らせる」——こういう仕組みは、どれも同じ土台の上に建っています。ここさえ通しておけば、あとは中身を変えるだけで何本でも作れます。
 
-私も最初はWebhookの設定で挫折しかけました。でも実は「送信するだけ」なら驚くほど簡単です。今回はまず「GASからLINEにメッセージを送る」ところまでを最短で構築します。
+逆に、ここでつまずくと何も進みません。私自身、最初にトークンの種類を取り違えて2時間溶かしました。同じ穴に落ちないよう、順番どおりに進めます。
 
-## 全体像
+## 前提：LINE Notifyは使えません
 
-やることは大きく3つだけ。
+以前は「LINE Notify」という手軽な仕組みがあり、多くの解説記事がこれを使っていました。**2025年3月31日で提供終了**しています。
 
-1. LINE Developersでチャネル作成→アクセストークン取得
-2. 自分のユーザーIDを取得（またはグループIDを準備）
-3. GASで`UrlFetchApp`を使ってPush APIを叩く
+古い記事のコード（`https://notify-api.line.me/api/notify` を叩くもの）をコピーしても動きません。今から作るなら **LINE Messaging API** 一択です。
 
-Webhook（受信）は後から追加で構築可能なので、まずは送信だけ動かして成功体験を積みましょう。
+## Step1：チャネルを作る
 
-## ステップ1: チャネル作成とトークン取得
+1. [LINE Developers](https://developers.line.biz/ja/) にLINEアカウントでログイン
+2. 「プロバイダー」を新規作成（自分が分かる名前でOK。例：`personal`）
+3. そのプロバイダーの中で「**新規チャネル作成**」→ **Messaging API** を選択
+4. チャネル名・説明・大業種・小業種・メールアドレスを入力して作成
 
-LINE Developersコンソール（developers.line.biz）にログインし、以下を進めます。
+チャネル名はLINE上での表示名になります。あとから変更できます。
 
-1. プロバイダーを新規作成（会社名や個人名でOK）
-2. 「Messaging API」のチャネルを作成
-3. チャネル詳細画面の「Messaging API設定」タブを開く
-4. 下部の「チャネルアクセストークン（長期）」を発行してコピー
-5. 同じ画面に表示されるQRコードから、自分のLINEでBotを友だち追加
+## Step2：3つの値を控える
 
-トークンは外部に漏らさないように注意。私はセキュリティのため、GASのスクリプトプロパティに保存しています。
+作ったチャネルの「**Messaging API設定**」タブを開き、次を取得します。
+
+| 名前 | どこにあるか | 何に使うか |
+|---|---|---|
+| **チャネルアクセストークン（長期）** | Messaging API設定の最下部（発行ボタン） | 送信の認証 |
+| **あなたのユーザーID** | 同タブの上部 | 自分宛に送るときの宛先 |
+| チャネルシークレット | 「チャネル基本設定」タブ | 署名検証（使わないことも多い） |
+
+**間違えやすい点**：チャネルID（数字）とチャネルシークレットとアクセストークンは全部別物です。送信に使うのは**アクセストークン**です。
+
+### 自分でBotを友だち追加する
+
+同じ画面にQRコードがあります。**必ず自分で友だち追加してください。**友だちでない相手には送信できません。「エラーは出ないのに届かない」の原因の大半がこれです。
+
+## Step3：応答設定を直す
+
+同じ画面の「応答設定」で、次のようにします。
+
+- **応答メッセージ：オフ**（オンだとLINEの定型文が自動で返り、自作の返信と二重になります）
+- **あいさつメッセージ：お好みで**
+- **Webhook：オン**（返信Botを作る場合。通知を送るだけなら不要）
+
+ここを直さずに「返事が2回くる」と悩む人がとても多いです。
+
+## Step4：トークンをスクリプトプロパティに入れる
+
+GASエディタで「プロジェクトの設定（⚙）」→「スクリプト プロパティ」を開き、登録します。
+
+| プロパティ名 | 値 |
+|---|---|
+| `LINE_TOKEN` | チャネルアクセストークン（長期） |
+| `LINE_USER_ID` | あなたのユーザーID |
+
+**コードに直接書かないでください。**トークンは、知られると自分のBotから勝手に送信されてしまう鍵です。GitHubに上げたコードから漏れる事故も実際に起きています。
+
+## Step5：送ってみる
 
 ```javascript
-function saveToken() {
-  PropertiesService.getScriptProperties().setProperty(
-    'LINE_TOKEN',
-    'ここに長期トークンを貼る'
-  );
+/** 自分宛にメッセージを送る（動作確認用） */
+function testPush() {
+  pushLine_('テスト送信です。届きましたか？');
 }
-```
 
-一度実行したら、この関数は削除しておきましょう。
+/** LINEにテキストを送る共通関数 */
+function pushLine_(text) {
+  const props  = PropertiesService.getScriptProperties();
+  const token  = props.getProperty('LINE_TOKEN');
+  const userId = props.getProperty('LINE_USER_ID');
 
-## ステップ2: ユーザーIDを取得
-
-Push APIで個別にメッセージを送るには、送信先のユーザーIDが必要です。一番簡単なのは、Webhookを使ってBotに話しかけた相手のIDをログに出す方法です。
-
-```javascript
-function doPost(e) {
-  const events = JSON.parse(e.postData.contents).events;
-  for (const event of events) {
-    console.log('userId:', event.source.userId);
-  }
-  return ContentService.createTextOutput('ok');
-}
-```
-
-これをウェブアプリとしてデプロイ（アクセス:全員、実行:自分）し、URLをLINE DevelopersのWebhook URLに設定。自分でBotに「hello」と送ればログにIDが表示されます。
-
-## ステップ3: Push APIでメッセージ送信
-
-いよいよメインです。シンプルな送信関数がこちら。
-
-```javascript
-function sendLine(message) {
-  const token = PropertiesService.getScriptProperties().getProperty('LINE_TOKEN');
-  const userId = PropertiesService.getScriptProperties().getProperty('LINE_USER_ID');
-
-  const payload = {
-    to: userId,
-    messages: [{
-      type: 'text',
-      text: message
-    }]
-  };
-
-  UrlFetchApp.fetch('https://api.line.me/v2/bot/message/push', {
+  const res = UrlFetchApp.fetch('https://api.line.me/v2/bot/message/push', {
     method: 'post',
     contentType: 'application/json',
     headers: { Authorization: 'Bearer ' + token },
-    payload: JSON.stringify(payload),
+    payload: JSON.stringify({
+      to: userId,
+      messages: [{ type: 'text', text: String(text).slice(0, 4900) }]
+    }),
     muteHttpExceptions: true
   });
-}
 
-function test() {
-  sendLine('GASからこんにちは！');
-}
-```
-
-`test`を実行してLINEに通知が来たら成功です。私は初めて成功した時、夜勤前のロッカーで小さくガッツポーズしました。
-
-## 押さえておきたい3つのポイント
-
-### ポイント1: トークンはスクリプトプロパティに保存
-
-GitHubに公開する可能性がある副業案件では、トークンをコードにベタ書きしないのは鉄則です。
-
-### ポイント2: muteHttpExceptionsでデバッグしやすく
-
-`muteHttpExceptions: true`にしておくと、エラー時もレスポンスが取得できるので原因調査が楽です。
-
-```javascript
-const res = UrlFetchApp.fetch(url, options);
-console.log(res.getResponseCode(), res.getContentText());
-```
-
-### ポイント3: Push APIは無料枠に注意
-
-LINE公式アカウントのフリープランでは、月の送信数に上限があります。大量通知するなら、自分だけに送る個人利用か、有料プランの検討が必要です。
-
-## 応用:シフト通知の自動化
-
-私が実際に使っているのが、Googleカレンダーに入れた夜勤シフトを前日21時に家族LINEグループへ送る仕組みです。
-
-```javascript
-function notifyShift() {
-  const cal = CalendarApp.getDefaultCalendar();
-  const tomorrow = new Date();
-  tomorrow.setDate(tomorrow.getDate() + 1);
-  const events = cal.getEventsForDay(tomorrow);
-
-  const shifts = events
-    .filter(e => e.getTitle().includes('夜勤'))
-    .map(e => `${e.getTitle()} ${Utilities.formatDate(e.getStartTime(),'JST','HH:mm')}〜`);
-
-  if (shifts.length > 0) {
-    sendLine('【明日のシフト】\n' + shifts.join('\n'));
+  const code = res.getResponseCode();
+  if (code !== 200) {
+    console.log('送信エラー ' + code + '：' + res.getContentText());
+  } else {
+    console.log('送信しました');
   }
+  return code === 200;
 }
 ```
 
-これを時間トリガーで毎日21時に実行。夫が「明日迎えいる？」と聞いてくる回数が激減しました。
+`testPush` を実行して、初回の権限を許可すれば、LINEに届きます。ここまで通れば土台は完成です。
+
+## 送信方法は4種類ある
+
+用途によって使い分けます。
+
+| 種類 | エンドポイント | 用途 | 無料枠の消費 |
+|---|---|---|---|
+| **reply** | `/v2/bot/message/reply` | 相手の発言への返信 | **消費しない** |
+| **push** | `/v2/bot/message/push` | こちらから任意のタイミングで送る | 消費する |
+| multicast | `/v2/bot/message/multicast` | 複数人にまとめて | 人数分消費 |
+| broadcast | `/v2/bot/message/broadcast` | 友だち全員へ | 人数分消費 |
+
+**replyは無料枠を消費しません。**これは大きな違いです。返信Botとして使うぶんには、通数を気にする必要がほとんどありません。
+
+replyは相手の発言に付いてくる `replyToken` が必要で、**1回しか使えず、発行から時間が経つと無効**になります。
+
+## 無料枠の数え方
+
+LINE公式アカウントの無料プラン（コミュニケーションプラン）では、**pushできるのは月200通**です。
+
+数え方で誤解しやすいのが「1通」の定義です。
+
+- **1回のAPI呼び出しで3つのメッセージ**を送ると、**3通**として数えられます
+- 送信先が5人なら、**5通**（人数分）です
+
+自分1人に毎朝1通なら、月31通。まったく問題ありません。**家族4人に毎朝送ると月124通**で、これでも収まります。ただし「毎朝＋帰宅時＋寝る前」と増やしていくと、あっという間に届かなくなります。
+
+上限に達したときは、こんなエラーが返ります。
+
+```text
+The monthly limit of the free plan has been exceeded.
+```
+
+翌月になれば自動で回復します。プラン内容は変わることがあるので、最新は[LINEヤフー for Businessの料金ページ](https://www.lycbiz.com/jp/service/line-official-account/plan/)で確認してください。
+
+## テキスト以外も送れる
+
+### 画像
+
+```javascript
+function pushImage_(originalUrl, previewUrl) {
+  sendMessages_([{
+    type: 'image',
+    originalContentUrl: originalUrl,   // HTTPS必須・最大10MB
+    previewImageUrl: previewUrl        // HTTPS必須・最大1MB
+  }]);
+}
+```
+
+画像は**外部から見えるHTTPSのURL**が必要です。Googleドライブの共有リンクは形式が合わないことが多いので、そのままでは使えない点に注意してください。
+
+### ボタン付きメッセージ（テンプレート）
+
+```javascript
+function pushButtons_() {
+  sendMessages_([{
+    type: 'template',
+    altText: '今日のタスク',   // 通知やPCで表示される代替テキスト（必須）
+    template: {
+      type: 'buttons',
+      title: '今日のタスク',
+      text: '終わったら押してください',
+      actions: [
+        { type: 'message', label: '完了', text: '済 タスク1' },
+        { type: 'uri',     label: 'シートを開く', uri: 'https://docs.google.com/...' }
+      ]
+    }
+  }]);
+}
+
+/** メッセージ配列を送る共通部分 */
+function sendMessages_(messages) {
+  const props = PropertiesService.getScriptProperties();
+  const res = UrlFetchApp.fetch('https://api.line.me/v2/bot/message/push', {
+    method: 'post',
+    contentType: 'application/json',
+    headers: { Authorization: 'Bearer ' + props.getProperty('LINE_TOKEN') },
+    payload: JSON.stringify({ to: props.getProperty('LINE_USER_ID'), messages: messages }),
+    muteHttpExceptions: true
+  });
+  if (res.getResponseCode() !== 200) console.log(res.getContentText());
+}
+```
+
+`altText` は必須です。忘れると400エラーになります。
+
+## エラーの読み方
+
+`muteHttpExceptions: true` を付けておくと、エラーの中身が読めます。よく出るものは次の3つです。
+
+### 401 Unauthorized
+
+トークンが違います。前後の空白、再発行後に古い値が残っている、チャネルシークレットと取り違えている——このどれかです。
+
+### 400 Bad Request
+
+送信先IDの形式が違うか、メッセージの組み立てが不正です。返ってくるJSONに `message` として理由が書かれているので、そこを読んでください。「property, messages[0].altText is required」のように、どこが足りないか教えてくれます。
+
+### 429 Too Many Requests
+
+短時間に送りすぎです。ループの中で連続送信している場合は、`Utilities.sleep(500)` を挟むか、1通にまとめてください。
+
+## つまずいたら確認する順番
+
+1. **自分でBotを友だち追加したか**（最頻出）
+2. トークンは「チャネルアクセストークン（長期）」か
+3. 送信先は `U` から始まるユーザーIDか
+4. GASの「実行数」画面にエラーが出ていないか
+5. 無料枠の200通を超えていないか
+
+この5つで、ほとんどの「届かない」は解決します。
 
 ## まとめ
 
-- LINE Developersでチャネル作成→長期トークン取得
-- ユーザーIDはWebhookログで取得
-- `UrlFetchApp`でPush APIを叩くだけ
-- トークンはスクリプトプロパティで安全管理
-- 応用でシフト通知や家族との情報共有が自動化できる
+- LINE Notifyは終了。今は **Messaging API**
+- 使うのは**チャネルアクセストークン（長期）**と**ユーザーID**の2つ
+- **自分でBotを友だち追加**しないと届かない
+- 「応答メッセージ」をオフにしないと**返事が二重**になる
+- **replyは無料枠を消費しない**。pushは月200通まで
+- トークンは**スクリプトプロパティ**へ。コードに直書きしない
 
-看護師の私にとって、家族との時間を守るための第一歩がこの自動通知でした。まずは送信だけでも十分実用的なので、ぜひ試してみてください。
+土台さえ通れば、あとは送る中身を変えるだけです。次は「毎朝の予定を送る」あたりから作ってみると、効果が実感しやすいと思います。
 
 ## 関連記事
 
-- [GAS setValuesで1000行を一括書き込む高速化テクニック](/blog/gas-sheet-setvalues-bulk/)
-- [スプシ重複行を自動削除するGAS完全版コード](/blog/gas-sheet-dedupe/)
-- [フリーランス請求書をGASで毎月自動発行する仕組み](/blog/gas-freelance-invoice/)
+- [GASでLINEに毎朝「今日の予定・天気・タスク」を自動通知する仕組み](/blog/gas-line-morning-notification/)
+- [GASで作るLINE返信Bot最小コード30行](/blog/gas-line-reply-bot/)
+- [毎朝ToDoをLINEに届けるGASリマインダー](/blog/gas-line-reminder-daily/)
+
+### この記事を書いた人：凛
+
+2児のママで現役ナース。夜勤明けの細切れ時間を副業GASに投じ、月5〜8万円の副収入を継続中。「看護師でもコードは書ける」を合言葉に、家事育児とプログラミングを両立する等身大の情報を発信しています。
